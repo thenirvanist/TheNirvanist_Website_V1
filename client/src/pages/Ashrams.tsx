@@ -206,69 +206,71 @@ export default function Ashrams() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {filteredAshrams.map((ashram) => (
-                <Card key={ashram.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[580px] flex flex-col">
+                <Card key={ashram.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[620px] flex flex-col">
                   <img 
                     src={ashram.image} 
                     alt={ashram.name}
                     className="w-full h-48 object-cover flex-shrink-0"
                   />
                   <div className="p-6 flex flex-col h-full">
-                    <h3 className="text-xl font-bold mb-2">{ashram.name}</h3>
+                    <h3 className="text-xl font-bold mb-2 line-clamp-1">{ashram.name}</h3>
                     
                     <div className="flex items-center mb-3">
                       <MapPin className="w-4 h-4 text-gray-500 mr-2" />
-                      <span className="text-sm text-gray-600">{ashram.location}</span>
+                      <span className="text-sm text-gray-600 line-clamp-1">{ashram.location}</span>
                     </div>
 
-                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed text-sm">
                       {ashram.description}
                     </p>
 
-                    {ashram.focus && (
-                      <div className="mb-4">
-                        <div className="flex items-center mb-2">
-                          <Star className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
-                          <h4 className="font-semibold text-gray-700 text-sm">Focus</h4>
+                    <div className="flex-grow">
+                      {ashram.focus && (
+                        <div className="mb-3">
+                          <div className="flex items-center mb-1">
+                            <Star className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                            <h4 className="font-semibold text-gray-700 text-sm">Focus</h4>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {ashram.focus}
+                          </Badge>
                         </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {ashram.focus}
-                        </Badge>
-                      </div>
-                    )}
+                      )}
 
-                    {ashram.founders && (
-                      <div className="mb-4">
-                        <div className="flex items-center mb-2">
-                          <User className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
-                          <h4 className="font-semibold text-gray-700 text-sm">Founder</h4>
+                      {ashram.founders && (
+                        <div className="mb-3">
+                          <div className="flex items-center mb-1">
+                            <User className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                            <h4 className="font-semibold text-gray-700 text-sm">Founder</h4>
+                          </div>
+                          <p className="text-sm text-gray-600 line-clamp-1">{ashram.founders}</p>
                         </div>
-                        <p className="text-sm text-gray-600 line-clamp-1">{ashram.founders}</p>
-                      </div>
-                    )}
+                      )}
 
-                    {ashram.facilities && ashram.facilities.length > 0 && (
-                      <div className="mb-6 flex-grow">
-                        <div className="flex items-center mb-2">
-                          <Leaf className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
-                          <h4 className="font-semibold text-gray-700 text-sm">Key Facilities</h4>
+                      {ashram.facilities && ashram.facilities.length > 0 && (
+                        <div className="mb-4">
+                          <div className="flex items-center mb-1">
+                            <Leaf className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                            <h4 className="font-semibold text-gray-700 text-sm">Key Facilities</h4>
+                          </div>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            {ashram.facilities.slice(0, 2).map((facility, index) => (
+                              <li key={index} className="flex items-start">
+                                <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                                <span className="line-clamp-1">{facility}</span>
+                              </li>
+                            ))}
+                            {ashram.facilities.length > 2 && (
+                              <li className="text-[hsl(75,64%,49%)] text-xs">
+                                + {ashram.facilities.length - 2} more facilities
+                              </li>
+                            )}
+                          </ul>
                         </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {ashram.facilities.slice(0, 2).map((facility, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
-                              <span className="line-clamp-1">{facility}</span>
-                            </li>
-                          ))}
-                          {ashram.facilities.length > 2 && (
-                            <li className="text-[hsl(75,64%,49%)] text-xs">
-                              + {ashram.facilities.length - 2} more facilities
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
-                    <div className="mt-auto pt-4 border-t border-gray-100">
+                    <div className="pt-4 border-t border-gray-100">
                       <Link href={`/ashrams/${ashram.id}`}>
                         <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                           Read More

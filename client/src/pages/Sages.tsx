@@ -206,70 +206,72 @@ export default function Sages() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {filteredSages.map((sage) => (
-                <Card key={sage.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[560px] flex flex-col">
+                <Card key={sage.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[620px] flex flex-col">
                   <img 
                     src={sage.image} 
                     alt={sage.name}
                     className="w-full h-48 object-cover flex-shrink-0"
                   />
                   <div className="p-6 flex flex-col h-full">
-                    <h3 className="text-xl font-bold mb-2">{sage.name}</h3>
+                    <h3 className="text-xl font-bold mb-2 line-clamp-1">{sage.name}</h3>
                     
                     {sage.location && (
                       <div className="flex items-center mb-3">
                         <MapPin className="w-4 h-4 text-gray-500 mr-2" />
-                        <span className="text-sm text-gray-600">{sage.location}</span>
+                        <span className="text-sm text-gray-600 line-clamp-1">{sage.location}</span>
                       </div>
                     )}
 
-                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed text-sm">
                       {sage.description}
                     </p>
 
-                    {sage.teachings && sage.teachings.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center mb-2">
-                          <Sparkles className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
-                          <h4 className="font-semibold text-gray-700 text-sm">Core Teachings</h4>
+                    <div className="flex-grow">
+                      {sage.teachings && sage.teachings.length > 0 && (
+                        <div className="mb-3">
+                          <div className="flex items-center mb-1">
+                            <Sparkles className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                            <h4 className="font-semibold text-gray-700 text-sm">Core Teachings</h4>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {sage.teachings.slice(0, 2).map((teaching, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {teaching}
+                              </Badge>
+                            ))}
+                            {sage.teachings.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{sage.teachings.length - 2}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex flex-wrap gap-1">
-                          {sage.teachings.slice(0, 2).map((teaching, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {teaching}
-                            </Badge>
-                          ))}
-                          {sage.teachings.length > 2 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{sage.teachings.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                      )}
 
-                    {sage.books && sage.books.length > 0 && (
-                      <div className="mb-6 flex-grow">
-                        <div className="flex items-center mb-2">
-                          <BookOpen className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
-                          <h4 className="font-semibold text-gray-700 text-sm">Notable Work</h4>
+                      {sage.books && sage.books.length > 0 && (
+                        <div className="mb-4">
+                          <div className="flex items-center mb-1">
+                            <BookOpen className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                            <h4 className="font-semibold text-gray-700 text-sm">Notable Work</h4>
+                          </div>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            {sage.books.slice(0, 2).map((book, index) => (
+                              <li key={index} className="flex items-start">
+                                <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                                <span className="line-clamp-1">{book}</span>
+                              </li>
+                            ))}
+                            {sage.books.length > 2 && (
+                              <li className="text-[hsl(75,64%,49%)] text-xs">
+                                + {sage.books.length - 2} more works
+                              </li>
+                            )}
+                          </ul>
                         </div>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {sage.books.slice(0, 2).map((book, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
-                              <span className="line-clamp-1">{book}</span>
-                            </li>
-                          ))}
-                          {sage.books.length > 2 && (
-                            <li className="text-[hsl(75,64%,49%)] text-xs">
-                              + {sage.books.length - 2} more works
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
-                    <div className="mt-auto pt-4 border-t border-gray-100">
+                    <div className="pt-4 border-t border-gray-100">
                       <Link href={`/sages/${sage.id}`}>
                         <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                           Read Full Biography
