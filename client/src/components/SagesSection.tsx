@@ -62,7 +62,7 @@ export default function SagesSection() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
-            <p className="text-lg text-gray-700">No sage information available at the moment.</p>
+            <p className="text-lg text-gray-700">No sage information available at the moment. {sages ? `Found ${sages.length} sages` : 'Sages is null/undefined'}</p>
           </div>
         </div>
       </section>

@@ -80,7 +80,7 @@ export default function TourCarousel() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
-            <p className="text-xl text-gray-600">No journeys available at the moment. Please check back soon.</p>
+            <p className="text-xl text-gray-600">No journeys available at the moment. {journeys ? `Found ${journeys.length} journeys` : 'Journeys is null/undefined'}</p>
           </div>
         </div>
       </section>

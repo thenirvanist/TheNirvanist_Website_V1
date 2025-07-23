@@ -62,7 +62,7 @@ export default function AshramsSection() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">No ashram information available at the moment.</p>
+            <p className="text-lg text-gray-700">No ashram information available at the moment. {ashrams ? `Found ${ashrams.length} ashrams` : 'Ashrams is null/undefined'}</p>
           </div>
         </div>
       </section>
