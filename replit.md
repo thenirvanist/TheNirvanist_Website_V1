@@ -1,0 +1,129 @@
+# The Nirvanist - Spiritual Tourism Platform
+
+## Overview
+
+The Nirvanist is a full-stack spiritual tourism platform that connects seekers with transformative spiritual journeys, sage wisdom, ashram retreats, and global meetups. The application facilitates spiritual growth through curated experiences in sacred destinations worldwide.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Routing**: Wouter for lightweight client-side routing
+- **Styling**: Tailwind CSS with shadcn/ui component library
+- **State Management**: TanStack Query for server state management
+- **UI Framework**: Radix UI primitives with custom styling
+- **Build Tool**: Vite for fast development and production builds
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js framework
+- **Language**: TypeScript throughout the application
+- **API Design**: RESTful API with clear endpoint structure
+- **File Structure**: Modular organization with separate concerns
+
+### Database Architecture
+- **ORM**: Drizzle ORM for type-safe database operations
+- **Database**: PostgreSQL (configured for Neon serverless)
+- **Schema Management**: Drizzle Kit for migrations and schema management
+- **Connection**: Neon serverless driver for PostgreSQL
+
+## Key Components
+
+### Core Entities
+1. **Journeys**: Sacred retreats and spiritual experiences with pricing, locations, and itineraries
+2. **Sages**: Spiritual teachers and masters with biographies, teachings, and books
+3. **Ashrams**: Sacred spaces and retreat centers with facilities and contact information
+4. **Meetups**: Global spiritual gatherings with online satsangs and community features
+5. **Users**: User management and authentication system
+6. **Blog Posts**: Spiritual content and insights
+7. **Testimonials**: User experiences and feedback
+8. **Contact Messages**: Customer inquiry management
+9. **Newsletter**: Subscription system for spiritual insights
+
+### Frontend Components
+- **Navigation**: Fixed header with responsive design and brand integration
+- **Hero Section**: Video background with call-to-action
+- **Interactive Sections**: Scroll-triggered animations and carousels
+- **Chatbot**: AI-powered spiritual guidance using OpenAI integration
+- **Forms**: Contact, registration, and newsletter subscription forms
+- **Responsive Design**: Mobile-first approach with adaptive layouts
+
+### Backend Services
+- **Storage Layer**: Abstracted database operations with interface pattern
+- **Route Handlers**: RESTful endpoints for all entities
+- **OpenAI Integration**: Spiritual chatbot with contextual responses
+- **Error Handling**: Centralized error management
+- **Validation**: Zod schema validation for data integrity
+
+## Data Flow
+
+### Client-Server Communication
+1. Frontend makes API requests using TanStack Query
+2. Express routes handle requests with validation
+3. Storage layer interfaces with Drizzle ORM
+4. PostgreSQL database stores and retrieves data
+5. Responses flow back through the same chain
+
+### Real-time Features
+- Chatbot interactions with OpenAI API
+- Form submissions with immediate feedback
+- Toast notifications for user actions
+
+### State Management
+- Server state managed by TanStack Query with caching
+- Local state managed by React hooks
+- Form state handled by React Hook Form with Zod validation
+
+## External Dependencies
+
+### Core Dependencies
+- **Database**: Neon PostgreSQL serverless database
+- **AI Service**: OpenAI API for chatbot functionality
+- **UI Components**: Radix UI primitives
+- **Styling**: Tailwind CSS framework
+- **Fonts**: Google Fonts (Inter family)
+- **Icons**: Lucide React icon library
+
+### Development Tools
+- **Build**: Vite with React plugin
+- **TypeScript**: Full type safety across stack
+- **ESBuild**: Server bundling for production
+- **PostCSS**: CSS processing with Tailwind
+
+### Third-party Integrations
+- **Replit**: Development environment integration
+- **Cartographer**: Replit-specific development tools
+- **Connect-pg-simple**: PostgreSQL session store
+
+## Deployment Strategy
+
+### Development Environment
+- Vite dev server for frontend with HMR
+- TSX for server development with hot reload
+- Replit-specific plugins for cloud development
+
+### Production Build
+- Vite builds optimized frontend bundle
+- ESBuild bundles server code for Node.js
+- Static assets served from Express
+- Database migrations handled via Drizzle Kit
+
+### Environment Configuration
+- Database URL from environment variables
+- OpenAI API key configuration
+- Production vs development environment detection
+- Graceful fallbacks for missing configurations
+
+### File Structure
+```
+/client           - React frontend application
+/server           - Express backend services  
+/shared           - Common types and schemas
+/migrations       - Database migration files
+/dist             - Production build output
+```
+
+The application follows a monorepo structure with clear separation between frontend, backend, and shared code, enabling efficient development and deployment workflows.
