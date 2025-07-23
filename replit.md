@@ -12,6 +12,9 @@ The Nirvanist is a full-stack spiritual tourism platform that connects seekers w
 ✓ Built dynamic spiritual collage section with hover animations
 ✓ Fixed meetup button placement to bottom of image
 ✓ Integrated OpenAI API key for future chatbot functionality
+✓ Added PostgreSQL database with Drizzle ORM integration
+✓ Migrated from in-memory storage to persistent database storage
+✓ Seeded database with initial spiritual journeys, sages, and ashram data
 
 ## User Preferences
 
@@ -32,6 +35,7 @@ Preferred communication style: Simple, everyday language.
 - **Language**: TypeScript throughout the application
 - **API Design**: RESTful API with clear endpoint structure
 - **File Structure**: Modular organization with separate concerns
+- **Storage**: PostgreSQL database with Drizzle ORM for type-safe operations
 
 ### Database Architecture
 - **ORM**: Drizzle ORM for type-safe database operations

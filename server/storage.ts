@@ -8,6 +8,8 @@ import {
   type ContactMessage, type InsertContactMessage,
   type NewsletterSubscriber, type InsertNewsletterSubscriber
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -407,4 +409,139 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async getAllJourneys(): Promise<Journey[]> {
+    return await db.select().from(journeys);
+  }
+
+  async getJourney(id: number): Promise<Journey | undefined> {
+    const [journey] = await db.select().from(journeys).where(eq(journeys.id, id));
+    return journey || undefined;
+  }
+
+  async createJourney(journey: InsertJourney): Promise<Journey> {
+    const [newJourney] = await db.insert(journeys).values(journey).returning();
+    return newJourney;
+  }
+
+  async updateJourney(id: number, journey: Partial<InsertJourney>): Promise<Journey | undefined> {
+    const [updated] = await db.update(journeys).set(journey).where(eq(journeys.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async getAllSages(): Promise<Sage[]> {
+    return await db.select().from(sages);
+  }
+
+  async getSage(id: number): Promise<Sage | undefined> {
+    const [sage] = await db.select().from(sages).where(eq(sages.id, id));
+    return sage || undefined;
+  }
+
+  async createSage(sage: InsertSage): Promise<Sage> {
+    const [newSage] = await db.insert(sages).values(sage).returning();
+    return newSage;
+  }
+
+  async updateSage(id: number, sage: Partial<InsertSage>): Promise<Sage | undefined> {
+    const [updated] = await db.update(sages).set(sage).where(eq(sages.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async getAllAshrams(): Promise<Ashram[]> {
+    return await db.select().from(ashrams);
+  }
+
+  async getAshram(id: number): Promise<Ashram | undefined> {
+    const [ashram] = await db.select().from(ashrams).where(eq(ashrams.id, id));
+    return ashram || undefined;
+  }
+
+  async createAshram(ashram: InsertAshram): Promise<Ashram> {
+    const [newAshram] = await db.insert(ashrams).values(ashram).returning();
+    return newAshram;
+  }
+
+  async updateAshram(id: number, ashram: Partial<InsertAshram>): Promise<Ashram | undefined> {
+    const [updated] = await db.update(ashrams).set(ashram).where(eq(ashrams.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async getAllMeetups(): Promise<Meetup[]> {
+    return await db.select().from(meetups);
+  }
+
+  async getMeetup(id: number): Promise<Meetup | undefined> {
+    const [meetup] = await db.select().from(meetups).where(eq(meetups.id, id));
+    return meetup || undefined;
+  }
+
+  async createMeetup(meetup: InsertMeetup): Promise<Meetup> {
+    const [newMeetup] = await db.insert(meetups).values(meetup).returning();
+    return newMeetup;
+  }
+
+  async registerForMeetup(registration: InsertRegistration): Promise<Registration> {
+    const [newRegistration] = await db.insert(registrations).values(registration).returning();
+    return newRegistration;
+  }
+
+  async getAllBlogPosts(): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts);
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post || undefined;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db.insert(blogPosts).values(post).returning();
+    return newPost;
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const [updated] = await db.update(blogPosts).set(post).where(eq(blogPosts.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async getAllTestimonials(): Promise<Testimonial[]> {
+    return await db.select().from(testimonials);
+  }
+
+  async getFeaturedTestimonials(): Promise<Testimonial[]> {
+    return await db.select().from(testimonials).where(eq(testimonials.featured, true));
+  }
+
+  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
+    const [newTestimonial] = await db.insert(testimonials).values(testimonial).returning();
+    return newTestimonial;
+  }
+
+  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
+    const [newMessage] = await db.insert(contactMessages).values(message).returning();
+    return newMessage;
+  }
+
+  async subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+    const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
+    return newSubscriber;
+  }
+}
+
+export const storage = new DatabaseStorage();
