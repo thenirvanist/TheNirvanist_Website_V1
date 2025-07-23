@@ -160,15 +160,19 @@ export default function TourCarousel() {
           {/* Carousel Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-500">
             {displayedJourneys.map((journey) => (
-              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[520px] flex flex-col">
+              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[580px] flex flex-col">
                 <img 
                   src={journey.image} 
                   alt={journey.title}
-                  className="w-full h-56 object-cover flex-shrink-0"
+                  className="w-full h-48 object-cover flex-shrink-0"
                 />
-                <CardContent className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-semibold mb-3">{journey.title}</h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed flex-grow">{journey.description}</p>
+                <CardContent className="p-6 flex flex-col h-full">
+                  <h3 className="text-xl font-semibold mb-3 flex items-center">
+                    {journey.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                    {journey.description}
+                  </p>
                   
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between text-sm">
@@ -186,13 +190,13 @@ export default function TourCarousel() {
                   </div>
 
                   {journey.inclusions && journey.inclusions.length > 0 && (
-                    <div className="mb-4">
+                    <div className="mb-4 flex-grow">
                       <h4 className="font-medium text-gray-700 mb-2">Includes:</h4>
                       <ul className="text-sm text-gray-600 space-y-1">
                         {journey.inclusions.slice(0, 3).map((inclusion, index) => (
-                          <li key={index} className="flex items-center">
-                            <span className="w-2 h-2 bg-[hsl(75,64%,49%)] rounded-full mr-2"></span>
-                            {inclusion}
+                          <li key={index} className="flex items-start">
+                            <span className="w-2 h-2 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                            <span className="line-clamp-1">{inclusion}</span>
                           </li>
                         ))}
                         {journey.inclusions.length > 3 && (
@@ -202,11 +206,16 @@ export default function TourCarousel() {
                     </div>
                   )}
 
-                  <Link href={`/journeys/${journey.id}`} className="mt-auto">
-                    <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
-                      {journey.available ? "Begin Your Journey" : "Currently Unavailable"}
-                    </Button>
-                  </Link>
+                  <div className="mt-auto pt-4">
+                    <Link href={`/journeys/${journey.id}`}>
+                      <Button 
+                        className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300"
+                        disabled={!journey.available}
+                      >
+                        {journey.available ? "Begin Your Journey" : "Currently Unavailable"}
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             ))}
