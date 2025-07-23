@@ -81,18 +81,32 @@ export default function SagesSection() {
           </div>
           
           <div className="scroll-trigger">
-            <div className="accordion-carousel-container overflow-hidden rounded-xl mb-6">
-              <div className="accordion-carousel">
-                {sages.map((sage, index) => (
+            <div className="image-carousel-container overflow-hidden rounded-xl mb-6">
+              <div className="flex h-64 gap-2">
+                {sages.slice(0, 5).map((sage, index) => (
                   <div
                     key={sage.id}
-                    className="accordion-item"
+                    className={`cursor-pointer transition-all duration-500 rounded-lg overflow-hidden ${
+                      index === currentIndex 
+                        ? "flex-[2] opacity-100" 
+                        : "flex-1 opacity-70 hover:opacity-90"
+                    }`}
                     style={{
                       backgroundImage: `url('${sage.image}')`,
-                      flex: index === currentIndex ? "0 0 250px" : "0 0 120px"
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
                     }}
                     onClick={() => setCurrentIndex(index)}
-                  />
+                  >
+                    <div className="w-full h-full bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                      <div className="text-white">
+                        <h5 className="font-semibold text-sm">{sage.name}</h5>
+                        {index === currentIndex && (
+                          <p className="text-xs opacity-90 mt-1">{sage.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
