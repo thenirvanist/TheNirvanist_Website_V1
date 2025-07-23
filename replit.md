@@ -4,6 +4,15 @@
 
 The Nirvanist is a full-stack spiritual tourism platform that connects seekers with transformative spiritual journeys, sage wisdom, ashram retreats, and global meetups. The application facilitates spiritual growth through curated experiences in sacred destinations worldwide.
 
+## Recent Changes (July 23, 2025)
+✓ Updated brand assets with new logo variations (color, white, black)
+✓ Implemented hero video autoplay with Heritage Film India footage
+✓ Added transparency effects to navigation and partner strip
+✓ Created interactive "About Us" section with word-by-word animation (sparklin.com style)
+✓ Built dynamic spiritual collage section with hover animations
+✓ Fixed meetup button placement to bottom of image
+✓ Integrated OpenAI API key for future chatbot functionality
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

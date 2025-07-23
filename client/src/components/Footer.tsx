@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <Logo textColor="text-white" className="mb-6" />
+            <Logo variant="white" className="mb-6" />
             <p className="text-gray-400 mb-4">Journey to Inner Peace</p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-[hsl(70,71%,62%)] transition-colors">

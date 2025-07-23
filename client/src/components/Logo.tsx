@@ -1,22 +1,33 @@
-import { Leaf } from "lucide-react";
+import colorLogo from "@assets/Color logo - no background_1753290308706.png";
+import whiteLogo from "@assets/White logo - no background_1753290308708.png";
+import blackLogo from "@assets/Black logo - no background_1753290308685.png";
 
 interface LogoProps {
   className?: string;
-  showText?: boolean;
-  textColor?: string;
+  variant?: "color" | "white" | "black";
+  size?: "sm" | "md" | "lg";
 }
 
-export default function Logo({ className = "", showText = true, textColor = "text-white" }: LogoProps) {
+export default function Logo({ className = "", variant = "white", size = "md" }: LogoProps) {
+  const logoSizes = {
+    sm: "h-8",
+    md: "h-12",
+    lg: "h-16"
+  };
+
+  const logoSrc = {
+    color: colorLogo,
+    white: whiteLogo,
+    black: blackLogo
+  };
+
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <div className="w-10 h-10 brand-primary rounded-full flex items-center justify-center">
-        <Leaf className="text-white text-lg" />
-      </div>
-      {showText && (
-        <span className={`text-xl font-semibold ${textColor}`}>
-          The Nirvanist
-        </span>
-      )}
+    <div className={`flex items-center ${className}`}>
+      <img 
+        src={logoSrc[variant]} 
+        alt="The Nirvanist - Nourish Your Soul" 
+        className={`${logoSizes[size]} w-auto`}
+      />
     </div>
   );
 }

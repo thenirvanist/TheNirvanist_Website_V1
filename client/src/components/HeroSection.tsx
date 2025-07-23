@@ -1,20 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import heroVideo from "@assets/Heritge Film India_VF720p30_CQ30 Slow_1753290344167.webm";
 
 export default function HeroSection() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background - placeholder for now */}
-      <div 
-        className="hero-video bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080')",
-          backgroundSize: "cover",
-          backgroundPosition: "center"
-        }}
-      />
+      {/* Video Background */}
+      <video 
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+      >
+        <source src={heroVideo} type="video/webm" />
+        {/* Fallback background for browsers that don't support video */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080')",
+            backgroundSize: "cover",
+            backgroundPosition: "center"
+          }}
+        />
+      </video>
       
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
       
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 text-reveal">
@@ -33,10 +44,10 @@ export default function HeroSection() {
         </Link>
       </div>
       
-      {/* Partner Logo Carousel Band */}
-      <div className="absolute bottom-0 left-0 right-0 brand-dark bg-opacity-95 py-4">
+      {/* Partner Logo Carousel Band with Transparency */}
+      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm py-4">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-center space-x-12 text-white text-sm opacity-80">
+          <div className="flex items-center justify-center space-x-12 text-white text-sm opacity-90">
             <span>Trusted Partners:</span>
             <div className="flex items-center space-x-8">
               <span>Sacred Earth Journeys</span>

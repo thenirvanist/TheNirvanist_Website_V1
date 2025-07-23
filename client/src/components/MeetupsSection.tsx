@@ -56,7 +56,7 @@ export default function MeetupsSection() {
               alt="Global spiritual video meetup" 
               className="rounded-xl shadow-lg w-full"
             />
-            <div className="absolute inset-0 bg-[hsl(84,42%,18%)] bg-opacity-20 rounded-xl flex items-center justify-center">
+            <div className="absolute inset-0 bg-[hsl(84,42%,18%)] bg-opacity-20 rounded-xl flex items-end justify-center pb-8">
               <Link href="/meetups">
                 <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
                   Participate Today

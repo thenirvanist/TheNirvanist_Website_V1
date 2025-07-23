@@ -1,7 +1,7 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import InteractiveAbout from "@/components/InteractiveAbout";
-import CollageSection from "@/components/CollageSection";
+import SpiritualCollage from "@/components/SpiritualCollage";
 import TourCarousel from "@/components/TourCarousel";
 import MeetupsSection from "@/components/MeetupsSection";
 import SagesSection from "@/components/SagesSection";
@@ -15,7 +15,7 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <InteractiveAbout />
-      <CollageSection />
+      <SpiritualCollage />
       <TourCarousel />
       <MeetupsSection />
       <SagesSection />
