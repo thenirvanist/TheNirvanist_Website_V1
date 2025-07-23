@@ -160,22 +160,51 @@ export default function TourCarousel() {
           {/* Carousel Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-500">
             {displayedJourneys.map((journey) => (
-              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[420px] flex flex-col">
+              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[520px] flex flex-col">
                 <img 
                   src={journey.image} 
                   alt={journey.title}
-                  className="w-full h-48 object-cover flex-shrink-0"
+                  className="w-full h-56 object-cover flex-shrink-0"
                 />
                 <CardContent className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-semibold mb-3">{journey.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">{journey.description}</p>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-[hsl(75,64%,49%)] font-semibold">{journey.price}</span>
-                    <span className="text-sm text-gray-500">{journey.duration}</span>
+                  <p className="text-gray-600 mb-4 leading-relaxed flex-grow">{journey.description}</p>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium text-gray-500">Location:</span>
+                      <span className="text-gray-700">{journey.location}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium text-gray-500">Duration:</span>
+                      <span className="text-gray-700">{journey.duration}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium text-gray-500">Investment:</span>
+                      <span className="font-semibold text-[hsl(75,64%,49%)]">{journey.price}</span>
+                    </div>
                   </div>
+
+                  {journey.inclusions && journey.inclusions.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-medium text-gray-700 mb-2">Includes:</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        {journey.inclusions.slice(0, 3).map((inclusion, index) => (
+                          <li key={index} className="flex items-center">
+                            <span className="w-2 h-2 bg-[hsl(75,64%,49%)] rounded-full mr-2"></span>
+                            {inclusion}
+                          </li>
+                        ))}
+                        {journey.inclusions.length > 3 && (
+                          <li className="text-[hsl(75,64%,49%)] text-xs">+ {journey.inclusions.length - 3} more inclusions</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
                   <Link href={`/journeys/${journey.id}`} className="mt-auto">
                     <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
-                      Start Your Journey
+                      {journey.available ? "Begin Your Journey" : "Currently Unavailable"}
                     </Button>
                   </Link>
                 </CardContent>
