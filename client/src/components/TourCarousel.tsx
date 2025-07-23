@@ -160,20 +160,20 @@ export default function TourCarousel() {
           {/* Carousel Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-500">
             {displayedJourneys.map((journey) => (
-              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+              <Card key={journey.id} className="tour-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[420px] flex flex-col">
                 <img 
                   src={journey.image} 
                   alt={journey.title}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 object-cover flex-shrink-0"
                 />
-                <CardContent className="p-6">
+                <CardContent className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-semibold mb-3">{journey.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{journey.description}</p>
+                  <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">{journey.description}</p>
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-[hsl(75,64%,49%)] font-semibold">{journey.price}</span>
                     <span className="text-sm text-gray-500">{journey.duration}</span>
                   </div>
-                  <Link href="/journeys">
+                  <Link href="/journeys" className="mt-auto">
                     <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                       Start Your Journey
                     </Button>

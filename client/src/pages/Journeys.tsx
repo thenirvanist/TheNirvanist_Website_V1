@@ -70,14 +70,19 @@ export default function Journeys() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-12 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-bold mb-6">Sacred Journeys</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat" 
+               style={{backgroundImage: "url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=800')"}}>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
+          <h1 className="text-6xl font-bold mb-6">Sacred Journeys</h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto">
             Embark on transformative spiritual adventures that connect you with ancient wisdom, 
             sacred places, and your inner truth. Each journey is carefully curated to provide 
             authentic experiences that foster deep personal growth.
           </p>
+          <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-4 text-lg rounded-lg font-semibold transition-all duration-300">
+            Explore All Journeys
+          </Button>
         </div>
       </section>
 

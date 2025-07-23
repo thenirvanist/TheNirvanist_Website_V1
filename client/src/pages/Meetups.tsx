@@ -115,15 +115,20 @@ export default function Meetups() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-12 bg-gradient-to-b from-[hsl(84,42%,18%)] to-[hsl(69,39%,37%)] text-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-bold mb-6">Global Spiritual Meetups</h1>
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat" 
+               style={{backgroundImage: "url('https://images.unsplash.com/photo-1544931503-6e6466908cec?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=800')"}}>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
+          <h1 className="text-6xl font-bold mb-6">Global Spiritual Meetups</h1>
           <h2 className="text-2xl font-semibold mb-4 text-[hsl(70,71%,62%)]">
             Join a Global Circle of Spiritual Seekers
           </h2>
-          <p className="text-xl opacity-90 leading-relaxed">
+          <p className="text-xl mb-8 opacity-90 leading-relaxed">
             Weekly online satsangs to pause, reflect, and grow — together.
           </p>
+          <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-4 text-lg rounded-lg font-semibold transition-all duration-300">
+            Join Our Community
+          </Button>
         </div>
       </section>
 
