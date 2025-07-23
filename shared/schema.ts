@@ -30,8 +30,14 @@ export const sages = pgTable("sages", {
   description: text("description").notNull(),
   biography: text("biography").notNull(),
   image: text("image").notNull(),
+  location: text("location"),
   teachings: text("teachings").array(),
   books: text("books").array(),
+  coreTeachings: text("core_teachings").array(),
+  notableWork: text("notable_work").array(),
+  category: text("category"), // Hindu, Buddhist, Sufi, Jain, etc.
+  era: text("era"), // Ancient, Modern
+  status: text("status"), // Living, Deceased
 });
 
 export const ashrams = pgTable("ashrams", {

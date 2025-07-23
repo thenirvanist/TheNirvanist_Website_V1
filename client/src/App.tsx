@@ -9,6 +9,7 @@ import Journeys from "@/pages/Journeys";
 import JourneyDetail from "@/pages/JourneyDetail";
 import Meetups from "@/pages/Meetups";
 import Sages from "@/pages/Sages";
+import SageDetail from "@/pages/SageDetail";
 import Ashrams from "@/pages/Ashrams";
 import Contact from "@/pages/Contact";
 import Chatbot from "@/components/Chatbot";
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/journeys/:id" component={JourneyDetail} />
       <Route path="/meetups" component={Meetups} />
       <Route path="/sages" component={Sages} />
+      <Route path="/sages/:id" component={SageDetail} />
       <Route path="/ashrams" component={Ashrams} />
       <Route path="/contact" component={Contact} />
       <Route component={NotFound} />

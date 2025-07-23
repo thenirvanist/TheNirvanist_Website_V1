@@ -1,15 +1,55 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Heart, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { BookOpen, Heart, Sparkles, MapPin, Search } from "lucide-react";
+import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import type { Sage } from "@shared/schema";
 
 export default function Sages() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+
   const { data: sages, isLoading, error } = useQuery<Sage[]>({
     queryKey: ["/api/sages"],
   });
+
+  const filterOptions = [
+    "All",
+    "Living Sages", 
+    "Modern Sages",
+    "Ancient Sages",
+    "Hindu",
+    "Buddhist", 
+    "Sufi",
+    "Jain"
+  ];
+
+  const filteredSages = useMemo(() => {
+    if (!sages) return [];
+    
+    let filtered = sages.filter(sage => {
+      const matchesSearch = sage.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sage.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sage.teachings?.some(teaching => teaching.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                          sage.books?.some(book => book.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      if (!matchesSearch) return false;
+      
+      if (activeFilter === "All") return true;
+      if (activeFilter === "Living Sages") return sage.status === "Living";
+      if (activeFilter === "Modern Sages") return sage.era === "Modern";
+      if (activeFilter === "Ancient Sages") return sage.era === "Ancient";
+      
+      return sage.category === activeFilter;
+    });
+    
+    return filtered;
+  }, [sages, searchTerm, activeFilter]);
 
   if (isLoading) {
     return (
@@ -95,76 +135,152 @@ export default function Sages() {
         </div>
       </section>
 
-      {/* Sages Grid */}
-      <section className="py-16">
+      {/* Search and Filter Section */}
+      <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12">
-            {sages.map((sage) => (
-              <Card key={sage.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="md:flex">
-                  <div className="md:w-1/3">
-                    <img 
-                      src={sage.image} 
-                      alt={sage.name}
-                      className="w-full h-64 md:h-full object-cover"
-                    />
-                  </div>
-                  <div className="md:w-2/3">
-                    <CardContent className="p-6 h-full flex flex-col">
-                      <div className="mb-4">
-                        <h3 className="text-2xl font-bold mb-2">{sage.name}</h3>
-                        <p className="text-[hsl(75,64%,49%)] font-medium mb-3">{sage.description}</p>
-                      </div>
-                      
-                      <div className="mb-4 flex-grow">
-                        <p className="text-gray-700 leading-relaxed line-clamp-4">
-                          {sage.biography}
-                        </p>
-                      </div>
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search sages by name or keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 py-3 text-lg rounded-lg border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] transition-colors"
+              />
+            </div>
+          </div>
 
-                      {sage.teachings && sage.teachings.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <Sparkles className="text-[hsl(75,64%,49%)] text-sm" />
-                            <h4 className="font-semibold text-gray-700">Core Teachings</h4>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {sage.teachings.slice(0, 3).map((teaching, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs">
-                                {teaching}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {sage.books && sage.books.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <BookOpen className="text-[hsl(75,64%,49%)] text-sm" />
-                            <h4 className="font-semibold text-gray-700">Notable Works</h4>
-                          </div>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            {sage.books.slice(0, 3).map((book, index) => (
-                              <li key={index} className="flex items-center">
-                                <span className="w-1.5 h-1.5 brand-primary rounded-full mr-2 flex-shrink-0"></span>
-                                {book}
-                              </li>
-                            ))}
-                            {sage.books.length > 3 && (
-                              <li className="text-[hsl(75,64%,49%)] text-xs">
-                                + {sage.books.length - 3} more works
-                              </li>
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                    </CardContent>
-                  </div>
-                </div>
-              </Card>
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {filterOptions.map((filter) => (
+              <Button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                variant={activeFilter === filter ? "default" : "outline"}
+                className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                  activeFilter === filter
+                    ? "brand-primary text-white hover:brand-bright hover:text-black"
+                    : "border-gray-300 text-gray-700 hover:border-[hsl(75,64%,49%)] hover:text-[hsl(75,64%,49%)]"
+                }`}
+              >
+                {filter}
+              </Button>
             ))}
           </div>
+
+          {/* Results Count */}
+          <div className="text-center mb-8">
+            <p className="text-gray-600">
+              Showing {filteredSages.length} {filteredSages.length === 1 ? 'sage' : 'sages'}
+              {activeFilter !== "All" && ` in ${activeFilter}`}
+              {searchTerm && ` matching "${searchTerm}"`}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Sages Grid */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          {filteredSages.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="text-gray-400 text-2xl" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">No sages found</h3>
+              <p className="text-gray-600 mb-6">
+                Try adjusting your search terms or filters to find the wisdom you seek.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setActiveFilter("All");
+                }}
+                className="brand-primary hover:brand-bright text-white hover:text-black"
+              >
+                Clear Search & Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredSages.map((sage) => (
+                <Card key={sage.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[560px] flex flex-col">
+                  <img 
+                    src={sage.image} 
+                    alt={sage.name}
+                    className="w-full h-48 object-cover flex-shrink-0"
+                  />
+                  <div className="p-6 flex flex-col h-full">
+                    <h3 className="text-xl font-bold mb-2">{sage.name}</h3>
+                    
+                    {sage.location && (
+                      <div className="flex items-center mb-3">
+                        <MapPin className="w-4 h-4 text-gray-500 mr-2" />
+                        <span className="text-sm text-gray-600">{sage.location}</span>
+                      </div>
+                    )}
+
+                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                      {sage.description}
+                    </p>
+
+                    {sage.teachings && sage.teachings.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center mb-2">
+                          <Sparkles className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                          <h4 className="font-semibold text-gray-700 text-sm">Core Teachings</h4>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {sage.teachings.slice(0, 2).map((teaching, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {teaching}
+                            </Badge>
+                          ))}
+                          {sage.teachings.length > 2 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{sage.teachings.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {sage.books && sage.books.length > 0 && (
+                      <div className="mb-6 flex-grow">
+                        <div className="flex items-center mb-2">
+                          <BookOpen className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                          <h4 className="font-semibold text-gray-700 text-sm">Notable Work</h4>
+                        </div>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          {sage.books.slice(0, 2).map((book, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                              <span className="line-clamp-1">{book}</span>
+                            </li>
+                          ))}
+                          {sage.books.length > 2 && (
+                            <li className="text-[hsl(75,64%,49%)] text-xs">
+                              + {sage.books.length - 2} more works
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="mt-auto pt-4 border-t border-gray-100">
+                      <Link href={`/sages/${sage.id}`}>
+                        <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
+                          Read Full Biography
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
