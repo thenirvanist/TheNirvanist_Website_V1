@@ -15,6 +15,9 @@ export default function TourCarousel() {
     queryKey: ["/api/journeys"],
   });
 
+  // Debug logging
+  console.log("TourCarousel Debug:", { journeys, isLoading, error });
+
 
 
   useEffect(() => {
