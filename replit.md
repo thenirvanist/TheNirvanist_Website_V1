@@ -18,8 +18,8 @@ The Nirvanist is a full-stack spiritual tourism platform that connects seekers w
 ✓ Increased logo size by 15% in navigation bar
 ✓ Changed navigation "Journeys" text to "Sacred Journeys"
 ✓ Updated interactive text section background from black to white
-✓ Replaced static collage image with dynamic Heritage Film video
-✓ Implemented alternating background pattern: white and #E8DCC3 sections
+✓ Reverted collage section back to static image grid with hover effects
+✓ Implemented alternating background pattern: white and #F7F2E8 sections
 
 ## User Preferences
 

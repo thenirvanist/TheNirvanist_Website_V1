@@ -55,7 +55,7 @@ export default function SpiritualCollage() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-20 bg-[#E8DCC3] overflow-hidden">
+    <section ref={sectionRef} className="py-20 bg-[#F7F2E8] overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 scroll-trigger">
           <h2 className="text-5xl md:text-6xl font-light text-black mb-8">
@@ -66,32 +66,8 @@ export default function SpiritualCollage() {
           </p>
         </div>
 
-        {/* Dynamic Video Collage */}
-        <div className="relative h-[600px] scroll-trigger rounded-2xl overflow-hidden shadow-2xl">
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source src="/attached_assets/Heritge Film India_VF720p30_CQ30 Slow_1753290344167.webm" type="video/webm" />
-            <source src="/attached_assets/Heritge Film India_VF720p30_CQ30 Slow_1753283941129.webm" type="video/webm" />
-          </video>
-          
-          {/* Overlay content */}
-          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h3 className="text-4xl md:text-5xl font-light mb-4">
-                Experience the <span className="text-[hsl(70,71%,62%)]">Sacred</span>
-              </h3>
-              <p className="text-xl opacity-90">Ancient wisdom meets modern seekers</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Floating Text Elements */}
-        <div className="relative mt-16">
+        {/* Dynamic Collage Grid */}
+        <div className="grid grid-cols-4 grid-rows-4 gap-4 h-[600px] scroll-trigger">
           {images.map((image, index) => (
             <div
               key={index}

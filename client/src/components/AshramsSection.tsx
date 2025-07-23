@@ -45,7 +45,7 @@ export default function AshramsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-[#E8DCC3]">
+      <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
@@ -58,7 +58,7 @@ export default function AshramsSection() {
 
   if (!ashrams || ashrams.length === 0) {
     return (
-      <section className="py-20 bg-[#E8DCC3]">
+      <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
@@ -70,7 +70,7 @@ export default function AshramsSection() {
   }
 
   return (
-    <section ref={sectionRef} id="ashrams" className="py-20 bg-[#E8DCC3]">
+    <section ref={sectionRef} id="ashrams" className="py-20 bg-[#F7F2E8]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="scroll-trigger">
