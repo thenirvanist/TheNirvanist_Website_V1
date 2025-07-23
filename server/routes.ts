@@ -96,6 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(ashram);
     } catch (error) {
+      console.error("Error fetching ashram:", error);
       res.status(500).json({ message: "Failed to fetch ashram" });
     }
   });

@@ -1,16 +1,52 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Globe, Star, Heart, Leaf } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { MapPin, Phone, Globe, Star, Heart, Leaf, Search, User } from "lucide-react";
+import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import type { Ashram } from "@shared/schema";
 
 export default function Ashrams() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+
   const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
     queryKey: ["/api/ashrams"],
   });
+
+  const filterOptions = [
+    "All",
+    "North India",
+    "South India", 
+    "West India",
+    "East India",
+    "Central India"
+  ];
+
+  const filteredAshrams = useMemo(() => {
+    if (!ashrams) return [];
+    
+    let filtered = ashrams.filter(ashram => {
+      const matchesSearch = ashram.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ashram.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ashram.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ashram.focus?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ashram.founders?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          ashram.facilities?.some(facility => facility.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      if (!matchesSearch) return false;
+      
+      if (activeFilter === "All") return true;
+      
+      return ashram.region === activeFilter;
+    });
+    
+    return filtered;
+  }, [ashrams, searchTerm, activeFilter]);
 
   if (isLoading) {
     return (
@@ -99,96 +135,151 @@ export default function Ashrams() {
         </div>
       </section>
 
-      {/* Ashrams Grid */}
-      <section className="py-16">
+      {/* Search and Filter Section */}
+      <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {ashrams.map((ashram) => (
-              <Card key={ashram.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative">
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search ashrams by name, location, or focus..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 py-3 text-lg rounded-lg border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {filterOptions.map((filter) => (
+              <Button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                variant={activeFilter === filter ? "default" : "outline"}
+                className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                  activeFilter === filter
+                    ? "brand-primary text-white hover:brand-bright hover:text-black"
+                    : "border-gray-300 text-gray-700 hover:border-[hsl(75,64%,49%)] hover:text-[hsl(75,64%,49%)]"
+                }`}
+              >
+                {filter}
+              </Button>
+            ))}
+          </div>
+
+          {/* Results Count */}
+          <div className="text-center mb-8">
+            <p className="text-gray-600">
+              Showing {filteredAshrams.length} {filteredAshrams.length === 1 ? 'ashram' : 'ashrams'}
+              {activeFilter !== "All" && ` in ${activeFilter}`}
+              {searchTerm && ` matching "${searchTerm}"`}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Ashrams Grid */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          {filteredAshrams.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="text-gray-400 text-2xl" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">No ashrams found</h3>
+              <p className="text-gray-600 mb-6">
+                Try adjusting your search terms or filters to find the sacred space you seek.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setActiveFilter("All");
+                }}
+                className="brand-primary hover:brand-bright text-white hover:text-black"
+              >
+                Clear Search & Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredAshrams.map((ashram) => (
+                <Card key={ashram.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 h-[580px] flex flex-col">
                   <img 
                     src={ashram.image} 
                     alt={ashram.name}
-                    className="w-full h-56 object-cover"
+                    className="w-full h-48 object-cover flex-shrink-0"
                   />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="brand-primary text-white">
-                      <Star className="w-3 h-3 mr-1" />
-                      Sacred Space
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardHeader>
-                  <CardTitle className="text-2xl text-[hsl(84,42%,18%)]">{ashram.name}</CardTitle>
-                  <div className="flex items-center text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span>{ashram.location}</span>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-6">
-                  <p className="text-gray-700 leading-relaxed">
-                    {ashram.description}
-                  </p>
-
-                  {ashram.facilities && ashram.facilities.length > 0 && (
-                    <div>
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Leaf className="text-[hsl(75,64%,49%)] w-5 h-5" />
-                        <h4 className="font-semibold text-gray-700">Facilities & Offerings</h4>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {ashram.facilities.map((facility, index) => (
-                          <div key={index} className="flex items-center text-sm">
-                            <span className="w-2 h-2 brand-primary rounded-full mr-2 flex-shrink-0"></span>
-                            <span className="text-gray-600">{facility}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="border-t pt-4 space-y-3">
-                    {ashram.contact && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Phone className="w-4 h-4 mr-3 text-[hsl(75,64%,49%)]" />
-                        <span>{ashram.contact}</span>
-                      </div>
-                    )}
+                  <div className="p-6 flex flex-col h-full">
+                    <h3 className="text-xl font-bold mb-2">{ashram.name}</h3>
                     
-                    {ashram.website && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Globe className="w-4 h-4 mr-3 text-[hsl(75,64%,49%)]" />
-                        <a 
-                          href={`https://${ashram.website}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-[hsl(75,64%,49%)] hover:underline"
-                        >
-                          {ashram.website}
-                        </a>
+                    <div className="flex items-center mb-3">
+                      <MapPin className="w-4 h-4 text-gray-500 mr-2" />
+                      <span className="text-sm text-gray-600">{ashram.location}</span>
+                    </div>
+
+                    <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                      {ashram.description}
+                    </p>
+
+                    {ashram.focus && (
+                      <div className="mb-4">
+                        <div className="flex items-center mb-2">
+                          <Star className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                          <h4 className="font-semibold text-gray-700 text-sm">Focus</h4>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {ashram.focus}
+                        </Badge>
                       </div>
                     )}
-                  </div>
 
-                  <div className="flex space-x-3 pt-4">
-                    <Button 
-                      className="flex-1 brand-primary hover:brand-bright text-white hover:text-black transition-all duration-300"
-                    >
-                      Learn More
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="flex-1 border-[hsl(75,64%,49%)] text-[hsl(75,64%,49%)] hover:bg-[hsl(75,64%,49%)] hover:text-white"
-                    >
-                      Plan Visit
-                    </Button>
+                    {ashram.founders && (
+                      <div className="mb-4">
+                        <div className="flex items-center mb-2">
+                          <User className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                          <h4 className="font-semibold text-gray-700 text-sm">Founder</h4>
+                        </div>
+                        <p className="text-sm text-gray-600 line-clamp-1">{ashram.founders}</p>
+                      </div>
+                    )}
+
+                    {ashram.facilities && ashram.facilities.length > 0 && (
+                      <div className="mb-6 flex-grow">
+                        <div className="flex items-center mb-2">
+                          <Leaf className="w-4 h-4 text-[hsl(75,64%,49%)] mr-2" />
+                          <h4 className="font-semibold text-gray-700 text-sm">Key Facilities</h4>
+                        </div>
+                        <ul className="text-sm text-gray-600 space-y-1">
+                          {ashram.facilities.slice(0, 2).map((facility, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="w-1.5 h-1.5 bg-[hsl(75,64%,49%)] rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                              <span className="line-clamp-1">{facility}</span>
+                            </li>
+                          ))}
+                          {ashram.facilities.length > 2 && (
+                            <li className="text-[hsl(75,64%,49%)] text-xs">
+                              + {ashram.facilities.length - 2} more facilities
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="mt-auto pt-4 border-t border-gray-100">
+                      <Link href={`/ashrams/${ashram.id}`}>
+                        <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
+                          Read More
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

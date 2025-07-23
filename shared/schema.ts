@@ -49,6 +49,9 @@ export const ashrams = pgTable("ashrams", {
   image: text("image").notNull(),
   contact: text("contact"),
   website: text("website"),
+  region: text("region"), // North India, South India, West India, East India, Central India
+  focus: text("focus"), // Meditation, Yoga, Service, Self-inquiry, etc.
+  founders: text("founders"), // Name of founder/spiritual leader
 });
 
 export const meetups = pgTable("meetups", {

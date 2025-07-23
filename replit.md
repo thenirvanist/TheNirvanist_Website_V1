@@ -48,6 +48,16 @@ The Nirvanist is a full-stack spiritual tourism platform that connects seekers w
 ✓ Enhanced sages database with new fields: location, category, era, status
 ✓ Seeded database with 9 comprehensive sage profiles across traditions
 ✓ Created individual sage detail pages with full biography and teachings
+✓ Complete redesign of Ashrams main page with advanced functionality:
+  - Grid layout displaying 3-4 ashram cards per row (responsive: 2/3/4 columns)
+  - Card content: Image, Location, Focus, Founders, Key Facilities, "Read More" CTA
+  - Search bar for filtering ashrams by name, location, or focus
+  - Filter buttons: All, North India, South India, West India, East India, Central India
+  - Real-time dynamic filtering without page reload
+  - Individual ashram detail pages with comprehensive information
+✓ Enhanced ashrams database with new fields: region, focus, founders
+✓ Seeded database with 10 comprehensive ashram profiles across India
+✓ Created individual ashram detail pages with full descriptions and contact information
 
 ## User Preferences
 
