@@ -15,8 +15,7 @@ export default function TourCarousel() {
     queryKey: ["/api/journeys"],
   });
 
-  // Debug logging
-  console.log("TourCarousel Debug:", { journeys, isLoading, error });
+
 
 
 
@@ -66,6 +65,7 @@ export default function TourCarousel() {
     }
   };
 
+  // Show loading only when we're actually loading and have no data
   if (isLoading && !journeys) {
     return (
       <section className="py-20 bg-white">
@@ -79,17 +79,42 @@ export default function TourCarousel() {
     );
   }
 
-  if (!journeys || journeys.length === 0) {
+  // Show error state if there's an error and no data
+  if (error && !journeys) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
-            <p className="text-xl text-gray-600">
-              {error ? 'Error loading journey data. Please try refreshing the page.' : 
-               journeys ? `Found ${journeys.length} journeys` : 
-               'Loading journey information...'}
-            </p>
+            <p className="text-xl text-gray-600">Error loading journey data. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state only if we have data but it's empty
+  if (journeys && journeys.length === 0) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
+            <p className="text-xl text-gray-600">No journeys available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If we don't have data yet, show loading
+  if (!journeys) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
+            <p className="text-xl text-gray-600">Loading transformative retreats...</p>
           </div>
         </div>
       </section>

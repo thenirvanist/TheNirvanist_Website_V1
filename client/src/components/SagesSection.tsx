@@ -45,6 +45,7 @@ export default function SagesSection() {
     }
   };
 
+  // Show loading only when we're actually loading and have no data
   if (isLoading && !sages) {
     return (
       <section className="py-20 bg-white">
@@ -58,17 +59,42 @@ export default function SagesSection() {
     );
   }
 
-  if (!sages || sages.length === 0) {
+  // Show error state if there's an error and no data
+  if (error && !sages) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
-            <p className="text-lg text-gray-700">
-              {error ? 'Error loading sages data. Please try refreshing the page.' : 
-               sages ? `Found ${sages.length} sages` : 
-               'Loading sage information...'}
-            </p>
+            <p className="text-lg text-gray-700">Error loading sages data. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state only if we have data but it's empty
+  if (sages && sages.length === 0) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <p className="text-lg text-gray-700">No sage information available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If we don't have data yet, show loading
+  if (!sages) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <p className="text-lg text-gray-700">Loading spiritual wisdom...</p>
           </div>
         </div>
       </section>

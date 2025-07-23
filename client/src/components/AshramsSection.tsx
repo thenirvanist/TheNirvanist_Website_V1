@@ -45,6 +45,7 @@ export default function AshramsSection() {
     }
   };
 
+  // Show loading only when we're actually loading and have no data
   if (isLoading && !ashrams) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
@@ -58,17 +59,42 @@ export default function AshramsSection() {
     );
   }
 
-  if (!ashrams || ashrams.length === 0) {
+  // Show error state if there's an error and no data
+  if (error && !ashrams) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">
-              {error ? 'Error loading ashram data. Please try refreshing the page.' : 
-               ashrams ? `Found ${ashrams.length} ashrams` : 
-               'Loading ashram information...'}
-            </p>
+            <p className="text-lg text-gray-700">Error loading ashram data. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state only if we have data but it's empty
+  if (ashrams && ashrams.length === 0) {
+    return (
+      <section className="py-20 bg-[#F7F2E8]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
+            <p className="text-lg text-gray-700">No ashram information available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If we don't have data yet, show loading
+  if (!ashrams) {
+    return (
+      <section className="py-20 bg-[#F7F2E8]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
+            <p className="text-lg text-gray-700">Loading sacred spaces...</p>
           </div>
         </div>
       </section>
