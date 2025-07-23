@@ -11,8 +11,10 @@ export default function TourCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
 
-  const { data: journeys, isLoading } = useQuery<Journey[]>({
+  const { data: journeys, isLoading, error } = useQuery<Journey[]>({
     queryKey: ["/api/journeys"],
+    retry: 3,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -80,7 +82,11 @@ export default function TourCarousel() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
-            <p className="text-xl text-gray-600">No journeys available at the moment. {journeys ? `Found ${journeys.length} journeys` : 'Journeys is null/undefined'}</p>
+            <p className="text-xl text-gray-600">
+              {error ? 'Error loading journey data. Please try refreshing the page.' : 
+               journeys ? `Found ${journeys.length} journeys` : 
+               'Loading journey information...'}
+            </p>
           </div>
         </div>
       </section>

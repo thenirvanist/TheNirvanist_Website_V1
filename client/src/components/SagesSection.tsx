@@ -9,8 +9,10 @@ export default function SagesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data: sages, isLoading } = useQuery<Sage[]>({
+  const { data: sages, isLoading, error } = useQuery<Sage[]>({
     queryKey: ["/api/sages"],
+    retry: 3,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -62,7 +64,11 @@ export default function SagesSection() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
-            <p className="text-lg text-gray-700">No sage information available at the moment. {sages ? `Found ${sages.length} sages` : 'Sages is null/undefined'}</p>
+            <p className="text-lg text-gray-700">
+              {error ? 'Error loading sages data. Please try refreshing the page.' : 
+               sages ? `Found ${sages.length} sages` : 
+               'Loading sage information...'}
+            </p>
           </div>
         </div>
       </section>

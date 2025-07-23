@@ -9,8 +9,10 @@ export default function AshramsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data: ashrams, isLoading } = useQuery<Ashram[]>({
+  const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
     queryKey: ["/api/ashrams"],
+    retry: 3,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -62,7 +64,11 @@ export default function AshramsSection() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">No ashram information available at the moment. {ashrams ? `Found ${ashrams.length} ashrams` : 'Ashrams is null/undefined'}</p>
+            <p className="text-lg text-gray-700">
+              {error ? 'Error loading ashram data. Please try refreshing the page.' : 
+               ashrams ? `Found ${ashrams.length} ashrams` : 
+               'Loading ashram information...'}
+            </p>
           </div>
         </div>
       </section>
