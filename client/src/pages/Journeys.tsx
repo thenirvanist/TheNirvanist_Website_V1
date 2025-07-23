@@ -2,8 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Heart, Globe, Users, Star } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import TourCarousel from "@/components/TourCarousel";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
 import type { Journey } from "@shared/schema";
 
 export default function Journeys() {
@@ -86,73 +89,174 @@ export default function Journeys() {
         </div>
       </section>
 
-      {/* Journeys Grid */}
-      <section className="py-12">
+      {/* Journey Cards Carousel */}
+      <TourCarousel />
+
+      {/* Why Do You Need One Section */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {journeys.map((journey) => (
-              <Card key={journey.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative">
-                  <img 
-                    src={journey.image} 
-                    alt={journey.title}
-                    className="w-full h-56 object-cover"
-                  />
-                  {journey.available && (
-                    <Badge className="absolute top-4 right-4 brand-primary text-white">
-                      Available
-                    </Badge>
-                  )}
-                </div>
-                
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-semibold mb-3">{journey.title}</h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed">{journey.description}</p>
-                  
-                  <div className="mb-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-500">Location:</span>
-                      <span className="text-sm text-gray-700">{journey.location}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-500">Duration:</span>
-                      <span className="text-sm text-gray-700">{journey.duration}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-sm font-medium text-gray-500">Investment:</span>
-                      <span className="text-lg font-semibold text-[hsl(75,64%,49%)]">{journey.price}</span>
-                    </div>
-                  </div>
-
-                  {journey.inclusions && journey.inclusions.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">Includes:</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        {journey.inclusions.slice(0, 3).map((inclusion, index) => (
-                          <li key={index} className="flex items-center">
-                            <span className="w-2 h-2 brand-primary rounded-full mr-2"></span>
-                            {inclusion}
-                          </li>
-                        ))}
-                        {journey.inclusions.length > 3 && (
-                          <li className="text-[hsl(75,64%,49%)] text-xs">+ {journey.inclusions.length - 3} more inclusions</li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-
-                  <Button 
-                    className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300"
-                    disabled={!journey.available}
-                  >
-                    {journey.available ? "Begin Your Journey" : "Currently Unavailable"}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Why Do You Need One?</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              In our fast-paced world, sacred journeys offer profound opportunities for spiritual growth, 
+              inner healing, and connection with ancient wisdom traditions.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-8">
+              <div className="w-20 h-20 brand-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Heart className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-4">Inner Transformation</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Experience profound shifts in consciousness through sacred practices, meditation, 
+                and connection with spiritual teachers and fellow seekers.
+              </p>
+            </div>
+            
+            <div className="text-center p-8">
+              <div className="w-20 h-20 brand-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Globe className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-4">Cultural Immersion</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Dive deep into authentic spiritual traditions, visiting sacred sites and learning 
+                from indigenous wisdom keepers in their natural environments.
+              </p>
+            </div>
+            
+            <div className="text-center p-8">
+              <div className="w-20 h-20 brand-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <Users className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-4">Soul Community</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Connect with like-minded spiritual seekers, forming lasting bonds and creating 
+                a supportive community for your ongoing spiritual journey.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* How Are We Different - Pricing First */}
+      <section className="py-20 bg-[#F7F2E8]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Pricing First</h2>
+              <h3 className="text-2xl font-semibold mb-4 text-[hsl(75,64%,49%)]">Transparent & Accessible</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                We believe spiritual growth shouldn't be limited by financial barriers. Our pricing is 
+                transparent from the start - no hidden fees, no surprise costs. We offer flexible 
+                payment plans and early-bird discounts to make these transformative experiences 
+                accessible to sincere seekers.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>All-inclusive pricing with no hidden costs</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Flexible payment plans available</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Scholarship opportunities for dedicated practitioners</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <img 
+                src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
+                alt="Transparent pricing" 
+                className="w-full h-80 object-cover rounded-xl shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How Are We Different - Tech First */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="lg:order-2">
+              <h2 className="text-4xl font-bold mb-6">Tech First</h2>
+              <h3 className="text-2xl font-semibold mb-4 text-[hsl(75,64%,49%)]">Modern Tools for Ancient Wisdom</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                We seamlessly blend traditional spiritual practices with modern technology. From AI-powered 
+                journey matching to virtual preparation sessions, our tech-first approach ensures you're 
+                fully prepared and connected throughout your sacred journey.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>AI-powered journey recommendations</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Virtual pre-journey preparation sessions</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Real-time journey updates and support</span>
+                </li>
+              </ul>
+            </div>
+            <div className="lg:order-1">
+              <img 
+                src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
+                alt="Technology integration" 
+                className="w-full h-80 object-cover rounded-xl shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How Are We Different - Partnership First */}
+      <section className="py-20 bg-[#F7F2E8]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Partnership First</h2>
+              <h3 className="text-2xl font-semibold mb-4 text-[hsl(75,64%,49%)]">Authentic Local Connections</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                We partner directly with authentic spiritual teachers, local communities, and sacred sites. 
+                This ensures your journey benefits the local community while providing you with genuine, 
+                unfiltered spiritual experiences that commercial tours simply cannot offer.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Direct partnerships with spiritual teachers</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Community-based tourism supporting locals</span>
+                </li>
+                <li className="flex items-center">
+                  <Star className="w-5 h-5 text-[hsl(75,64%,49%)] mr-3" />
+                  <span>Exclusive access to sacred sites and ceremonies</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <img 
+                src="https://images.unsplash.com/photo-1544931503-6e6466908cec?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" 
+                alt="Community partnerships" 
+                className="w-full h-80 object-cover rounded-xl shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <TestimonialCarousel />
 
       <Footer />
     </div>

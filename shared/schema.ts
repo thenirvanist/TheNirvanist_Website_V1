@@ -12,12 +12,15 @@ export const journeys = pgTable("journeys", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
+  fullDescription: text("full_description"),
   location: text("location").notNull(),
   duration: text("duration").notNull(),
   price: text("price").notNull(),
   image: text("image").notNull(),
+  heroImage: text("hero_image"),
   inclusions: text("inclusions").array(),
   itinerary: text("itinerary"),
+  overview: text("overview"),
   available: boolean("available").default(true),
 });
 
@@ -80,8 +83,10 @@ export const testimonials = pgTable("testimonials", {
   location: text("location").notNull(),
   content: text("content").notNull(),
   rating: integer("rating").notNull(),
-  journeyId: integer("journey_id"),
+  journeyTitle: text("journey_title"),
+  avatar: text("avatar"),
   featured: boolean("featured").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const contactMessages = pgTable("contact_messages", {

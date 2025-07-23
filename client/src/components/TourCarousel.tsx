@@ -173,7 +173,7 @@ export default function TourCarousel() {
                     <span className="text-[hsl(75,64%,49%)] font-semibold">{journey.price}</span>
                     <span className="text-sm text-gray-500">{journey.duration}</span>
                   </div>
-                  <Link href="/journeys" className="mt-auto">
+                  <Link href={`/journeys/${journey.id}`} className="mt-auto">
                     <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                       Start Your Journey
                     </Button>

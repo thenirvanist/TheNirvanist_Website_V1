@@ -1,0 +1,20 @@
+I need a complete overhaul for the 'Sacred Journeys' main service page and the structure for individual journey detail pages:
+
+1.  **'Sacred Journeys' Main Service Page Structure:**
+    * **Hero Image:** Ensure this page begins with a wide-stretched hero image (as specified in previous requests).
+    * **Card Carousel:** Directly below the hero image, display the **fast-moving cards carousel** (as previously requested for Sacred Journey cards, capable of showing more cards via arrows).
+    * **'Why Do You Need One' Section:** Below the carousel, add a dedicated section titled **'Why Do You Need One?'**.
+    * **'How Are We Different' Sections (3 sections):** Following the 'Why Do You Need One' section, create three distinct sections under the heading 'How Are We Different'. These sections should be:
+        * **'Pricing First'**
+        * **'Tech First'**
+        * **'Partnership First'**
+        * For these three sections, implement an **alternating image vs. text placement**: The first section should have its image on the RHS (right-hand side) and text on the LHS (left-hand side). The subsequent section should have its image on the LHS and text on the RHS, and so on.
+    * **Testimonial Section:** Finally, include a testimonial section at the bottom of the page. This section should be similar in design and functionality to the one currently used on the 'Global Spiritual Meetups' page. It must be a **fast-moving rotating carousel** capable of handling at least **15 testimonials**.
+
+2.  **Individual Sacred Journey Detail Page Structure:**
+    * When any 'Sacred Journey card' is clicked, a new detail page should open. This page's structure should be similar to: https://www.sacredearthjourneys.ca/current-tours/sacred-himalaya-pilgrimage-with-andrew-harvey-2025
+    * Below the main hero banner image on this new page, there should be a **strip with three interactive tabs**:
+        * **i) Overview**
+        * **ii) Description**
+        * **iii) Itinerary**
+    * Ensure that clicking on each tab seamlessly displays its corresponding content without a full page reload.
