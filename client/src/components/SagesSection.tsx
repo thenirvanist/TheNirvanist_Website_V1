@@ -10,18 +10,7 @@ export default function SagesSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data: sages, isLoading, error } = useQuery<Sage[]>({
-    queryKey: ["api", "sages"],
-    queryFn: async () => {
-      const response = await fetch("/api/sages");
-      if (!response.ok) {
-        throw new Error("Failed to fetch sages");
-      }
-      return response.json();
-    },
-    retry: 3,
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-    gcTime: 0,
+    queryKey: ["/api/sages"],
   });
 
 
