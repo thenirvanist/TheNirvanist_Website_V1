@@ -13,7 +13,11 @@ export default function SagesSection() {
     queryKey: ["/api/sages"],
     retry: 3,
     refetchOnWindowFocus: false,
+    staleTime: 0, // Force fresh data
+    gcTime: 0, // Don't cache
   });
+
+  console.log("SagesSection - sages:", sages, "isLoading:", isLoading, "error:", error);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
