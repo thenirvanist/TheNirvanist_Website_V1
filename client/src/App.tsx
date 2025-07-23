@@ -13,6 +13,9 @@ import SageDetail from "@/pages/SageDetail";
 import Ashrams from "@/pages/Ashrams";
 import AshramDetail from "@/pages/AshramDetail";
 import Contact from "@/pages/Contact";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import ForgotPassword from "@/pages/ForgotPassword";
 import Chatbot from "@/components/Chatbot";
 
 function Router() {
@@ -27,6 +30,9 @@ function Router() {
       <Route path="/ashrams" component={Ashrams} />
       <Route path="/ashrams/:id" component={AshramDetail} />
       <Route path="/contact" component={Contact} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/forgot-password" component={ForgotPassword} />
       <Route component={NotFound} />
     </Switch>
   );

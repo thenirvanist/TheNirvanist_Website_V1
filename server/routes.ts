@@ -1,6 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { authService, authenticateToken } from "./auth";
+import { 
+  loginSchema, 
+  registerSchema, 
+  forgotPasswordSchema, 
+  resetPasswordSchema 
+} from "@shared/schema";
 import { getChatbotResponse, analyzeUserIntent, generateSpiritualInsight } from "./openai";
 import { 
   insertJourneySchema, insertSageSchema, insertAshramSchema, 
@@ -272,6 +279,159 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Spiritual insight error:", error);
       res.status(500).json({ 
         insight: "In every moment, there is an opportunity for deeper understanding." 
+      });
+    }
+  });
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const validatedData = registerSchema.parse(req.body);
+      const result = await authService.register(validatedData);
+      
+      res.json({
+        message: "Registration successful. Please check your email to verify your account.",
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          firstName: result.user.firstName,
+          lastName: result.user.lastName,
+          emailVerified: result.user.emailVerified,
+        },
+        token: result.token,
+      });
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      res.status(400).json({ 
+        message: error.message || "Registration failed. Please try again." 
+      });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const validatedData = loginSchema.parse(req.body);
+      const result = await authService.login(validatedData);
+      
+      res.json({
+        message: "Login successful",
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          firstName: result.user.firstName,
+          lastName: result.user.lastName,
+          emailVerified: result.user.emailVerified,
+        },
+        token: result.token,
+      });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      res.status(401).json({ 
+        message: error.message || "Invalid credentials" 
+      });
+    }
+  });
+
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const validatedData = forgotPasswordSchema.parse(req.body);
+      await authService.sendPasswordResetEmail(validatedData.email);
+      
+      res.json({
+        message: "If an account with that email exists, we've sent password reset instructions.",
+      });
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({ 
+        message: "Failed to send reset email. Please try again." 
+      });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const validatedData = resetPasswordSchema.parse(req.body);
+      await authService.resetPassword(validatedData.token, validatedData.password);
+      
+      res.json({
+        message: "Password reset successful. You can now login with your new password.",
+      });
+    } catch (error: any) {
+      console.error("Reset password error:", error);
+      res.status(400).json({ 
+        message: error.message || "Password reset failed. Please try again." 
+      });
+    }
+  });
+
+  app.get("/api/auth/verify-email", async (req, res) => {
+    try {
+      const token = req.query.token as string;
+      if (!token) {
+        return res.status(400).json({ message: "Verification token required" });
+      }
+
+      await authService.verifyEmail(token);
+      res.json({ message: "Email verified successfully" });
+    } catch (error: any) {
+      console.error("Email verification error:", error);
+      res.status(400).json({ 
+        message: error.message || "Email verification failed" 
+      });
+    }
+  });
+
+  app.get("/api/auth/user", authenticateToken, async (req: any, res) => {
+    try {
+      res.json({
+        id: req.user.id,
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        emailVerified: req.user.emailVerified,
+      });
+    } catch (error: any) {
+      console.error("Get user error:", error);
+      res.status(500).json({ message: "Failed to fetch user data" });
+    }
+  });
+
+  // Enhanced newsletter subscription with verification
+  app.post("/api/newsletter/subscribe", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const verificationToken = authService.generateVerificationToken();
+      await storage.createNewsletterSubscriber(email, verificationToken);
+      await authService.sendNewsletterVerificationEmail(email, verificationToken);
+
+      res.json({ 
+        message: "Please check your email to confirm your newsletter subscription." 
+      });
+    } catch (error: any) {
+      console.error("Newsletter subscription error:", error);
+      res.status(500).json({ 
+        message: "Failed to subscribe to newsletter. Please try again." 
+      });
+    }
+  });
+
+  app.get("/api/newsletter/verify", async (req, res) => {
+    try {
+      const token = req.query.token as string;
+      if (!token) {
+        return res.status(400).json({ message: "Verification token required" });
+      }
+
+      await storage.verifyNewsletterSubscriber(token);
+      res.json({ message: "Newsletter subscription confirmed successfully" });
+    } catch (error: any) {
+      console.error("Newsletter verification error:", error);
+      res.status(400).json({ 
+        message: "Newsletter verification failed. Token may be invalid or expired." 
       });
     }
   });

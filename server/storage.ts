@@ -1,12 +1,13 @@
 import {
   users, journeys, sages, ashrams, meetups, registrations,
-  blogPosts, testimonials, contactMessages, newsletterSubscribers,
+  blogPosts, testimonials, contactMessages, newsletterSubscribers, authUsers,
   type User, type InsertUser, type Journey, type InsertJourney,
   type Sage, type InsertSage, type Ashram, type InsertAshram,
   type Meetup, type InsertMeetup, type Registration, type InsertRegistration,
   type BlogPost, type InsertBlogPost, type Testimonial, type InsertTestimonial,
   type ContactMessage, type InsertContactMessage,
-  type NewsletterSubscriber, type InsertNewsletterSubscriber
+  type NewsletterSubscriber, type InsertNewsletterSubscriber,
+  type AuthUser, type InsertAuthUser
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -57,6 +58,19 @@ export interface IStorage {
 
   // Newsletter
   subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
+  
+  // Authentication methods
+  getAuthUser(id: number): Promise<AuthUser | undefined>;
+  getAuthUserByEmail(email: string): Promise<AuthUser | undefined>;
+  getAuthUserByVerificationToken(token: string): Promise<AuthUser | undefined>;
+  getAuthUserByResetToken(token: string): Promise<AuthUser | undefined>;
+  createAuthUser(userData: InsertAuthUser): Promise<AuthUser>;
+  updateAuthUser(id: number, userData: Partial<InsertAuthUser>): Promise<AuthUser>;
+  
+  // Enhanced newsletter methods
+  createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber>;
+  getNewsletterSubscriberByToken(token: string): Promise<NewsletterSubscriber | undefined>;
+  verifyNewsletterSubscriber(token: string): Promise<NewsletterSubscriber>;
 }
 
 export class MemStorage implements IStorage {
@@ -541,6 +555,67 @@ export class DatabaseStorage implements IStorage {
   async subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
     const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
     return newSubscriber;
+  }
+
+  // Authentication user operations
+  async getAuthUser(id: number): Promise<AuthUser | undefined> {
+    const [user] = await db.select().from(authUsers).where(eq(authUsers.id, id));
+    return user || undefined;
+  }
+
+  async getAuthUserByEmail(email: string): Promise<AuthUser | undefined> {
+    const [user] = await db.select().from(authUsers).where(eq(authUsers.email, email));
+    return user || undefined;
+  }
+
+  async getAuthUserByVerificationToken(token: string): Promise<AuthUser | undefined> {
+    const [user] = await db.select().from(authUsers).where(eq(authUsers.emailVerificationToken, token));
+    return user || undefined;
+  }
+
+  async getAuthUserByResetToken(token: string): Promise<AuthUser | undefined> {
+    const [user] = await db.select().from(authUsers).where(eq(authUsers.passwordResetToken, token));
+    return user || undefined;
+  }
+
+  async createAuthUser(userData: InsertAuthUser): Promise<AuthUser> {
+    const [user] = await db.insert(authUsers).values(userData).returning();
+    return user;
+  }
+
+  async updateAuthUser(id: number, userData: Partial<InsertAuthUser>): Promise<AuthUser> {
+    const [user] = await db
+      .update(authUsers)
+      .set({ ...userData, updatedAt: new Date() })
+      .where(eq(authUsers.id, id))
+      .returning();
+    return user;
+  }
+
+  // Enhanced newsletter operations with verification
+  async createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber> {
+    const [subscriber] = await db
+      .insert(newsletterSubscribers)
+      .values({ email, verificationToken, verified: false })
+      .returning();
+    return subscriber;
+  }
+
+  async getNewsletterSubscriberByToken(token: string): Promise<NewsletterSubscriber | undefined> {
+    const [subscriber] = await db
+      .select()
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.verificationToken, token));
+    return subscriber || undefined;
+  }
+
+  async verifyNewsletterSubscriber(token: string): Promise<NewsletterSubscriber> {
+    const [subscriber] = await db
+      .update(newsletterSubscribers)
+      .set({ verified: true, verificationToken: null })
+      .where(eq(newsletterSubscribers.verificationToken, token))
+      .returning();
+    return subscriber;
   }
 }
 
