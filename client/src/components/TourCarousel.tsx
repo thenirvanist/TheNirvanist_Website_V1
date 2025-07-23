@@ -12,11 +12,18 @@ export default function TourCarousel() {
   const [visibleCards, setVisibleCards] = useState(3);
 
   const { data: journeys, isLoading, error } = useQuery<Journey[]>({
-    queryKey: ["/api/journeys"],
+    queryKey: ["api", "journeys"],
+    queryFn: async () => {
+      const response = await fetch("/api/journeys");
+      if (!response.ok) {
+        throw new Error("Failed to fetch journeys");
+      }
+      return response.json();
+    },
     retry: 3,
     refetchOnWindowFocus: false,
-    staleTime: 0, // Force fresh data
-    gcTime: 0, // Don't cache
+    staleTime: 0,
+    gcTime: 0,
   });
 
 

@@ -10,11 +10,18 @@ export default function AshramsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
-    queryKey: ["/api/ashrams"],
+    queryKey: ["api", "ashrams"],
+    queryFn: async () => {
+      const response = await fetch("/api/ashrams");
+      if (!response.ok) {
+        throw new Error("Failed to fetch ashrams");
+      }
+      return response.json();
+    },
     retry: 3,
     refetchOnWindowFocus: false,
-    staleTime: 0, // Force fresh data
-    gcTime: 0, // Don't cache
+    staleTime: 0,
+    gcTime: 0,
   });
 
 
