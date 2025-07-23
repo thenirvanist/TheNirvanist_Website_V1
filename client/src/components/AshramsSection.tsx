@@ -17,7 +17,7 @@ export default function AshramsSection() {
     gcTime: 0, // Don't cache
   });
 
-  console.log("AshramsSection - ashrams:", ashrams, "isLoading:", isLoading, "error:", error);
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,7 +49,7 @@ export default function AshramsSection() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !ashrams) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">

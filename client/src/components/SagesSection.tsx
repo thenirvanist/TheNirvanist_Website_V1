@@ -17,7 +17,7 @@ export default function SagesSection() {
     gcTime: 0, // Don't cache
   });
 
-  console.log("SagesSection - sages:", sages, "isLoading:", isLoading, "error:", error);
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,7 +49,7 @@ export default function SagesSection() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !sages) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">

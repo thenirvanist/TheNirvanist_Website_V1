@@ -19,7 +19,7 @@ export default function TourCarousel() {
     gcTime: 0, // Don't cache
   });
 
-  console.log("TourCarousel - journeys:", journeys, "isLoading:", isLoading, "error:", error);
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -67,7 +67,7 @@ export default function TourCarousel() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !journeys) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
