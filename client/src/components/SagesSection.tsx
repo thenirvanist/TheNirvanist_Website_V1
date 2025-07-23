@@ -45,7 +45,7 @@ export default function SagesSection() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
@@ -58,7 +58,7 @@ export default function SagesSection() {
 
   if (!sages || sages.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
@@ -70,7 +70,7 @@ export default function SagesSection() {
   }
 
   return (
-    <section ref={sectionRef} id="sages" className="py-20 bg-gray-50">
+    <section ref={sectionRef} id="sages" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="scroll-trigger">

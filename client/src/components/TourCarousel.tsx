@@ -32,7 +32,7 @@ export default function TourCarousel() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
@@ -45,7 +45,7 @@ export default function TourCarousel() {
 
   if (!journeys || journeys.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
@@ -57,7 +57,7 @@ export default function TourCarousel() {
   }
 
   return (
-    <section ref={sectionRef} id="journeys" className="py-20 bg-gray-50">
+    <section ref={sectionRef} id="journeys" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="scroll-trigger text-center mb-12">
           <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>

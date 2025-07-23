@@ -10,9 +10,9 @@ interface LogoProps {
 
 export default function Logo({ className = "", variant = "white", size = "md" }: LogoProps) {
   const logoSizes = {
-    sm: "h-8",
-    md: "h-12",
-    lg: "h-16"
+    sm: "h-9",
+    md: "h-14",
+    lg: "h-18"
   };
 
   const logoSrc = {

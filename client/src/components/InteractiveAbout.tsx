@@ -50,7 +50,7 @@ export default function InteractiveAbout() {
   }, [isInView, visibleWords, aboutText.length]);
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-black text-white flex items-center justify-center py-20">
+    <section ref={sectionRef} className="min-h-screen bg-white text-black flex items-center justify-center py-20">
       <div className="max-w-6xl mx-auto px-6">
         {/* Interactive Text Animation */}
         <div className="text-center mb-16">
@@ -69,7 +69,7 @@ export default function InteractiveAbout() {
                 }`}
                 style={{
                   transitionDelay: `${index * 50}ms`,
-                  color: index % 8 === 0 ? 'hsl(70,71%,62%)' : 'white'
+                  color: index % 8 === 0 ? 'hsl(70,71%,62%)' : 'black'
                 }}
               >
                 {word}

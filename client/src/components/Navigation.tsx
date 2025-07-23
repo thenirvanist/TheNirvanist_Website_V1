@@ -9,7 +9,7 @@ export default function Navigation() {
   const [location] = useLocation();
 
   const navItems = [
-    { href: "/journeys", label: "Journeys" },
+    { href: "/journeys", label: "Sacred Journeys" },
     { href: "/meetups", label: "Global Spiritual Meet-ups" },
     { href: "/sages", label: "Sages" },
     { href: "/ashrams", label: "Ashrams" },
