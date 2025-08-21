@@ -57,6 +57,11 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
       const stateKey = provider === 'azure' ? 'microsoft' : provider;
       setLoadingState(prev => ({ ...prev, [stateKey]: true }));
 
+      // Check if Supabase is configured
+      if (!supabase) {
+        throw new Error('Social authentication is not configured. Please set up Supabase environment variables.');
+      }
+
       // Prepare authentication options
       const authOptions = {
         provider,
@@ -110,6 +115,22 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
       setLoadingState(prev => ({ ...prev, [stateKey]: false }));
     }
   };
+
+  // If Supabase is not configured, show a message instead of the buttons
+  if (!supabase) {
+    return (
+      <div className="w-full space-y-4">
+        <div className="text-center mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+            Social Authentication Unavailable
+          </h3>
+          <p className="text-sm text-yellow-700">
+            Social login requires Supabase configuration. Please use email authentication below.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full space-y-4">

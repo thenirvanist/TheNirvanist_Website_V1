@@ -5,10 +5,11 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.'
-  );
+// Check if Supabase is configured - if not, create a mock client
+const isSupabaseConfigured = supabaseUrl && supabaseAnonKey;
+
+if (!isSupabaseConfigured) {
+  console.warn('Supabase environment variables not found. Social authentication will be disabled.');
 }
 
 /**
@@ -23,7 +24,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
  * - Database: supabase.from('table').select()
  * - Storage: supabase.storage.from('bucket')
  */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = isSupabaseConfigured ? createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     // Automatically refresh tokens
     autoRefreshToken: true,
@@ -32,7 +33,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // Detect auth changes and update accordingly
     detectSessionInUrl: true,
   },
-});
+}) : null;
 
 /**
  * Auth helper functions

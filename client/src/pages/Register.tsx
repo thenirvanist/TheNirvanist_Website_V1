@@ -37,6 +37,7 @@ const authApiRequest = async (url: string, method = "GET", body?: any, headers?:
 import { registerSchema, type RegisterData } from "@shared/schema";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { SocialAuth } from "@/components/SocialAuth";
 
 export default function Register() {
   const [, navigate] = useLocation();
@@ -150,6 +151,24 @@ export default function Register() {
             </CardHeader>
 
             <CardContent className="px-8 pb-8">
+              {/* Social Authentication Section */}
+              <div className="mb-8">
+                <SocialAuth 
+                  onSuccess={() => navigate("/")}
+                  redirectTo={`${window.location.origin}/`}
+                />
+              </div>
+
+              {/* Divider */}
+              <div className="relative mb-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-gray-500">Or create account with email</span>
+                </div>
+              </div>
+
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
