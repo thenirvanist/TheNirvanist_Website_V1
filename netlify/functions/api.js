@@ -1,6 +1,7 @@
-// Netlify Functions wrapper for Express server
-import serverlessExpress from '@netlify/functions/express';
+// Netlify Functions handler for API routes
+import { Handler } from '@netlify/functions';
 import express from 'express';
+import serverless from 'serverless-http';
 import { registerRoutes } from '../../server/routes.js';
 
 const app = express();
@@ -13,4 +14,4 @@ app.use(express.urlencoded({ extended: true }));
 registerRoutes(app);
 
 // Export the handler for Netlify Functions
-export const handler = serverlessExpress(app);
+export const handler = serverless(app);

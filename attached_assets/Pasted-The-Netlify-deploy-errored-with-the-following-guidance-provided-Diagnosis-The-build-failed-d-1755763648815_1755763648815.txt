@@ -1,0 +1,86 @@
+The Netlify deploy errored, with the following guidance provided:
+
+**Diagnosis:**
+The build failed due to an error in resolving the dependency "@netlify/functions/express" in the file "api.js".
+
+**Solution:**
+1. Verify if the package "@netlify/functions/express" is present in the top-level "package.json" file of the site's dependencies.
+
+2. If the package is not in the "package.json" file, add it as a dependency by running the following command in the project directory:
+   ```bash
+   npm install @netlify/functions-express
+   ```
+
+3. If the package is not intended to be bundled, mark the path "@netlify/functions/express" as external to exclude it from the bundle. Update the build configuration to mark it as external.
+
+4. After making the necessary changes, trigger a new build to see if the issue is resolved.
+
+The relevant error logs are:
+
+Line 0: build-image version: 9b5eda74bd0982ea06a6fdf058a78c4ba15c7b10 (noble)
+Line 1: buildbot version: 9b5eda74bd0982ea06a6fdf058a78c4ba15c7b10
+Line 2: Fetching cached dependencies
+Line 3: Failed to fetch cache, continuing with build
+Line 4: Starting to prepare the repo for build
+Line 5: No cached dependencies found. Cloning fresh repo
+Line 6: git clone --filter=blob:none https://github.com/thenirvanist/TheNirvanist_Website_V1
+Line 7: Preparing Git Reference refs/heads/main
+Line 8: Starting to install dependencies
+Line 9: Downloading and installing node v18.20.8...
+Line 10: Downloading https://nodejs.org/dist/v18.20.8/node-v18.20.8-linux-x64.tar.xz...
+Line 11: Computing checksum with sha256sum
+Line 12: Checksums matched!
+Line 13: Now using node v18.20.8 (npm v10.8.2)
+Line 82: ⚡ Done in 5ms
+Line 83: ​
+Line 84: [90m(build.command completed in 5s)[39m
+Line 85: [96m[1m​[22m[39m
+Line 86: [96m[1mFunctions bundling                                            [22m[39m
+Line 87: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 88: ​
+Line 89: Packaging Functions from [36mnetlify/functions[39m directory:
+Line 90:  - api.js
+Line 91: ​
+Line 92: ✘ [ERROR] Could not resolve "@netlify/functions/express"
+Line 93:     netlify/functions/api.js:2:30:
+Line 94:       2 │ import serverlessExpress from '@netlify/functions/express';
+Line 95:         ╵                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Line 96:   The path "./express" is not exported by package "@netlify/functions":
+Line 97:     node_modules/@netlify/functions/package.json:6:13:
+Line 98:       6 │   "exports": {
+Line 99:         ╵              ^
+Line 100:   You can mark the path "@netlify/functions/express" as external to exclude it from the bundle, which will remove this error and
+Line 101: [91m[1m​[22m[39m
+Line 102: [91m[1mDependencies installation error                               [22m[39m
+Line 103: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 104: ​
+Line 105:   [31m[1mError message[22m[39m
+Line 106:   A Netlify Function failed to require one of its dependencies.
+Line 107:   Please make sure it is present in the site's top-level "package.json".
+​
+Line 108:   Build failed with 1 error:
+Line 109:   netlify/functions/api.js:2:30: ERROR: Could not resolve "@netlify/functions/express"
+Line 110: ​
+Line 111:   [31m[1mResolved config[22m[39m
+Line 112:   build:
+Line 113:     command: npm run build
+Line 114:     commandOrigin: config
+Line 115:     environment:
+Line 116:       - NODE_VERSION
+Line 117:     publish: /opt/build/repo/dist
+Line 118:     publishOrigin: config
+Line 119:   functions:
+Line 120:     "*":
+Line 121:       node_bundler: esbuild
+Line 122:   functionsDirectory: /opt/build/repo/netlify/functions
+Line 123:   redirects:
+Line 124: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 125:     - from: /api/*
+      status: 200
+      to: /.netlify/functions/api/:splat
+    - from: /*
+      status: 200
+      to: /index.
+Line 126: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 127: Failing build: Failed to build site
+Line 128: Finished processing build request in 40.228s
