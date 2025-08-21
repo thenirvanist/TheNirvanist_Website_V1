@@ -41,7 +41,7 @@ git push -u origin main
 4. Select your repository: `nirvanist-spiritual-platform`
 5. Configure build settings:
    - **Build command**: `npm run build && node scripts/build-functions.js`
-   - **Publish directory**: `dist`
+   - **Publish directory**: `dist/public`
    - **Functions directory**: `netlify/functions`
 6. Click "Deploy site"
 
