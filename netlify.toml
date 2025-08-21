@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "npm run build && npm run build:functions"
+  command = "npm run build && node scripts/build-functions.js"
 
 [build.environment]
   NODE_VERSION = "18"
