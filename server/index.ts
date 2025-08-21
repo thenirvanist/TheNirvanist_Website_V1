@@ -37,6 +37,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Run database migrations first
+  const { runMigrations } = await import('./migrate.js');
+  const migrationSuccess = await runMigrations();
+  
+  if (migrationSuccess) {
+    // Seed the database with spiritual content
+    const { seedSupabaseData } = await import('./seed-supabase.js');
+    await seedSupabaseData();
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

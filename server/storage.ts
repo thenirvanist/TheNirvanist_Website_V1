@@ -1,621 +1,425 @@
-import {
-  users, journeys, sages, ashrams, meetups, registrations,
-  blogPosts, testimonials, contactMessages, newsletterSubscribers, authUsers,
-  type User, type InsertUser, type Journey, type InsertJourney,
-  type Sage, type InsertSage, type Ashram, type InsertAshram,
-  type Meetup, type InsertMeetup, type Registration, type InsertRegistration,
-  type BlogPost, type InsertBlogPost, type Testimonial, type InsertTestimonial,
-  type ContactMessage, type InsertContactMessage,
-  type NewsletterSubscriber, type InsertNewsletterSubscriber,
-  type AuthUser, type InsertAuthUser
-} from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { db } from "./db.js";
+import { eq, sql } from "drizzle-orm";
+import * as schema from "@shared/schema";
+
+// Import all the types we need
+export type User = typeof schema.users.$inferSelect;
+export type InsertUser = typeof schema.users.$inferInsert;
+export type Journey = typeof schema.journeys.$inferSelect;
+export type InsertJourney = typeof schema.journeys.$inferInsert;
+export type Sage = typeof schema.sages.$inferSelect;
+export type InsertSage = typeof schema.sages.$inferInsert;
+export type Ashram = typeof schema.ashrams.$inferSelect;
+export type InsertAshram = typeof schema.ashrams.$inferInsert;
+export type Meetup = typeof schema.meetups.$inferSelect;
+export type InsertMeetup = typeof schema.meetups.$inferInsert;
+export type Registration = typeof schema.registrations.$inferSelect;
+export type InsertRegistration = typeof schema.registrations.$inferInsert;
+
+// Simplified types for the basic functionality
+export interface Testimonial {
+  id: number;
+  name: string;
+  location: string;
+  content: string;
+  rating: number;
+  journeyId?: number;
+  image?: string;
+  verified?: boolean;
+  createdAt?: Date;
+}
+
+export interface AuthUser {
+  id: number;
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  emailVerified?: boolean;
+  verificationToken?: string;
+  resetToken?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt?: Date;
+}
+
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  verified?: boolean;
+  verificationToken?: string;
+  subscribedAt?: Date;
+}
 
 export interface IStorage {
-  // Users
+  // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 
-  // Journeys
-  getAllJourneys(): Promise<Journey[]>;
+  // Journey operations
+  getJourneys(): Promise<Journey[]>;
   getJourney(id: number): Promise<Journey | undefined>;
   createJourney(journey: InsertJourney): Promise<Journey>;
   updateJourney(id: number, journey: Partial<InsertJourney>): Promise<Journey | undefined>;
 
-  // Sages
-  getAllSages(): Promise<Sage[]>;
+  // Sage operations
+  getSages(): Promise<Sage[]>;
   getSage(id: number): Promise<Sage | undefined>;
   createSage(sage: InsertSage): Promise<Sage>;
   updateSage(id: number, sage: Partial<InsertSage>): Promise<Sage | undefined>;
 
-  // Ashrams
-  getAllAshrams(): Promise<Ashram[]>;
+  // Ashram operations
+  getAshrams(): Promise<Ashram[]>;
   getAshram(id: number): Promise<Ashram | undefined>;
   createAshram(ashram: InsertAshram): Promise<Ashram>;
   updateAshram(id: number, ashram: Partial<InsertAshram>): Promise<Ashram | undefined>;
 
-  // Meetups
-  getAllMeetups(): Promise<Meetup[]>;
+  // Meetup operations
+  getMeetups(): Promise<Meetup[]>;
   getMeetup(id: number): Promise<Meetup | undefined>;
   createMeetup(meetup: InsertMeetup): Promise<Meetup>;
   registerForMeetup(registration: InsertRegistration): Promise<Registration>;
 
-  // Blog
-  getAllBlogPosts(): Promise<BlogPost[]>;
-  getBlogPost(id: number): Promise<BlogPost | undefined>;
-  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
-  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  // Testimonial operations
+  getTestimonials(): Promise<Testimonial[]>;
+  createTestimonial(testimonial: Partial<Testimonial>): Promise<Testimonial>;
 
-  // Testimonials
-  getAllTestimonials(): Promise<Testimonial[]>;
-  getFeaturedTestimonials(): Promise<Testimonial[]>;
-  createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
-
-  // Contact
-  createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
-
-  // Newsletter
-  subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
-  
-  // Authentication methods
+  // Auth user operations
   getAuthUser(id: number): Promise<AuthUser | undefined>;
   getAuthUserByEmail(email: string): Promise<AuthUser | undefined>;
-  getAuthUserByVerificationToken(token: string): Promise<AuthUser | undefined>;
-  getAuthUserByResetToken(token: string): Promise<AuthUser | undefined>;
-  createAuthUser(userData: InsertAuthUser): Promise<AuthUser>;
-  updateAuthUser(id: number, userData: Partial<InsertAuthUser>): Promise<AuthUser>;
-  
-  // Enhanced newsletter methods
+  createAuthUser(userData: Partial<AuthUser>): Promise<AuthUser>;
+  updateAuthUser(id: number, userData: Partial<AuthUser>): Promise<AuthUser>;
+
+  // Contact and newsletter operations
+  createContactMessage(message: Partial<ContactMessage>): Promise<ContactMessage>;
   createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber>;
-  getNewsletterSubscriberByToken(token: string): Promise<NewsletterSubscriber | undefined>;
-  verifyNewsletterSubscriber(token: string): Promise<NewsletterSubscriber>;
-}
-
-export class MemStorage implements IStorage {
-  private users: Map<number, User> = new Map();
-  private journeys: Map<number, Journey> = new Map();
-  private sages: Map<number, Sage> = new Map();
-  private ashrams: Map<number, Ashram> = new Map();
-  private meetups: Map<number, Meetup> = new Map();
-  private registrations: Map<number, Registration> = new Map();
-  private blogPosts: Map<number, BlogPost> = new Map();
-  private testimonials: Map<number, Testimonial> = new Map();
-  private contactMessages: Map<number, ContactMessage> = new Map();
-  private newsletterSubscribers: Map<number, NewsletterSubscriber> = new Map();
-  
-  private currentUserId = 1;
-  private currentJourneyId = 1;
-  private currentSageId = 1;
-  private currentAshramId = 1;
-  private currentMeetupId = 1;
-  private currentRegistrationId = 1;
-  private currentBlogPostId = 1;
-  private currentTestimonialId = 1;
-  private currentContactId = 1;
-  private currentNewsletterSubscriberId = 1;
-
-  constructor() {
-    this.seedInitialData();
-  }
-
-  private seedInitialData() {
-    // Seed journeys
-    const journeyData = [
-      {
-        title: "Mindful Himalayas Retreat",
-        description: "7-day transformative journey through sacred Himalayan monasteries and meditation centers",
-        location: "Himalayas, Nepal",
-        duration: "7 days",
-        price: "$399 + expenses",
-        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-        inclusions: ["Accommodation", "Meditation sessions", "Local guide", "Traditional meals"],
-        itinerary: "Day 1: Arrival and orientation...",
-        available: true
-      },
-      {
-        title: "Balinese Serenity Journey",
-        description: "5-day immersion in traditional Balinese spiritual practices and temple ceremonies",
-        location: "Ubud, Bali",
-        duration: "5 days",
-        price: "$299 + expenses",
-        image: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-        inclusions: ["Temple visits", "Traditional ceremonies", "Yoga sessions", "Cultural experiences"],
-        itinerary: "Day 1: Temple blessing ceremony...",
-        available: true
-      },
-      {
-        title: "Sacred India Pilgrimage",
-        description: "10-day spiritual odyssey visiting ancient ashrams and holy sites across India",
-        location: "Rishikesh, India",
-        duration: "10 days",
-        price: "$399 + expenses",
-        image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-        inclusions: ["Ashram stays", "Spiritual teachings", "Sacred site visits", "Meditation practice"],
-        itinerary: "Day 1: Arrival in Rishikesh...",
-        available: true
-      }
-    ];
-
-    journeyData.forEach(journey => {
-      const id = this.currentJourneyId++;
-      this.journeys.set(id, { ...journey, id });
-    });
-
-    // Seed sages
-    const sageData = [
-      {
-        name: "Ramana Maharshi",
-        description: "Self-realized sage who taught through silence and self-inquiry",
-        biography: "Born in 1879, Ramana Maharshi was one of the most revered spiritual teachers of modern India...",
-        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        teachings: ["Self-inquiry", "Who am I?", "Silence as teaching"],
-        books: ["Who Am I?", "Forty Verses on Reality"]
-      },
-      {
-        name: "Sri Aurobindo",
-        description: "Philosopher, yogi, and spiritual teacher who developed Integral Yoga",
-        biography: "Sri Aurobindo was an Indian philosopher, yogi, maharishi, poet, and Indian nationalist...",
-        image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        teachings: ["Integral Yoga", "Evolution of consciousness", "Divine life"],
-        books: ["The Life Divine", "Synthesis of Yoga"]
-      },
-      {
-        name: "Anandamayi Ma",
-        description: "Bengali Hindu saint who was revered as an incarnation of Hindu goddess Durga",
-        biography: "Anandamayi Ma was a Hindu saint from Bengal. She was revered by her followers as an incarnation of the Divine Mother...",
-        image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        teachings: ["Divine love", "Surrender to God", "Joy in spiritual practice"],
-        books: ["Matri Vani", "Words of the Mother"]
-      },
-      {
-        name: "Paramahansa Yogananda",
-        description: "Yogi and guru who introduced millions to meditation and Kriya Yoga",
-        biography: "Paramahansa Yogananda was an Indian Hindu monk, yogi and guru who introduced millions to the teachings of meditation...",
-        image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        teachings: ["Kriya Yoga", "Self-realization", "East-West spiritual unity"],
-        books: ["Autobiography of a Yogi", "The Science of Enlightenment"]
-      }
-    ];
-
-    sageData.forEach(sage => {
-      const id = this.currentSageId++;
-      this.sages.set(id, { ...sage, id });
-    });
-
-    // Seed ashrams
-    const ashramData = [
-      {
-        name: "Rishikesh Sacred Valley",
-        location: "Rishikesh, India",
-        description: "Ancient ashram nestled in the foothills of the Himalayas, offering traditional yoga and meditation practices",
-        facilities: ["Meditation halls", "Yoga studios", "Vegetarian kitchen", "Library", "Gardens"],
-        image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        contact: "info@rishikeshashram.org",
-        website: "www.rishikeshashram.org"
-      },
-      {
-        name: "Himalayan Meditation Retreat",
-        location: "Dharamshala, India",
-        description: "Peaceful mountain retreat center focused on Buddhist meditation and mindfulness practices",
-        facilities: ["Silent meditation halls", "Walking paths", "Organic gardens", "Guest quarters"],
-        image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        contact: "contact@himalayanretreat.org",
-        website: "www.himalayanretreat.org"
-      },
-      {
-        name: "Sacred Lotus Sanctuary",
-        location: "Auroville, India",
-        description: "Modern spiritual community dedicated to human unity and consciousness evolution",
-        facilities: ["Matrimandir", "Study centers", "Cultural pavilions", "Workshops"],
-        image: "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        contact: "welcome@auroville.org",
-        website: "www.auroville.org"
-      },
-      {
-        name: "Mountain Wisdom Center",
-        location: "McLeod Ganj, India",
-        description: "Tibetan Buddhist center offering teachings in compassion and wisdom traditions",
-        facilities: ["Prayer halls", "Study rooms", "Monastery", "Guest house"],
-        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400",
-        contact: "info@mountainwisdom.org",
-        website: "www.mountainwisdom.org"
-      }
-    ];
-
-    ashramData.forEach(ashram => {
-      const id = this.currentAshramId++;
-      this.ashrams.set(id, { ...ashram, id });
-    });
-
-    // Seed testimonials
-    const testimonialData = [
-      {
-        name: "Sarah Johnson",
-        location: "California, USA",
-        content: "The Himalayan retreat was life-changing. I found peace I never knew existed within myself.",
-        rating: 5,
-        journeyId: 1,
-        featured: true
-      },
-      {
-        name: "Marco Silva",
-        location: "São Paulo, Brazil",
-        content: "The spiritual guidance and community connection exceeded all my expectations.",
-        rating: 5,
-        journeyId: 2,
-        featured: true
-      }
-    ];
-
-    testimonialData.forEach(testimonial => {
-      const id = this.currentTestimonialId++;
-      this.testimonials.set(id, { ...testimonial, id });
-    });
-  }
-
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
-  }
-
-  // Journey methods
-  async getAllJourneys(): Promise<Journey[]> {
-    return Array.from(this.journeys.values());
-  }
-
-  async getJourney(id: number): Promise<Journey | undefined> {
-    return this.journeys.get(id);
-  }
-
-  async createJourney(journey: InsertJourney): Promise<Journey> {
-    const id = this.currentJourneyId++;
-    const newJourney: Journey = { ...journey, id };
-    this.journeys.set(id, newJourney);
-    return newJourney;
-  }
-
-  async updateJourney(id: number, journey: Partial<InsertJourney>): Promise<Journey | undefined> {
-    const existing = this.journeys.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...journey };
-    this.journeys.set(id, updated);
-    return updated;
-  }
-
-  // Sage methods
-  async getAllSages(): Promise<Sage[]> {
-    return Array.from(this.sages.values());
-  }
-
-  async getSage(id: number): Promise<Sage | undefined> {
-    return this.sages.get(id);
-  }
-
-  async createSage(sage: InsertSage): Promise<Sage> {
-    const id = this.currentSageId++;
-    const newSage: Sage = { ...sage, id };
-    this.sages.set(id, newSage);
-    return newSage;
-  }
-
-  async updateSage(id: number, sage: Partial<InsertSage>): Promise<Sage | undefined> {
-    const existing = this.sages.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...sage };
-    this.sages.set(id, updated);
-    return updated;
-  }
-
-  // Ashram methods
-  async getAllAshrams(): Promise<Ashram[]> {
-    return Array.from(this.ashrams.values());
-  }
-
-  async getAshram(id: number): Promise<Ashram | undefined> {
-    return this.ashrams.get(id);
-  }
-
-  async createAshram(ashram: InsertAshram): Promise<Ashram> {
-    const id = this.currentAshramId++;
-    const newAshram: Ashram = { ...ashram, id };
-    this.ashrams.set(id, newAshram);
-    return newAshram;
-  }
-
-  async updateAshram(id: number, ashram: Partial<InsertAshram>): Promise<Ashram | undefined> {
-    const existing = this.ashrams.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...ashram };
-    this.ashrams.set(id, updated);
-    return updated;
-  }
-
-  // Meetup methods
-  async getAllMeetups(): Promise<Meetup[]> {
-    return Array.from(this.meetups.values());
-  }
-
-  async getMeetup(id: number): Promise<Meetup | undefined> {
-    return this.meetups.get(id);
-  }
-
-  async createMeetup(meetup: InsertMeetup): Promise<Meetup> {
-    const id = this.currentMeetupId++;
-    const newMeetup: Meetup = { ...meetup, id };
-    this.meetups.set(id, newMeetup);
-    return newMeetup;
-  }
-
-  async registerForMeetup(registration: InsertRegistration): Promise<Registration> {
-    const id = this.currentRegistrationId++;
-    const newRegistration: Registration = { ...registration, id };
-    this.registrations.set(id, newRegistration);
-    return newRegistration;
-  }
-
-  // Blog methods
-  async getAllBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values()).filter(post => post.published);
-  }
-
-  async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    return this.blogPosts.get(id);
-  }
-
-  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const id = this.currentBlogPostId++;
-    const newPost: BlogPost = { ...post, id, createdAt: new Date() };
-    this.blogPosts.set(id, newPost);
-    return newPost;
-  }
-
-  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const existing = this.blogPosts.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...post };
-    this.blogPosts.set(id, updated);
-    return updated;
-  }
-
-  // Testimonial methods
-  async getAllTestimonials(): Promise<Testimonial[]> {
-    return Array.from(this.testimonials.values());
-  }
-
-  async getFeaturedTestimonials(): Promise<Testimonial[]> {
-    return Array.from(this.testimonials.values()).filter(t => t.featured);
-  }
-
-  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
-    const id = this.currentTestimonialId++;
-    const newTestimonial: Testimonial = { ...testimonial, id };
-    this.testimonials.set(id, newTestimonial);
-    return newTestimonial;
-  }
-
-  // Contact methods
-  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
-    const id = this.currentContactId++;
-    const newMessage: ContactMessage = { ...message, id, createdAt: new Date() };
-    this.contactMessages.set(id, newMessage);
-    return newMessage;
-  }
-
-  // Newsletter methods
-  async subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
-    const id = this.currentNewsletterSubscriberId++;
-    const newSubscriber: NewsletterSubscriber = { ...subscriber, id, subscribedAt: new Date() };
-    this.newsletterSubscribers.set(id, newSubscriber);
-    return newSubscriber;
-  }
+  getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
+  updateNewsletterSubscriber(id: number, data: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber>;
 }
 
 export class DatabaseStorage implements IStorage {
+  // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    try {
+      const [user] = await db.select().from(schema.users).where(eq(schema.users.id, id));
+      return user || undefined;
+    } catch (error) {
+      console.error('Error getting user:', error);
+      return undefined;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    try {
+      const [user] = await db.select().from(schema.users).where(eq(schema.users.username, username));
+      return user || undefined;
+    } catch (error) {
+      console.error('Error getting user by username:', error);
+      return undefined;
+    }
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(schema.users).values(user).returning();
+    return newUser;
   }
 
-  async getAllJourneys(): Promise<Journey[]> {
-    return await db.select().from(journeys);
+  // Journey operations
+  async getJourneys(): Promise<Journey[]> {
+    try {
+      return await db.select().from(schema.journeys);
+    } catch (error) {
+      console.error('Error getting journeys:', error);
+      return [];
+    }
   }
 
   async getJourney(id: number): Promise<Journey | undefined> {
-    const [journey] = await db.select().from(journeys).where(eq(journeys.id, id));
-    return journey || undefined;
+    try {
+      const [journey] = await db.select().from(schema.journeys).where(eq(schema.journeys.id, id));
+      return journey || undefined;
+    } catch (error) {
+      console.error('Error getting journey:', error);
+      return undefined;
+    }
   }
 
   async createJourney(journey: InsertJourney): Promise<Journey> {
-    const [newJourney] = await db.insert(journeys).values(journey).returning();
+    const [newJourney] = await db.insert(schema.journeys).values(journey).returning();
     return newJourney;
   }
 
   async updateJourney(id: number, journey: Partial<InsertJourney>): Promise<Journey | undefined> {
-    const [updated] = await db.update(journeys).set(journey).where(eq(journeys.id, id)).returning();
-    return updated || undefined;
+    try {
+      const [updated] = await db.update(schema.journeys).set(journey).where(eq(schema.journeys.id, id)).returning();
+      return updated || undefined;
+    } catch (error) {
+      console.error('Error updating journey:', error);
+      return undefined;
+    }
   }
 
-  async getAllSages(): Promise<Sage[]> {
-    return await db.select().from(sages);
+  // Sage operations
+  async getSages(): Promise<Sage[]> {
+    try {
+      return await db.select().from(schema.sages);
+    } catch (error) {
+      console.error('Error getting sages:', error);
+      return [];
+    }
   }
 
   async getSage(id: number): Promise<Sage | undefined> {
-    const [sage] = await db.select().from(sages).where(eq(sages.id, id));
-    return sage || undefined;
+    try {
+      const [sage] = await db.select().from(schema.sages).where(eq(schema.sages.id, id));
+      return sage || undefined;
+    } catch (error) {
+      console.error('Error getting sage:', error);
+      return undefined;
+    }
   }
 
   async createSage(sage: InsertSage): Promise<Sage> {
-    const [newSage] = await db.insert(sages).values(sage).returning();
+    const [newSage] = await db.insert(schema.sages).values(sage).returning();
     return newSage;
   }
 
   async updateSage(id: number, sage: Partial<InsertSage>): Promise<Sage | undefined> {
-    const [updated] = await db.update(sages).set(sage).where(eq(sages.id, id)).returning();
-    return updated || undefined;
+    try {
+      const [updated] = await db.update(schema.sages).set(sage).where(eq(schema.sages.id, id)).returning();
+      return updated || undefined;
+    } catch (error) {
+      console.error('Error updating sage:', error);
+      return undefined;
+    }
   }
 
-  async getAllAshrams(): Promise<Ashram[]> {
-    return await db.select().from(ashrams);
+  // Ashram operations
+  async getAshrams(): Promise<Ashram[]> {
+    try {
+      return await db.select().from(schema.ashrams);
+    } catch (error) {
+      console.error('Error getting ashrams:', error);
+      return [];
+    }
   }
 
   async getAshram(id: number): Promise<Ashram | undefined> {
-    const [ashram] = await db.select().from(ashrams).where(eq(ashrams.id, id));
-    return ashram || undefined;
+    try {
+      const [ashram] = await db.select().from(schema.ashrams).where(eq(schema.ashrams.id, id));
+      return ashram || undefined;
+    } catch (error) {
+      console.error('Error getting ashram:', error);
+      return undefined;
+    }
   }
 
   async createAshram(ashram: InsertAshram): Promise<Ashram> {
-    const [newAshram] = await db.insert(ashrams).values(ashram).returning();
+    const [newAshram] = await db.insert(schema.ashrams).values(ashram).returning();
     return newAshram;
   }
 
   async updateAshram(id: number, ashram: Partial<InsertAshram>): Promise<Ashram | undefined> {
-    const [updated] = await db.update(ashrams).set(ashram).where(eq(ashrams.id, id)).returning();
-    return updated || undefined;
+    try {
+      const [updated] = await db.update(schema.ashrams).set(ashram).where(eq(schema.ashrams.id, id)).returning();
+      return updated || undefined;
+    } catch (error) {
+      console.error('Error updating ashram:', error);
+      return undefined;
+    }
   }
 
-  async getAllMeetups(): Promise<Meetup[]> {
-    return await db.select().from(meetups);
+  // Meetup operations
+  async getMeetups(): Promise<Meetup[]> {
+    try {
+      return await db.select().from(schema.meetups);
+    } catch (error) {
+      console.error('Error getting meetups:', error);
+      return [];
+    }
   }
 
   async getMeetup(id: number): Promise<Meetup | undefined> {
-    const [meetup] = await db.select().from(meetups).where(eq(meetups.id, id));
-    return meetup || undefined;
+    try {
+      const [meetup] = await db.select().from(schema.meetups).where(eq(schema.meetups.id, id));
+      return meetup || undefined;
+    } catch (error) {
+      console.error('Error getting meetup:', error);
+      return undefined;
+    }
   }
 
   async createMeetup(meetup: InsertMeetup): Promise<Meetup> {
-    const [newMeetup] = await db.insert(meetups).values(meetup).returning();
+    const [newMeetup] = await db.insert(schema.meetups).values(meetup).returning();
     return newMeetup;
   }
 
   async registerForMeetup(registration: InsertRegistration): Promise<Registration> {
-    const [newRegistration] = await db.insert(registrations).values(registration).returning();
+    const [newRegistration] = await db.insert(schema.registrations).values(registration).returning();
     return newRegistration;
   }
 
-  async getAllBlogPosts(): Promise<BlogPost[]> {
-    return await db.select().from(blogPosts);
+  // Testimonial operations
+  async getTestimonials(): Promise<Testimonial[]> {
+    try {
+      // Use raw SQL since we have a simplified testimonial structure
+      const result = await db.execute('SELECT * FROM testimonials ORDER BY created_at DESC');
+      return result.rows as any[] || [];
+    } catch (error) {
+      console.error('Error getting testimonials:', error);
+      return [];
+    }
   }
 
-  async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
-    return post || undefined;
+  async createTestimonial(testimonial: Partial<Testimonial>): Promise<Testimonial> {
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO testimonials (name, location, content, rating, journey_id, featured, created_at) 
+        VALUES (${testimonial.name}, ${testimonial.location}, ${testimonial.content}, ${testimonial.rating}, ${testimonial.journeyId || null}, ${testimonial.verified || false}, NOW()) 
+        RETURNING *
+      `);
+      return result[0] as any;
+    } catch (error) {
+      console.error('Error creating testimonial:', error);
+      throw error;
+    }
   }
 
-  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const [newPost] = await db.insert(blogPosts).values(post).returning();
-    return newPost;
-  }
-
-  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const [updated] = await db.update(blogPosts).set(post).where(eq(blogPosts.id, id)).returning();
-    return updated || undefined;
-  }
-
-  async getAllTestimonials(): Promise<Testimonial[]> {
-    return await db.select().from(testimonials);
-  }
-
-  async getFeaturedTestimonials(): Promise<Testimonial[]> {
-    return await db.select().from(testimonials).where(eq(testimonials.featured, true));
-  }
-
-  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
-    const [newTestimonial] = await db.insert(testimonials).values(testimonial).returning();
-    return newTestimonial;
-  }
-
-  async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
-    const [newMessage] = await db.insert(contactMessages).values(message).returning();
-    return newMessage;
-  }
-
-  async subscribeNewsletter(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
-    const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
-    return newSubscriber;
-  }
-
-  // Authentication user operations
+  // Auth user operations  
   async getAuthUser(id: number): Promise<AuthUser | undefined> {
-    const [user] = await db.select().from(authUsers).where(eq(authUsers.id, id));
-    return user || undefined;
+    try {
+      const result = await db.execute('SELECT * FROM auth_users WHERE id = $1', [id]);
+      return result.rows[0] as any || undefined;
+    } catch (error) {
+      console.error('Error getting auth user:', error);
+      return undefined;
+    }
   }
 
   async getAuthUserByEmail(email: string): Promise<AuthUser | undefined> {
-    const [user] = await db.select().from(authUsers).where(eq(authUsers.email, email));
-    return user || undefined;
+    try {
+      const result = await db.execute('SELECT * FROM auth_users WHERE email = $1', [email]);
+      return result.rows[0] as any || undefined;
+    } catch (error) {
+      console.error('Error getting auth user by email:', error);
+      return undefined;
+    }
   }
 
-  async getAuthUserByVerificationToken(token: string): Promise<AuthUser | undefined> {
-    const [user] = await db.select().from(authUsers).where(eq(authUsers.emailVerificationToken, token));
-    return user || undefined;
+  async createAuthUser(userData: Partial<AuthUser>): Promise<AuthUser> {
+    try {
+      const result = await db.execute(`
+        INSERT INTO auth_users (email, password, first_name, last_name, email_verified, verification_token, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+        RETURNING *
+      `, [
+        userData.email,
+        userData.password,
+        userData.firstName || null,
+        userData.lastName || null,
+        userData.emailVerified || false,
+        userData.verificationToken || null
+      ]);
+      return result.rows[0] as any;
+    } catch (error) {
+      console.error('Error creating auth user:', error);
+      throw error;
+    }
   }
 
-  async getAuthUserByResetToken(token: string): Promise<AuthUser | undefined> {
-    const [user] = await db.select().from(authUsers).where(eq(authUsers.passwordResetToken, token));
-    return user || undefined;
+  async updateAuthUser(id: number, userData: Partial<AuthUser>): Promise<AuthUser> {
+    try {
+      const result = await db.execute(`
+        UPDATE auth_users 
+        SET email = COALESCE($2, email),
+            password = COALESCE($3, password),
+            first_name = COALESCE($4, first_name),
+            last_name = COALESCE($5, last_name),
+            email_verified = COALESCE($6, email_verified),
+            verification_token = COALESCE($7, verification_token),
+            reset_token = COALESCE($8, reset_token),
+            updated_at = NOW()
+        WHERE id = $1
+        RETURNING *
+      `, [
+        id,
+        userData.email,
+        userData.password,
+        userData.firstName,
+        userData.lastName,
+        userData.emailVerified,
+        userData.verificationToken,
+        userData.resetToken
+      ]);
+      return result.rows[0] as any;
+    } catch (error) {
+      console.error('Error updating auth user:', error);
+      throw error;
+    }
   }
 
-  async createAuthUser(userData: InsertAuthUser): Promise<AuthUser> {
-    const [user] = await db.insert(authUsers).values(userData).returning();
-    return user;
+  // Contact and newsletter operations
+  async createContactMessage(message: Partial<ContactMessage>): Promise<ContactMessage> {
+    try {
+      const result = await db.execute(`
+        INSERT INTO contact_messages (name, email, subject, message, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
+        RETURNING *
+      `, [message.name, message.email, message.subject, message.message]);
+      return result.rows[0] as any;
+    } catch (error) {
+      console.error('Error creating contact message:', error);
+      throw error;
+    }
   }
 
-  async updateAuthUser(id: number, userData: Partial<InsertAuthUser>): Promise<AuthUser> {
-    const [user] = await db
-      .update(authUsers)
-      .set({ ...userData, updatedAt: new Date() })
-      .where(eq(authUsers.id, id))
-      .returning();
-    return user;
-  }
-
-  // Enhanced newsletter operations with verification
   async createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber> {
-    const [subscriber] = await db
-      .insert(newsletterSubscribers)
-      .values({ email, verificationToken, verified: false })
-      .returning();
-    return subscriber;
+    try {
+      const result = await db.execute(`
+        INSERT INTO newsletter_subscribers (email, verified, verification_token, subscribed_at)
+        VALUES ($1, false, $2, NOW())
+        RETURNING *
+      `, [email, verificationToken]);
+      return result.rows[0] as any;
+    } catch (error) {
+      console.error('Error creating newsletter subscriber:', error);
+      throw error;
+    }
   }
 
-  async getNewsletterSubscriberByToken(token: string): Promise<NewsletterSubscriber | undefined> {
-    const [subscriber] = await db
-      .select()
-      .from(newsletterSubscribers)
-      .where(eq(newsletterSubscribers.verificationToken, token));
-    return subscriber || undefined;
+  async getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined> {
+    try {
+      const result = await db.execute('SELECT * FROM newsletter_subscribers WHERE email = $1', [email]);
+      return result.rows[0] as any || undefined;
+    } catch (error) {
+      console.error('Error getting newsletter subscriber:', error);
+      return undefined;
+    }
   }
 
-  async verifyNewsletterSubscriber(token: string): Promise<NewsletterSubscriber> {
-    const [subscriber] = await db
-      .update(newsletterSubscribers)
-      .set({ verified: true, verificationToken: null })
-      .where(eq(newsletterSubscribers.verificationToken, token))
-      .returning();
-    return subscriber;
+  async updateNewsletterSubscriber(id: number, data: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber> {
+    try {
+      const result = await db.execute(`
+        UPDATE newsletter_subscribers 
+        SET verified = COALESCE($2, verified),
+            verification_token = COALESCE($3, verification_token)
+        WHERE id = $1
+        RETURNING *
+      `, [id, data.verified, data.verificationToken]);
+      return result.rows[0] as any;
+    } catch (error) {
+      console.error('Error updating newsletter subscriber:', error);
+      throw error;
+    }
   }
 }
 
