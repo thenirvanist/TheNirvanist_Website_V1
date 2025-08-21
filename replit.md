@@ -4,7 +4,7 @@
 
 The Nirvanist is a full-stack spiritual tourism platform that connects seekers with transformative spiritual journeys, sage wisdom, ashram retreats, and global meetups. The application facilitates spiritual growth through curated experiences in sacred destinations worldwide.
 
-## Recent Changes (July 23, 2025)
+## Recent Changes (August 25, 2025)
 ✓ Updated brand assets with new logo variations (color, white, black)
 ✓ Implemented hero video autoplay with Heritage Film India footage
 ✓ Added transparency effects to navigation and partner strip
@@ -65,6 +65,11 @@ The Nirvanist is a full-stack spiritual tourism platform that connects seekers w
 ✓ Enhanced newsletter subscription with email verification workflow
 ✓ Added authentication middleware and JWT token-based security
 ✓ Created database schema for user authentication and session management
+✓ Configured project for GitHub + Netlify deployment with serverless functions
+✓ Added Netlify configuration files (netlify.toml, _headers, _redirects)
+✓ Created comprehensive deployment documentation and README
+✓ Set up environment variables template for production deployment
+✓ Optimized build process for Netlify Functions architecture
 
 ## User Preferences
 
