@@ -20,7 +20,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Journeys routes
   app.get("/api/journeys", async (req, res) => {
     try {
-      const journeys = await storage.getAllJourneys();
+      const journeys = await storage.getJourneys();
       res.json(journeys);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch journeys" });
@@ -53,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Sages routes
   app.get("/api/sages", async (req, res) => {
     try {
-      const sages = await storage.getAllSages();
+      const sages = await storage.getSages();
       res.json(sages);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch sages" });
@@ -87,7 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Ashrams routes
   app.get("/api/ashrams", async (req, res) => {
     try {
-      const ashrams = await storage.getAllAshrams();
+      const ashrams = await storage.getAshrams();
       res.json(ashrams);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch ashrams" });
@@ -121,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Meetups routes
   app.get("/api/meetups", async (req, res) => {
     try {
-      const meetups = await storage.getAllMeetups();
+      const meetups = await storage.getMeetups();
       res.json(meetups);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch meetups" });
@@ -138,44 +138,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Blog routes
+  // Blog routes - Temporarily disabled (not implemented in storage)
   app.get("/api/blog", async (req, res) => {
-    try {
-      const posts = await storage.getAllBlogPosts();
-      res.json(posts);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog posts" });
-    }
+    res.json([]); // Return empty array until blog functionality is implemented
   });
 
   app.get("/api/blog/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const post = await storage.getBlogPost(id);
-      if (!post) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      res.json(post);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog post" });
-    }
+    res.status(404).json({ message: "Blog post not found" });
   });
 
   app.post("/api/blog", async (req, res) => {
-    try {
-      const validatedData = insertBlogPostSchema.parse(req.body);
-      const post = await storage.createBlogPost(validatedData);
-      res.status(201).json(post);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid blog post data" });
-    }
+    res.status(501).json({ message: "Blog creation not yet implemented" });
   });
 
   // Testimonials routes
   app.get("/api/testimonials", async (req, res) => {
     try {
-      const { getAllTestimonials } = await import("./testimonials-api");
-      const testimonials = await getAllTestimonials();
+      const testimonials = await storage.getTestimonials();
       res.json(testimonials);
     } catch (error) {
       console.error("Testimonials API error:", error);
@@ -185,8 +164,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/testimonials/featured", async (req, res) => {
     try {
-      const testimonials = await storage.getFeaturedTestimonials();
-      res.json(testimonials);
+      const testimonials = await storage.getTestimonials();
+      // Filter for featured testimonials
+      const featured = testimonials.filter(t => t.featured);
+      res.json(featured);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch featured testimonials" });
     }
