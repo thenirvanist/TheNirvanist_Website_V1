@@ -24,9 +24,8 @@ export interface Testimonial {
   content: string;
   rating: number;
   journeyId?: number;
-  journeyTitle?: string;
-  avatar?: string;
-  featured?: boolean;
+  image?: string;
+  verified?: boolean;
   createdAt?: Date;
 }
 
@@ -272,8 +271,9 @@ export class SupabaseStorage implements IStorage {
   // Testimonial operations
   async getTestimonials(): Promise<Testimonial[]> {
     try {
-      const result = await db.execute(sql`SELECT * FROM testimonials ORDER BY created_at DESC`);
-      return result as any[];
+      // Use raw SQL since we have a simplified testimonial structure
+      const result = await db.execute('SELECT * FROM testimonials ORDER BY created_at DESC');
+      return result.rows as any[] || [];
     } catch (error) {
       console.error('Error getting testimonials:', error);
       return [];
@@ -284,7 +284,7 @@ export class SupabaseStorage implements IStorage {
     try {
       const result = await db.execute(sql`
         INSERT INTO testimonials (name, location, content, rating, journey_id, featured, created_at) 
-        VALUES (${testimonial.name}, ${testimonial.location}, ${testimonial.content}, ${testimonial.rating}, ${testimonial.journeyId || null}, ${testimonial.featured || false}, NOW()) 
+        VALUES (${testimonial.name}, ${testimonial.location}, ${testimonial.content}, ${testimonial.rating}, ${testimonial.journeyId || null}, ${testimonial.verified || false}, NOW()) 
         RETURNING *
       `);
       return result[0] as any;
@@ -294,11 +294,11 @@ export class SupabaseStorage implements IStorage {
     }
   }
 
-  // Auth user operations (basic implementations)
+  // Auth user operations  
   async getAuthUser(id: number): Promise<AuthUser | undefined> {
     try {
-      const result = await db.execute(sql`SELECT * FROM auth_users WHERE id = ${id}`);
-      return result[0] as any || undefined;
+      const result = await db.execute('SELECT * FROM auth_users WHERE id = $1', [id]);
+      return result.rows[0] as any || undefined;
     } catch (error) {
       console.error('Error getting auth user:', error);
       return undefined;
@@ -307,8 +307,8 @@ export class SupabaseStorage implements IStorage {
 
   async getAuthUserByEmail(email: string): Promise<AuthUser | undefined> {
     try {
-      const result = await db.execute(sql`SELECT * FROM auth_users WHERE email = ${email}`);
-      return result[0] as any || undefined;
+      const result = await db.execute('SELECT * FROM auth_users WHERE email = $1', [email]);
+      return result.rows[0] as any || undefined;
     } catch (error) {
       console.error('Error getting auth user by email:', error);
       return undefined;
@@ -317,12 +317,19 @@ export class SupabaseStorage implements IStorage {
 
   async createAuthUser(userData: Partial<AuthUser>): Promise<AuthUser> {
     try {
-      const result = await db.execute(sql`
-        INSERT INTO auth_users (email, password, first_name, last_name, email_verified, verification_token, created_at) 
-        VALUES (${userData.email}, ${userData.password}, ${userData.firstName || null}, ${userData.lastName || null}, ${userData.emailVerified || false}, ${userData.verificationToken || null}, NOW()) 
+      const result = await db.execute(`
+        INSERT INTO auth_users (email, password, first_name, last_name, email_verified, verification_token, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
         RETURNING *
-      `);
-      return result[0] as any;
+      `, [
+        userData.email,
+        userData.password,
+        userData.firstName || null,
+        userData.lastName || null,
+        userData.emailVerified || false,
+        userData.verificationToken || null
+      ]);
+      return result.rows[0] as any;
     } catch (error) {
       console.error('Error creating auth user:', error);
       throw error;
@@ -331,16 +338,29 @@ export class SupabaseStorage implements IStorage {
 
   async updateAuthUser(id: number, userData: Partial<AuthUser>): Promise<AuthUser> {
     try {
-      const result = await db.execute(sql`
+      const result = await db.execute(`
         UPDATE auth_users 
-        SET email_verified = COALESCE(${userData.emailVerified}, email_verified),
-            verification_token = COALESCE(${userData.verificationToken}, verification_token),
-            reset_token = COALESCE(${userData.resetToken}, reset_token),
+        SET email = COALESCE($2, email),
+            password = COALESCE($3, password),
+            first_name = COALESCE($4, first_name),
+            last_name = COALESCE($5, last_name),
+            email_verified = COALESCE($6, email_verified),
+            verification_token = COALESCE($7, verification_token),
+            reset_token = COALESCE($8, reset_token),
             updated_at = NOW()
-        WHERE id = ${id}
+        WHERE id = $1
         RETURNING *
-      `);
-      return result[0] as any;
+      `, [
+        id,
+        userData.email,
+        userData.password,
+        userData.firstName,
+        userData.lastName,
+        userData.emailVerified,
+        userData.verificationToken,
+        userData.resetToken
+      ]);
+      return result.rows[0] as any;
     } catch (error) {
       console.error('Error updating auth user:', error);
       throw error;
@@ -350,12 +370,12 @@ export class SupabaseStorage implements IStorage {
   // Contact and newsletter operations
   async createContactMessage(message: Partial<ContactMessage>): Promise<ContactMessage> {
     try {
-      const result = await db.execute(sql`
-        INSERT INTO contact_messages (name, email, subject, message, created_at) 
-        VALUES (${message.name}, ${message.email}, ${message.subject}, ${message.message}, NOW()) 
+      const result = await db.execute(`
+        INSERT INTO contact_messages (name, email, subject, message, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
         RETURNING *
-      `);
-      return result[0] as any;
+      `, [message.name, message.email, message.subject, message.message]);
+      return result.rows[0] as any;
     } catch (error) {
       console.error('Error creating contact message:', error);
       throw error;
@@ -364,12 +384,12 @@ export class SupabaseStorage implements IStorage {
 
   async createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber> {
     try {
-      const result = await db.execute(sql`
-        INSERT INTO newsletter_subscribers (email, verification_token, verified, subscribed_at) 
-        VALUES (${email}, ${verificationToken}, false, NOW()) 
+      const result = await db.execute(`
+        INSERT INTO newsletter_subscribers (email, verified, verification_token, subscribed_at)
+        VALUES ($1, false, $2, NOW())
         RETURNING *
-      `);
-      return result[0] as any;
+      `, [email, verificationToken]);
+      return result.rows[0] as any;
     } catch (error) {
       console.error('Error creating newsletter subscriber:', error);
       throw error;
@@ -378,8 +398,8 @@ export class SupabaseStorage implements IStorage {
 
   async getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined> {
     try {
-      const result = await db.execute(sql`SELECT * FROM newsletter_subscribers WHERE email = ${email}`);
-      return result[0] as any || undefined;
+      const result = await db.execute('SELECT * FROM newsletter_subscribers WHERE email = $1', [email]);
+      return result.rows[0] as any || undefined;
     } catch (error) {
       console.error('Error getting newsletter subscriber:', error);
       return undefined;
@@ -388,14 +408,14 @@ export class SupabaseStorage implements IStorage {
 
   async updateNewsletterSubscriber(id: number, data: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber> {
     try {
-      const result = await db.execute(sql`
+      const result = await db.execute(`
         UPDATE newsletter_subscribers 
-        SET verified = COALESCE(${data.verified}, verified),
-            verification_token = COALESCE(${data.verificationToken}, verification_token)
-        WHERE id = ${id}
+        SET verified = COALESCE($2, verified),
+            verification_token = COALESCE($3, verification_token)
+        WHERE id = $1
         RETURNING *
-      `);
-      return result[0] as any;
+      `, [id, data.verified, data.verificationToken]);
+      return result.rows[0] as any;
     } catch (error) {
       console.error('Error updating newsletter subscriber:', error);
       throw error;
