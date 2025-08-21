@@ -1,33 +1,21 @@
 import React, { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
-import { FaGoogle, FaApple, FaFacebook } from 'react-icons/fa';
+import { FaGoogle, FaApple, FaFacebook, FaTwitter, FaMicrosoft } from 'react-icons/fa';
 import { useToast } from '@/hooks/use-toast';
 
 /**
  * SocialAuth Component
  * 
  * A standalone React component that provides social authentication buttons
- * for Google, Apple, and Facebook using Supabase Auth.
+ * for Google, Apple, Facebook, X.com (Twitter), and Microsoft using Supabase Auth.
  * 
  * Features:
- * - Three social login options with branded icons
+ * - Five social login options with branded icons
  * - Loading states for each button
  * - Error handling with toast notifications
  * - Responsive design with Tailwind CSS
  * - Full TypeScript support
- * 
- * Usage:
- * Import this component into your login page:
- * import { SocialAuth } from '@/components/SocialAuth';
- * 
- * Then use it in your JSX:
- * <SocialAuth />
- * 
- * Prerequisites:
- * 1. Configure OAuth providers in your Supabase dashboard
- * 2. Add redirect URLs in each provider's settings
- * 3. Install required dependencies: @supabase/supabase-js, react-icons
  */
 
 interface SocialAuthProps {
@@ -48,23 +36,26 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
     google: boolean;
     apple: boolean;
     facebook: boolean;
+    twitter: boolean;
+    microsoft: boolean;
   }>({
     google: false,
     apple: false,
     facebook: false,
+    twitter: false,
+    microsoft: false,
   });
 
   const { toast } = useToast();
 
   /**
    * Handles social authentication for a specific provider
-   * 
-   * @param provider - The OAuth provider ('google', 'apple', or 'facebook')
    */
-  const handleSocialLogin = async (provider: 'google' | 'apple' | 'facebook') => {
+  const handleSocialLogin = async (provider: 'google' | 'apple' | 'facebook' | 'twitter' | 'azure') => {
     try {
-      // Set loading state for the specific provider
-      setLoadingState(prev => ({ ...prev, [provider]: true }));
+      // Set loading state for the specific provider - handle both 'azure' (provider) and 'microsoft' (UI state)
+      const stateKey = provider === 'azure' ? 'microsoft' : provider;
+      setLoadingState(prev => ({ ...prev, [stateKey]: true }));
 
       // Prepare authentication options
       const authOptions = {
@@ -73,7 +64,9 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
           // Redirect to the current domain or custom URL after authentication
           redirectTo: redirectTo || `${window.location.origin}/auth/callback`,
           // Request additional scopes if needed
-          scopes: provider === 'google' ? 'email profile' : undefined,
+          scopes: provider === 'google' ? 'email profile' : 
+                  provider === 'azure' ? 'email profile' :
+                  provider === 'twitter' ? 'tweet.read users.read' : undefined,
         },
       };
 
@@ -112,8 +105,9 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
         onError(errorMessage);
       }
     } finally {
-      // Reset loading state
-      setLoadingState(prev => ({ ...prev, [provider]: false }));
+      // Reset loading state - handle both 'azure' (provider) and 'microsoft' (UI state)
+      const stateKey = provider === 'azure' ? 'microsoft' : provider;
+      setLoadingState(prev => ({ ...prev, [stateKey]: false }));
     }
   };
 
@@ -180,6 +174,38 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
             {loadingState.facebook ? 'Connecting...' : 'Login with Facebook'}
           </span>
         </Button>
+
+        {/* X.com (Twitter) Authentication Button */}
+        <Button
+          onClick={() => handleSocialLogin('twitter')}
+          disabled={loadingState.twitter}
+          className="w-full h-12 bg-black hover:bg-gray-800 text-white font-medium transition-all duration-200 flex items-center justify-center space-x-3 shadow-sm hover:shadow-md"
+        >
+          {loadingState.twitter ? (
+            <div className="w-5 h-5 border-2 border-gray-600 border-t-white rounded-full animate-spin" />
+          ) : (
+            <FaTwitter className="w-5 h-5 text-white" />
+          )}
+          <span>
+            {loadingState.twitter ? 'Connecting...' : 'Login with X.com'}
+          </span>
+        </Button>
+
+        {/* Microsoft Authentication Button */}
+        <Button
+          onClick={() => handleSocialLogin('azure')}
+          disabled={loadingState.microsoft}
+          className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white font-medium transition-all duration-200 flex items-center justify-center space-x-3 shadow-sm hover:shadow-md"
+        >
+          {loadingState.microsoft ? (
+            <div className="w-5 h-5 border-2 border-blue-300 border-t-white rounded-full animate-spin" />
+          ) : (
+            <FaMicrosoft className="w-5 h-5 text-white" />
+          )}
+          <span>
+            {loadingState.microsoft ? 'Connecting...' : 'Login with Microsoft'}
+          </span>
+        </Button>
       </div>
 
       {/* Additional Information */}
@@ -193,81 +219,3 @@ export const SocialAuth: React.FC<SocialAuthProps> = ({
 };
 
 export default SocialAuth;
-
-/**
- * SETUP INSTRUCTIONS:
- * 
- * 1. Supabase Configuration:
- *    - Go to your Supabase dashboard > Authentication > Providers
- *    - Enable Google, Apple, and Facebook providers
- *    - Add your OAuth app credentials for each provider
- *    - Set redirect URLs to: https://yourdomain.com/auth/callback
- * 
- * 2. Create Supabase Client:
- *    Create a file at `client/src/lib/supabase.ts`:
- *    ```typescript
- *    import { createClient } from '@supabase/supabase-js'
- *    
- *    const supabaseUrl = 'your-supabase-url'
- *    const supabaseKey = 'your-supabase-anon-key'
- *    
- *    export const supabase = createClient(supabaseUrl, supabaseKey)
- *    ```
- * 
- * 3. Auth Callback Route:
- *    Create a callback page to handle the OAuth redirect:
- *    ```typescript
- *    // pages/auth/callback.tsx or similar
- *    import { useEffect } from 'react';
- *    import { useRouter } from 'your-router';
- *    import { supabase } from '@/lib/supabase';
- *    
- *    export default function AuthCallback() {
- *      const router = useRouter();
- *    
- *      useEffect(() => {
- *        const handleAuthCallback = async () => {
- *          const { data, error } = await supabase.auth.getSession();
- *          if (data.session) {
- *            router.push('/dashboard'); // Redirect to authenticated area
- *          } else {
- *            router.push('/login'); // Redirect back to login on error
- *          }
- *        };
- *        handleAuthCallback();
- *      }, [router]);
- *    
- *      return <div>Processing authentication...</div>;
- *    }
- *    ```
- * 
- * 4. Usage in Login Page:
- *    ```typescript
- *    import { SocialAuth } from '@/components/SocialAuth';
- *    
- *    export default function LoginPage() {
- *      const handleAuthSuccess = () => {
- *        console.log('Authentication started successfully');
- *      };
- *    
- *      const handleAuthError = (error: string) => {
- *        console.error('Authentication failed:', error);
- *      };
- *    
- *      return (
- *        <div className="max-w-md mx-auto">
- *          <SocialAuth 
- *            onSuccess={handleAuthSuccess}
- *            onError={handleAuthError}
- *            redirectTo="https://yoursite.com/dashboard"
- *          />
- *        </div>
- *      );
- *    }
- *    ```
- * 
- * 5. Dependencies to Install:
- *    ```bash
- *    npm install @supabase/supabase-js react-icons
- *    ```
- */
