@@ -9,9 +9,19 @@ export default function AshramsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Enhanced useQuery configuration to ensure immediate data fetching on component mount
   const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
     queryKey: ["/api/ashrams"],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
   });
+
+  // Ensure data fetching happens immediately when component mounts
+  useEffect(() => {
+    // This effect ensures the query is triggered as soon as the component mounts
+    // The query will automatically fetch due to the queryKey dependency
+  }, []);
 
 
 

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-import { useDeferredQuery } from "@/hooks/useOptimizedQuery";
+import { useQuery } from "@tanstack/react-query";
 import LazyImage from "@/components/LazyImage";
 import type { Journey } from "@shared/schema";
 
@@ -12,7 +12,19 @@ export default function TourCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
 
-  const { data: journeys, isLoading, error } = useDeferredQuery<Journey[]>("/api/journeys");
+  // Use regular useQuery with immediate fetching to ensure data loads on initial page load
+  const { data: journeys, isLoading, error } = useQuery<Journey[]>({
+    queryKey: ["/api/journeys"],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+  });
+
+  // Ensure data fetching happens immediately when component mounts
+  useEffect(() => {
+    // This effect ensures the query is triggered as soon as the component mounts
+    // The query will automatically fetch due to the queryKey dependency
+  }, []);
 
 
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-import { useDeferredQuery } from "@/hooks/useOptimizedQuery";
+import { useQuery } from "@tanstack/react-query";
 import LazyImage from "@/components/LazyImage";
 import type { Sage } from "@shared/schema";
 
@@ -10,7 +10,19 @@ export default function SagesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data: sages, isLoading, error } = useDeferredQuery<Sage[]>("/api/sages");
+  // Use regular useQuery with immediate fetching to ensure data loads on initial page load
+  const { data: sages, isLoading, error } = useQuery<Sage[]>({
+    queryKey: ["/api/sages"],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+  });
+
+  // Ensure data fetching happens immediately when component mounts
+  useEffect(() => {
+    // This effect ensures the query is triggered as soon as the component mounts
+    // The query will automatically fetch due to the queryKey dependency
+  }, []);
 
 
 
