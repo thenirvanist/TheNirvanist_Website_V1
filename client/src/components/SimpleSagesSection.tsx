@@ -89,7 +89,7 @@ export default function SimpleSagesSection() {
                   </div>
                 )}
 
-                <Link href={`/sages/${sage.id}`}>
+                <Link href={`/sages/${sage.id}`} onClick={() => window.scrollTo(0, 0)}>
                   <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                     Read Full Biography
                   </Button>
@@ -100,7 +100,7 @@ export default function SimpleSagesSection() {
         </div>
         
         <div className="text-center mt-12">
-          <Link href="/sages">
+          <Link href="/sages" onClick={() => window.scrollTo(0, 0)}>
             <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300">
               Visit All Sages
             </Button>

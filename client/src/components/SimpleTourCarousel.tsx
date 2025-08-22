@@ -87,7 +87,7 @@ export default function SimpleTourCarousel() {
                   </div>
                 </div>
 
-                <Link href={`/journeys/${journey.id}`}>
+                <Link href={`/journeys/${journey.id}`} onClick={() => window.scrollTo(0, 0)}>
                   <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                     Begin Your Journey
                   </Button>
@@ -98,7 +98,7 @@ export default function SimpleTourCarousel() {
         </div>
         
         <div className="text-center mt-12">
-          <Link href="/journeys">
+          <Link href="/journeys" onClick={() => window.scrollTo(0, 0)}>
             <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300">
               Visit All Journeys
             </Button>

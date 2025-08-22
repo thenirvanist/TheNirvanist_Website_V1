@@ -90,7 +90,7 @@ export default function SimpleAshramsSection() {
                   </div>
                 )}
 
-                <Link href={`/ashrams/${ashram.id}`}>
+                <Link href={`/ashrams/${ashram.id}`} onClick={() => window.scrollTo(0, 0)}>
                   <Button className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold transition-all duration-300">
                     Learn More
                   </Button>
@@ -101,7 +101,7 @@ export default function SimpleAshramsSection() {
         </div>
         
         <div className="text-center mt-12">
-          <Link href="/ashrams">
+          <Link href="/ashrams" onClick={() => window.scrollTo(0, 0)}>
             <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300">
               Explore All Ashrams
             </Button>
