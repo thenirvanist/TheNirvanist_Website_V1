@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-import { useDeferredQuery } from "@/hooks/useOptimizedQuery";
-import LazyImage from "@/components/LazyImage";
 import type { Sage } from "@shared/schema";
 
 export default function SagesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data: sages, isLoading, error } = useDeferredQuery<Sage[]>("/api/sages");
+  const { data: sages, isLoading, error } = useQuery<Sage[]>({
+    queryKey: ["/api/sages"],
+  });
 
 
 

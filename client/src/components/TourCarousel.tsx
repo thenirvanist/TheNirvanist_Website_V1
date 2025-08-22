@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-import { useDeferredQuery } from "@/hooks/useOptimizedQuery";
-import LazyImage from "@/components/LazyImage";
 import type { Journey } from "@shared/schema";
 
 export default function TourCarousel() {
@@ -12,7 +11,9 @@ export default function TourCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
 
-  const { data: journeys, isLoading, error } = useDeferredQuery<Journey[]>("/api/journeys");
+  const { data: journeys, isLoading, error } = useQuery<Journey[]>({
+    queryKey: ["/api/journeys"],
+  });
 
 
 
