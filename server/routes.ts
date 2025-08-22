@@ -14,6 +14,7 @@ import {
   insertMeetupSchema, insertRegistrationSchema, insertBlogPostSchema,
   insertTestimonialSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema
 } from "@shared/schema";
+import { registerSEORoutes } from "./seo-routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -416,6 +417,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Register SEO routes for sitemap.xml and robots.txt
+  registerSEORoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
