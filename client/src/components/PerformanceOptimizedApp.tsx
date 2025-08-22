@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 /**
  * Higher-order component for performance optimization
@@ -16,8 +16,8 @@ export function withPerformanceOptimization<P extends object>(
 /**
  * Custom memo hook for comparing props with shallow comparison
  */
-export function useShallowMemo<T>(value: T): T {
-  return memo(() => value, [JSON.stringify(value)])();
+export function useShallowMemo<T>(value: T, deps: React.DependencyList): T {
+  return React.useMemo(() => value, deps);
 }
 
 /**
