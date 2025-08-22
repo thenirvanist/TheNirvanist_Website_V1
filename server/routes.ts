@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { authService, authenticateToken } from "./auth";
+import multer from "multer";
+import path from "path";
 import { 
   loginSchema, 
   registerSchema, 
@@ -19,6 +21,25 @@ import { registerSEORoutes } from "./seo-routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Configure multer for file uploads
+  const upload = multer({
+    dest: 'attached_assets/',
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      const allowedTypes = /jpeg|jpg|png|gif/;
+      const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+      const mimetype = allowedTypes.test(file.mimetype);
+      
+      if (mimetype && extname) {
+        return cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed'));
+      }
+    }
+  });
+
   // Journeys routes
   app.get("/api/journeys", async (req, res) => {
     try {
@@ -251,6 +272,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Create quote error:", error);
       res.status(400).json({ message: "Invalid quote data" });
+    }
+  });
+
+  app.put("/api/quotes/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      const quote = await storage.updateQuoteOfWeek(id, updateData);
+      if (!quote) {
+        return res.status(404).json({ message: "Quote not found" });
+      }
+      res.json(quote);
+    } catch (error) {
+      console.error("Update quote error:", error);
+      res.status(400).json({ message: "Failed to update quote" });
+    }
+  });
+
+  // Admin image upload route
+  app.post("/api/admin/upload-quote-image", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      const author = req.body.author || "unknown";
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFilename = `${timestamp}_${author.replace(/\s+/g, '_')}${fileExtension}`;
+      const newPath = path.join('attached_assets', newFilename);
+      
+      // Move and rename the uploaded file
+      const fs = await import('fs/promises');
+      await fs.rename(req.file.path, newPath);
+      
+      const imageUrl = `/attached_assets/${newFilename}`;
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ message: "Failed to upload image" });
     }
   });
 

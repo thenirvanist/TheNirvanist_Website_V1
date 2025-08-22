@@ -19,6 +19,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import AuthCallback from "@/pages/auth/callback";
 import InnerNutrition from "@/pages/InnerNutrition";
 import BlogArticle from "@/pages/BlogArticle";
+import QuotesAdmin from "@/pages/QuotesAdmin";
 import Chatbot from "@/components/Chatbot";
 
 function Router() {
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/auth/callback" component={AuthCallback} />
+      <Route path="/admin/quotes" component={QuotesAdmin} />
       <Route component={NotFound} />
     </Switch>
   );

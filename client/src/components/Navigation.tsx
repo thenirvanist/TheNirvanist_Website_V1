@@ -16,6 +16,7 @@ export default function Navigation() {
     { href: "/inner-nutrition", label: "Inner Nutrition" },
     { href: "/sages", label: "Sages" },
     { href: "/ashrams", label: "Ashrams" },
+    { href: "/admin/quotes", label: "Admin", className: "text-xs" },
   ];
 
   const isActive = (href: string) => location === href;
@@ -36,7 +37,7 @@ export default function Navigation() {
                   variant="ghost"
                   className={`text-white hover:bg-[hsl(70,71%,62%)] hover:text-black px-4 py-2 rounded-lg transition-all duration-300 ${
                     isActive(item.href) ? "bg-[hsl(70,71%,62%)] text-black" : ""
-                  }`}
+                  } ${item.className || ""}`}
                 >
                   {item.label}
                 </Button>
