@@ -128,32 +128,11 @@ export default function QuotesCarousel() {
               className="aspect-square bg-cover bg-center relative"
               style={{ backgroundImage: `url(${currentQuote.imageUrl})` }}
             >
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/50"></div>
-              
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-center items-center p-8 text-white z-10">
-                {/* Quote Icon */}
-                <Quote className="w-12 h-12 mb-6 text-white/80" />
-                
-                {/* Quote Text */}
-                {currentQuote.quoteText && (
-                  <blockquote className="text-xl sm:text-2xl lg:text-3xl font-medium text-center leading-relaxed mb-6 max-w-3xl">
-                    "{currentQuote.quoteText}"
-                  </blockquote>
-                )}
-                
-                {/* Author */}
-                <cite className="text-lg sm:text-xl font-semibold text-white/90">
-                  — {currentQuote.author}
-                </cite>
-                
-                {/* Day Label */}
-                <div className="mt-4 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                  <span className="text-sm font-medium">
-                    {dayNames[currentQuote.dayOfWeek]}
-                  </span>
-                </div>
+              {/* Day Label Only */}
+              <div className="absolute top-4 left-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full z-10">
+                <span className="text-sm font-medium text-gray-900">
+                  {dayNames[currentQuote.dayOfWeek]}
+                </span>
               </div>
             </div>
           </div>
