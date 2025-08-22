@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import InteractiveAbout from "@/components/InteractiveAbout";
 // Import critical sections directly to ensure immediate data loading
 import SimpleTourCarousel from "@/components/SimpleTourCarousel";
+import QuotesCarousel from "@/components/QuotesCarousel";
 import MeetupsSection from "@/components/MeetupsSection";
 import InnerNutritionSection from "@/components/InnerNutritionSection";
 import SimpleSagesSection from "@/components/SimpleSagesSection";
@@ -44,6 +45,7 @@ export default function Home() {
       </Suspense>
       
       {/* Critical sections with immediate data loading - New order */}
+      <QuotesCarousel />
       <MeetupsSection />
       <InnerNutritionSection />
       <SimpleTourCarousel />

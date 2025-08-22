@@ -62,6 +62,19 @@ export interface NewsletterSubscriber {
   subscribedAt?: Date;
 }
 
+export interface QuoteOfWeek {
+  id: number;
+  dayOfWeek: number;
+  title: string;
+  author: string;
+  quoteText?: string;
+  imageUrl: string;
+  active?: boolean;
+  weekStartDate: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
@@ -114,6 +127,12 @@ export interface IStorage {
   getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+
+  // Quote of week operations
+  getQuotesOfWeek(): Promise<QuoteOfWeek[]>;
+  getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]>;
+  createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek>;
+  updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined>;
 }
 
 export class SupabaseStorage implements IStorage {
@@ -467,6 +486,63 @@ export class SupabaseStorage implements IStorage {
       return updatedPost || undefined;
     } catch (error) {
       console.error('Error updating blog post:', error);
+      return undefined;
+    }
+  }
+
+  // Quote of week operations
+  async getQuotesOfWeek(): Promise<QuoteOfWeek[]> {
+    try {
+      const quotes = await db.select().from(schema.quotesOfWeek)
+        .orderBy(sql`day_of_week ASC`);
+      return quotes as QuoteOfWeek[];
+    } catch (error) {
+      console.error('Error getting quotes of week:', error);
+      return [];
+    }
+  }
+
+  async getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]> {
+    try {
+      const quotes = await db.select().from(schema.quotesOfWeek)
+        .where(eq(schema.quotesOfWeek.active, true))
+        .orderBy(sql`day_of_week ASC`);
+      return quotes as QuoteOfWeek[];
+    } catch (error) {
+      console.error('Error getting active quotes of week:', error);
+      return [];
+    }
+  }
+
+  async createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek> {
+    try {
+      const [newQuote] = await db.insert(schema.quotesOfWeek)
+        .values({
+          dayOfWeek: quote.dayOfWeek!,
+          title: quote.title!,
+          author: quote.author!,
+          quoteText: quote.quoteText,
+          imageUrl: quote.imageUrl!,
+          active: quote.active ?? true,
+          weekStartDate: quote.weekStartDate!,
+        })
+        .returning();
+      return newQuote as QuoteOfWeek;
+    } catch (error) {
+      console.error('Error creating quote of week:', error);
+      throw error;
+    }
+  }
+
+  async updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined> {
+    try {
+      const [updatedQuote] = await db.update(schema.quotesOfWeek)
+        .set({ ...quote, updatedAt: new Date() })
+        .where(eq(schema.quotesOfWeek.id, id))
+        .returning();
+      return updatedQuote as QuoteOfWeek || undefined;
+    } catch (error) {
+      console.error('Error updating quote of week:', error);
       return undefined;
     }
   }

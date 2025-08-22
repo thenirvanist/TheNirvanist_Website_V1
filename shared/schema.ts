@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -121,6 +121,19 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
   subscribedAt: timestamp("subscribed_at").defaultNow(),
 });
 
+export const quotesOfWeek = pgTable("quotes_of_week", {
+  id: serial("id").primaryKey(),
+  dayOfWeek: integer("day_of_week").notNull(), // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  title: text("title").notNull(),
+  author: text("author").notNull(),
+  quoteText: text("quote_text"),
+  imageUrl: text("image_url").notNull(),
+  active: boolean("active").default(true),
+  weekStartDate: date("week_start_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Authentication tables
 export const authUsers = pgTable("auth_users", {
   id: serial("id").primaryKey(),
@@ -147,6 +160,7 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: tru
 export const insertTestimonialSchema = createInsertSchema(testimonials).omit({ id: true });
 export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({ id: true, createdAt: true });
 export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({ id: true, subscribedAt: true });
+export const insertQuoteOfWeekSchema = createInsertSchema(quotesOfWeek).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertAuthUserSchema = createInsertSchema(authUsers).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Login and authentication schemas
@@ -192,6 +206,8 @@ export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
+export type QuoteOfWeek = typeof quotesOfWeek.$inferSelect;
+export type InsertQuoteOfWeek = z.infer<typeof insertQuoteOfWeekSchema>;
 export type AuthUser = typeof authUsers.$inferSelect;
 export type InsertAuthUser = z.infer<typeof insertAuthUserSchema>;
 export type LoginData = z.infer<typeof loginSchema>;

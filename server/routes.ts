@@ -12,7 +12,8 @@ import { getChatbotResponse, analyzeUserIntent, generateSpiritualInsight } from 
 import { 
   insertJourneySchema, insertSageSchema, insertAshramSchema, 
   insertMeetupSchema, insertRegistrationSchema, insertBlogPostSchema,
-  insertTestimonialSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema
+  insertTestimonialSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
+  insertQuoteOfWeekSchema
 } from "@shared/schema";
 import { registerSEORoutes } from "./seo-routes";
 
@@ -218,6 +219,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(testimonial);
     } catch (error) {
       res.status(400).json({ message: "Invalid testimonial data" });
+    }
+  });
+
+  // Quotes of the Week routes
+  app.get("/api/quotes", async (req, res) => {
+    try {
+      const quotes = await storage.getQuotesOfWeek();
+      res.json(quotes);
+    } catch (error) {
+      console.error("Quotes API error:", error);
+      res.status(500).json({ message: "Failed to fetch quotes" });
+    }
+  });
+
+  app.get("/api/quotes/active", async (req, res) => {
+    try {
+      const quotes = await storage.getActiveQuotesOfWeek();
+      res.json(quotes);
+    } catch (error) {
+      console.error("Active quotes API error:", error);
+      res.status(500).json({ message: "Failed to fetch active quotes" });
+    }
+  });
+
+  app.post("/api/quotes", async (req, res) => {
+    try {
+      const validatedData = insertQuoteOfWeekSchema.parse(req.body);
+      const quote = await storage.createQuoteOfWeek(validatedData);
+      res.status(201).json(quote);
+    } catch (error) {
+      console.error("Create quote error:", error);
+      res.status(400).json({ message: "Invalid quote data" });
     }
   });
 
