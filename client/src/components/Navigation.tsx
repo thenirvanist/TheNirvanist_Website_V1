@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Heart } from "lucide-react";
 import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,6 +52,17 @@ export default function Navigation() {
                   <div className="text-white text-sm">
                     Welcome, {user.firstName}
                   </div>
+                  <Link href="/dashboard">
+                    <Button
+                      variant="ghost"
+                      className={`text-white hover:bg-[hsl(70,71%,62%)] hover:text-black px-3 py-2 rounded-lg transition-all duration-300 ${
+                        isActive("/dashboard") ? "bg-[hsl(70,71%,62%)] text-black" : ""
+                      }`}
+                    >
+                      <Heart className="w-4 h-4 mr-1 fill-red-500 text-red-500" />
+                      My Collection
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     onClick={logout}
@@ -119,6 +130,20 @@ export default function Navigation() {
                     <div className="text-white text-sm px-4 py-2">
                       Welcome, {user.firstName}
                     </div>
+                    <Link href="/dashboard">
+                      <Button
+                        variant="ghost"
+                        className={`w-full px-4 py-2 rounded-lg transition-all duration-300 justify-start ${
+                          isActive("/dashboard") 
+                            ? "bg-[hsl(70,71%,62%)] text-black" 
+                            : "text-white hover:bg-[hsl(70,71%,62%)] hover:text-black"
+                        }`}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Heart className="w-4 h-4 mr-2 fill-red-500 text-red-500" />
+                        My Collection
+                      </Button>
+                    </Link>
                     <Button
                       variant="ghost"
                       onClick={() => {

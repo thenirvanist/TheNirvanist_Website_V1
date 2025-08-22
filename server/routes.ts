@@ -379,6 +379,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bookmark endpoints (protected routes)
+  const requireAuth = authenticateToken; // Use existing auth middleware
+
+  app.get("/api/bookmarks", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+      const bookmarks = await storage.getUserBookmarks(userId);
+      res.json(bookmarks);
+    } catch (error) {
+      console.error("Error fetching bookmarks:", error);
+      res.status(500).json({ message: "Error fetching bookmarks" });
+    }
+  });
+
+  app.post("/api/bookmarks", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const { contentType, contentId } = req.body;
+      if (!contentType || !contentId) {
+        return res.status(400).json({ message: "Content type and ID are required" });
+      }
+
+      // Check if bookmark already exists
+      const existing = await storage.getBookmarkByUserAndContent(userId, contentType, contentId);
+      if (existing) {
+        return res.status(409).json({ message: "Content already bookmarked" });
+      }
+
+      const bookmark = await storage.createBookmark({
+        userId,
+        contentType,
+        contentId
+      });
+      res.status(201).json(bookmark);
+    } catch (error) {
+      console.error("Error creating bookmark:", error);
+      res.status(500).json({ message: "Error creating bookmark" });
+    }
+  });
+
+  app.delete("/api/bookmarks/:contentType/:contentId", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const { contentType, contentId } = req.params;
+      const success = await storage.deleteBookmark(userId, contentType, parseInt(contentId));
+      
+      if (success) {
+        res.json({ message: "Bookmark removed successfully" });
+      } else {
+        res.status(404).json({ message: "Bookmark not found" });
+      }
+    } catch (error) {
+      console.error("Error deleting bookmark:", error);
+      res.status(500).json({ message: "Error deleting bookmark" });
+    }
+  });
+
   // General admin image upload route
   app.post("/api/admin/upload-image", upload.single('image'), async (req, res) => {
     try {

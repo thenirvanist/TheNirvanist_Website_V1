@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb, date } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, date, varchar, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -149,6 +149,18 @@ export const authUsers = pgTable("auth_users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Bookmarks table for user bookmarking functionality
+export const bookmarks = pgTable("bookmarks", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  contentType: varchar("content_type", { length: 50 }).notNull(), // 'sage', 'ashram', 'blog', 'journey'
+  contentId: integer("content_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  // Ensure a user can only bookmark the same content once
+  uniqueBookmark: unique().on(table.userId, table.contentType, table.contentId),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertJourneySchema = createInsertSchema(journeys).omit({ id: true });
@@ -162,6 +174,7 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).om
 export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({ id: true, subscribedAt: true });
 export const insertQuoteOfWeekSchema = createInsertSchema(quotesOfWeek).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertAuthUserSchema = createInsertSchema(authUsers).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertBookmarkSchema = createInsertSchema(bookmarks).omit({ id: true, createdAt: true });
 
 // Login and authentication schemas
 export const loginSchema = z.object({
@@ -214,3 +227,5 @@ export type LoginData = z.infer<typeof loginSchema>;
 export type RegisterData = z.infer<typeof registerSchema>;
 export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
+export type Bookmark = typeof bookmarks.$inferSelect;
+export type InsertBookmark = z.infer<typeof insertBookmarkSchema>;

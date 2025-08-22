@@ -1,5 +1,5 @@
 import { db } from "./db.js";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 import * as schema from "@shared/schema";
 
 // Import all the types we need
@@ -75,6 +75,16 @@ export interface QuoteOfWeek {
   updatedAt?: Date;
 }
 
+export interface Bookmark {
+  id: number;
+  userId: number;
+  contentType: string;
+  contentId: number;
+  createdAt?: Date;
+}
+
+export type InsertBookmark = Omit<Bookmark, 'id' | 'createdAt'>;
+
 export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
@@ -136,6 +146,12 @@ export interface IStorage {
   getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]>;
   createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek>;
   updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined>;
+
+  // Bookmark operations
+  getUserBookmarks(userId: number): Promise<Bookmark[]>;
+  getBookmarkByUserAndContent(userId: number, contentType: string, contentId: number): Promise<Bookmark | undefined>;
+  createBookmark(bookmark: InsertBookmark): Promise<Bookmark>;
+  deleteBookmark(userId: number, contentType: string, contentId: number): Promise<boolean>;
 }
 
 export class SupabaseStorage implements IStorage {
@@ -577,6 +593,66 @@ export class SupabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error updating quote of week:', error);
       return undefined;
+    }
+  }
+
+  // Bookmark operations
+  async getUserBookmarks(userId: number): Promise<Bookmark[]> {
+    try {
+      const bookmarks = await db.select()
+        .from(schema.bookmarks)
+        .where(eq(schema.bookmarks.userId, userId));
+      return bookmarks;
+    } catch (error) {
+      console.error("Error fetching user bookmarks:", error);
+      return [];
+    }
+  }
+
+  async getBookmarkByUserAndContent(userId: number, contentType: string, contentId: number): Promise<Bookmark | undefined> {
+    try {
+      const [bookmark] = await db.select()
+        .from(schema.bookmarks)
+        .where(
+          and(
+            eq(schema.bookmarks.userId, userId),
+            eq(schema.bookmarks.contentType, contentType),
+            eq(schema.bookmarks.contentId, contentId)
+          )
+        );
+      return bookmark;
+    } catch (error) {
+      console.error("Error fetching bookmark:", error);
+      return undefined;
+    }
+  }
+
+  async createBookmark(bookmark: InsertBookmark): Promise<Bookmark> {
+    try {
+      const [newBookmark] = await db.insert(schema.bookmarks)
+        .values(bookmark)
+        .returning();
+      return newBookmark;
+    } catch (error) {
+      console.error("Error creating bookmark:", error);
+      throw error;
+    }
+  }
+
+  async deleteBookmark(userId: number, contentType: string, contentId: number): Promise<boolean> {
+    try {
+      await db.delete(schema.bookmarks)
+        .where(
+          and(
+            eq(schema.bookmarks.userId, userId),
+            eq(schema.bookmarks.contentType, contentType),
+            eq(schema.bookmarks.contentId, contentId)
+          )
+        );
+      return true;
+    } catch (error) {
+      console.error("Error deleting bookmark:", error);
+      return false;
     }
   }
 }
