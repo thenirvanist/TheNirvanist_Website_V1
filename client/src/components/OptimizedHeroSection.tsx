@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from "react";
+import { useState, useEffect, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
@@ -10,31 +10,25 @@ interface HeroSectionProps {
 }
 
 export default function OptimizedHeroSection({ priority = true }: HeroSectionProps) {
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(true);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
 
   useEffect(() => {
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setIsReducedMotion(mediaQuery.matches);
-
-    // Delay video loading to prioritize critical content
-    const timer = setTimeout(() => {
-      if (!mediaQuery.matches) {
-        setShouldLoadVideo(true);
-      }
-    }, priority ? 100 : 1000);
-
-    return () => clearTimeout(timer);
-  }, [priority]);
+    
+    // Don't load video if reduced motion is preferred
+    if (mediaQuery.matches) {
+      setShouldLoadVideo(false);
+    }
+  }, []);
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden hero-optimized">
       {/* Optimized Background */}
       {shouldLoadVideo && !isReducedMotion ? (
-        <Suspense fallback={<StaticBackground />}>
-          <LazyVideoBackground />
-        </Suspense>
+        <LazyVideoBackground />
       ) : (
         <StaticBackground />
       )}
