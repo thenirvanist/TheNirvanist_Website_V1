@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import Navigation from "@/components/Navigation";
-import OptimizedHeroSection from "@/components/OptimizedHeroSection";
+import HeroSection from "@/components/HeroSection";
 import InteractiveAbout from "@/components/InteractiveAbout";
 // Import critical sections directly to ensure immediate data loading
 import TourCarousel from "@/components/TourCarousel";
@@ -34,7 +34,7 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Critical above-the-fold content */}
       <Navigation />
-      <OptimizedHeroSection priority />
+      <HeroSection />
       <InteractiveAbout />
       
       {/* Below-the-fold content */}

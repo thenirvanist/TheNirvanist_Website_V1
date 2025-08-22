@@ -18,6 +18,7 @@ export default function SagesSection() {
     refetchOnWindowFocus: false,
   });
 
+
   // Ensure data fetching happens immediately when component mounts
   useEffect(() => {
     // This effect ensures the query is triggered as soon as the component mounts
@@ -56,8 +57,8 @@ export default function SagesSection() {
     }
   };
 
-  // Show loading only when we're actually loading and have no data
-  if (isLoading && !sages) {
+  // Show loading state only when actively loading
+  if (isLoading) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
@@ -70,8 +71,8 @@ export default function SagesSection() {
     );
   }
 
-  // Show error state if there's an error and no data
-  if (error && !sages) {
+  // Show error state if there's an error
+  if (error) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
@@ -84,28 +85,14 @@ export default function SagesSection() {
     );
   }
 
-  // Show empty state only if we have data but it's empty
-  if (sages && sages.length === 0) {
+  // Show empty state if no data
+  if (!sages || sages.length === 0) {
     return (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
             <p className="text-lg text-gray-700">No sage information available at the moment.</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // If we don't have data yet, show loading
-  if (!sages) {
-    return (
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
-            <p className="text-lg text-gray-700">Loading spiritual wisdom...</p>
           </div>
         </div>
       </section>
