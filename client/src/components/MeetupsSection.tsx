@@ -25,7 +25,7 @@ export default function MeetupsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="meetups" className="py-20 bg-[#F7F2E8]">
+    <section ref={sectionRef} id="meetups" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="scroll-trigger">
