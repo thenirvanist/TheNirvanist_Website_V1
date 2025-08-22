@@ -23,7 +23,7 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-30 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="rounded-lg hover:bg-[hsl(70,71%,62%)] hover:bg-opacity-20 p-2 transition-all duration-300">
+          <Link href="/" className="rounded-lg hover:bg-[hsl(70,71%,62%)] p-2 transition-all duration-300">
             <Logo />
           </Link>
           

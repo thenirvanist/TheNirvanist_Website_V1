@@ -50,20 +50,21 @@ export default function MeetupsSection() {
             </div>
           </div>
           
-          <div className="relative scroll-trigger">
+          <div className="scroll-trigger">
             <img 
               src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
               alt="Global spiritual video meetup" 
               className="rounded-xl shadow-lg w-full"
             />
-            <div className="absolute inset-0 bg-[hsl(84,42%,18%)] bg-opacity-20 rounded-xl flex items-end justify-center pb-8">
-              <Link href="/meetups" onClick={() => window.scrollTo(0, 0)}>
-                <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
-                  Participate Today
-                </Button>
-              </Link>
-            </div>
           </div>
+        </div>
+        
+        <div className="text-center mt-12">
+          <Link href="/meetups" onClick={() => window.scrollTo(0, 0)}>
+            <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+              Participate Today
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
