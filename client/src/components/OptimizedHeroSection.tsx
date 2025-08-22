@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
 // Lazy load the video component to reduce initial bundle size
-const LazyVideoBackground = lazy(() => import('@/components/VideoBackground'));
+const LazyVideoBackground = lazy(() => import('./VideoBackground'));
 
 interface HeroSectionProps {
   priority?: boolean;
