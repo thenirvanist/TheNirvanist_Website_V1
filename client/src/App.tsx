@@ -42,13 +42,15 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <Chatbot />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-background">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          <Chatbot />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </div>
   );
 }
 
