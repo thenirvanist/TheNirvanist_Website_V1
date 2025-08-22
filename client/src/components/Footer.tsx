@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Heart, MapPin, Phone, Mail } from "lucide-react";
+import { Heart, MapPin, Phone, Mail, Settings } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -68,6 +68,14 @@ export default function Footer() {
                 <a href="#" className="text-gray-300 hover:text-[#70c92e] transition-colors">
                   Newsletter
                 </a>
+              </li>
+              <li className="pt-2 border-t border-gray-600">
+                <Link href="/admin">
+                  <span className="text-gray-500 hover:text-gray-400 transition-colors text-xs flex items-center cursor-pointer" data-testid="link-admin-access">
+                    <Settings className="w-3 h-3 mr-1" />
+                    Admin Access
+                  </span>
+                </Link>
               </li>
             </ul>
           </div>

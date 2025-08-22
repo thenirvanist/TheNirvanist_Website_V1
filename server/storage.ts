@@ -92,12 +92,14 @@ export interface IStorage {
   getSage(id: number): Promise<Sage | undefined>;
   createSage(sage: InsertSage): Promise<Sage>;
   updateSage(id: number, sage: Partial<InsertSage>): Promise<Sage | undefined>;
+  deleteSage(id: number): Promise<boolean>;
 
   // Ashram operations
   getAshrams(): Promise<Ashram[]>;
   getAshram(id: number): Promise<Ashram | undefined>;
   createAshram(ashram: InsertAshram): Promise<Ashram>;
   updateAshram(id: number, ashram: Partial<InsertAshram>): Promise<Ashram | undefined>;
+  deleteAshram(id: number): Promise<boolean>;
 
   // Meetup operations
   getMeetups(): Promise<Meetup[]>;
@@ -127,6 +129,7 @@ export interface IStorage {
   getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: number): Promise<boolean>;
 
   // Quote of week operations
   getQuotesOfWeek(): Promise<QuoteOfWeek[]>;
@@ -232,6 +235,16 @@ export class SupabaseStorage implements IStorage {
     }
   }
 
+  async deleteSage(id: number): Promise<boolean> {
+    try {
+      const deleted = await db.delete(schema.sages).where(eq(schema.sages.id, id));
+      return deleted.rowCount > 0;
+    } catch (error) {
+      console.error("Error deleting sage:", error);
+      return false;
+    }
+  }
+
   // Ashram operations
   async getAshrams(): Promise<Ashram[]> {
     try {
@@ -264,6 +277,16 @@ export class SupabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error updating ashram:', error);
       return undefined;
+    }
+  }
+
+  async deleteAshram(id: number): Promise<boolean> {
+    try {
+      const deleted = await db.delete(schema.ashrams).where(eq(schema.ashrams.id, id));
+      return deleted.rowCount > 0;
+    } catch (error) {
+      console.error("Error deleting ashram:", error);
+      return false;
     }
   }
 
@@ -487,6 +510,16 @@ export class SupabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error updating blog post:', error);
       return undefined;
+    }
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    try {
+      const deleted = await db.delete(schema.blogPosts).where(eq(schema.blogPosts.id, id));
+      return deleted.rowCount > 0;
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      return false;
     }
   }
 

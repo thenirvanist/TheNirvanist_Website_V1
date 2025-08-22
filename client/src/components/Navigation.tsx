@@ -16,7 +16,6 @@ export default function Navigation() {
     { href: "/inner-nutrition", label: "Inner Nutrition" },
     { href: "/sages", label: "Sages" },
     { href: "/ashrams", label: "Ashrams" },
-    { href: "/admin/quotes", label: "Admin", className: "text-xs" },
   ];
 
   const isActive = (href: string) => location === href;

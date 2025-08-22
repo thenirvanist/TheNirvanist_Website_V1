@@ -103,7 +103,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sage = await storage.createSage(validatedData);
       res.status(201).json(sage);
     } catch (error) {
+      console.error("Create sage error:", error);
       res.status(400).json({ message: "Invalid sage data" });
+    }
+  });
+
+  app.put("/api/sages/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      const sage = await storage.updateSage(id, updateData);
+      if (!sage) {
+        return res.status(404).json({ message: "Sage not found" });
+      }
+      res.json(sage);
+    } catch (error) {
+      console.error("Update sage error:", error);
+      res.status(400).json({ message: "Failed to update sage" });
+    }
+  });
+
+  app.delete("/api/sages/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteSage(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Sage not found" });
+      }
+      res.json({ message: "Sage deleted successfully" });
+    } catch (error) {
+      console.error("Delete sage error:", error);
+      res.status(400).json({ message: "Failed to delete sage" });
     }
   });
 
@@ -137,7 +167,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const ashram = await storage.createAshram(validatedData);
       res.status(201).json(ashram);
     } catch (error) {
+      console.error("Create ashram error:", error);
       res.status(400).json({ message: "Invalid ashram data" });
+    }
+  });
+
+  app.put("/api/ashrams/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      const ashram = await storage.updateAshram(id, updateData);
+      if (!ashram) {
+        return res.status(404).json({ message: "Ashram not found" });
+      }
+      res.json(ashram);
+    } catch (error) {
+      console.error("Update ashram error:", error);
+      res.status(400).json({ message: "Failed to update ashram" });
+    }
+  });
+
+  app.delete("/api/ashrams/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteAshram(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Ashram not found" });
+      }
+      res.json({ message: "Ashram deleted successfully" });
+    } catch (error) {
+      console.error("Delete ashram error:", error);
+      res.status(400).json({ message: "Failed to delete ashram" });
     }
   });
 
@@ -208,6 +268,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating blog post:", error);
       res.status(400).json({ message: "Failed to create blog post" });
+    }
+  });
+
+  app.put("/api/blog/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      const post = await storage.updateBlogPost(id, updateData);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Update blog post error:", error);
+      res.status(400).json({ message: "Failed to update blog post" });
+    }
+  });
+
+  app.delete("/api/blog/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteBlogPost(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json({ message: "Blog post deleted successfully" });
+    } catch (error) {
+      console.error("Delete blog post error:", error);
+      res.status(400).json({ message: "Failed to delete blog post" });
     }
   });
 
@@ -290,7 +379,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin image upload route
+  // General admin image upload route
+  app.post("/api/admin/upload-image", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      const category = req.body.category || "general";
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFilename = `${timestamp}_${category}${fileExtension}`;
+      const newPath = path.join('attached_assets', newFilename);
+      
+      // Move and rename the uploaded file
+      const fs = await import('fs/promises');
+      await fs.rename(req.file.path, newPath);
+      
+      const imageUrl = `/attached_assets/${newFilename}`;
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ message: "Failed to upload image" });
+    }
+  });
+
+  // Admin quote image upload route (legacy compatibility)
   app.post("/api/admin/upload-quote-image", upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {

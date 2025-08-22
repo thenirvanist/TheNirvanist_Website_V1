@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import Navigation from "@/components/Navigation";
 
 interface Quote {
   id: number;
@@ -112,20 +111,14 @@ export default function QuotesAdmin() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen">
-        <Navigation />
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center">Loading quotes...</div>
-        </div>
+      <div className="text-center py-8">
+        <div className="text-gray-500">Loading quotes...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      <div className="max-w-7xl mx-auto px-4 py-16">
+    <div className="space-y-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Quotes Admin Panel
@@ -372,7 +365,6 @@ export default function QuotesAdmin() {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }
