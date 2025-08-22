@@ -21,6 +21,7 @@ export default function AshramsSection() {
 
 
 
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -85,17 +86,14 @@ export default function AshramsSection() {
     );
   }
 
-  // Show empty state if no data
-  if (!ashrams || ashrams.length === 0) {
+  // Always render the section if we have data, even if empty
+  if (!ashrams) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-gray-800 font-medium mb-2">No ashrams available</p>
-              <p className="text-gray-600 text-sm">Check back soon for sacred spaces.</p>
-            </div>
+            <p className="text-lg text-gray-700">Loading ashram data...</p>
           </div>
         </div>
       </section>
