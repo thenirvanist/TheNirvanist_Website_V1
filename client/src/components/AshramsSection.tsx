@@ -18,11 +18,6 @@ export default function AshramsSection() {
   });
 
 
-  // Ensure data fetching happens immediately when component mounts
-  useEffect(() => {
-    // This effect ensures the query is triggered as soon as the component mounts
-    // The query will automatically fetch due to the queryKey dependency
-  }, []);
 
 
 
@@ -56,28 +51,34 @@ export default function AshramsSection() {
     }
   };
 
-  // Show loading state only when actively loading
+  // Show loading state with spinner
   if (isLoading) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">Loading sacred spaces...</p>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[hsl(75,64%,49%)]"></div>
+              <p className="text-lg text-gray-700">Loading sacred spaces...</p>
+            </div>
           </div>
         </div>
       </section>
     );
   }
 
-  // Show error state if there's an error
+  // Show error state with fallback message
   if (error) {
     return (
       <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">Error loading ashram data. Please try refreshing the page.</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-red-800 font-medium mb-2">Content unavailable</p>
+              <p className="text-red-600 text-sm">We're experiencing technical difficulties. Please try refreshing the page.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -91,7 +92,10 @@ export default function AshramsSection() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Sacred Ashrams</h2>
-            <p className="text-lg text-gray-700">No ashram information available at the moment.</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-gray-800 font-medium mb-2">No ashrams available</p>
+              <p className="text-gray-600 text-sm">Check back soon for sacred spaces.</p>
+            </div>
           </div>
         </div>
       </section>

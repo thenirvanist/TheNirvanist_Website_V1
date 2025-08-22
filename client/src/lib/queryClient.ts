@@ -50,8 +50,8 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 2,
-      // Performance optimizations
-      refetchOnMount: false
+      // Ensure queries fetch on mount for initial data loading
+      refetchOnMount: true
     },
     mutations: {
       retry: false,
