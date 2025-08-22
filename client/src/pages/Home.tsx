@@ -5,6 +5,7 @@ import InteractiveAbout from "@/components/InteractiveAbout";
 // Import critical sections directly to ensure immediate data loading
 import SimpleTourCarousel from "@/components/SimpleTourCarousel";
 import MeetupsSection from "@/components/MeetupsSection";
+import InnerNutritionSection from "@/components/InnerNutritionSection";
 import SimpleSagesSection from "@/components/SimpleSagesSection";
 import SimpleAshramsSection from "@/components/SimpleAshramsSection";
 
@@ -44,6 +45,7 @@ export default function Home() {
       
       {/* Critical sections with immediate data loading - New order */}
       <MeetupsSection />
+      <InnerNutritionSection />
       <SimpleTourCarousel />
       <SimpleSagesSection />
       <SimpleAshramsSection />

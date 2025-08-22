@@ -15,6 +15,8 @@ export type Meetup = typeof schema.meetups.$inferSelect;
 export type InsertMeetup = typeof schema.meetups.$inferInsert;
 export type Registration = typeof schema.registrations.$inferSelect;
 export type InsertRegistration = typeof schema.registrations.$inferInsert;
+export type BlogPost = typeof schema.blogPosts.$inferSelect;
+export type InsertBlogPost = typeof schema.blogPosts.$inferInsert;
 
 // Simplified types for the basic functionality
 export interface Testimonial {
@@ -105,6 +107,13 @@ export interface IStorage {
   createNewsletterSubscriber(email: string, verificationToken: string): Promise<NewsletterSubscriber>;
   getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
   updateNewsletterSubscriber(id: number, data: Partial<NewsletterSubscriber>): Promise<NewsletterSubscriber>;
+
+  // Blog post operations
+  getBlogPosts(): Promise<BlogPost[]>;
+  getBlogPost(id: number): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
 }
 
 export class SupabaseStorage implements IStorage {
@@ -399,6 +408,66 @@ export class SupabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error updating newsletter subscriber:', error);
       throw error;
+    }
+  }
+
+  // Blog post operations
+  async getBlogPosts(): Promise<BlogPost[]> {
+    try {
+      const posts = await db.select().from(schema.blogPosts)
+        .where(eq(schema.blogPosts.published, true))
+        .orderBy(sql`created_at DESC`);
+      return posts;
+    } catch (error) {
+      console.error('Error getting blog posts:', error);
+      return [];
+    }
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    try {
+      const [post] = await db.select().from(schema.blogPosts)
+        .where(eq(schema.blogPosts.id, id));
+      return post || undefined;
+    } catch (error) {
+      console.error('Error getting blog post:', error);
+      return undefined;
+    }
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    try {
+      const [post] = await db.select().from(schema.blogPosts)
+        .where(eq(schema.blogPosts.slug, slug));
+      return post || undefined;
+    } catch (error) {
+      console.error('Error getting blog post by slug:', error);
+      return undefined;
+    }
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    try {
+      const [newPost] = await db.insert(schema.blogPosts)
+        .values(post)
+        .returning();
+      return newPost;
+    } catch (error) {
+      console.error('Error creating blog post:', error);
+      throw error;
+    }
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    try {
+      const [updatedPost] = await db.update(schema.blogPosts)
+        .set({ ...post, updatedAt: new Date() })
+        .where(eq(schema.blogPosts.id, id))
+        .returning();
+      return updatedPost || undefined;
+    } catch (error) {
+      console.error('Error updating blog post:', error);
+      return undefined;
     }
   }
 }

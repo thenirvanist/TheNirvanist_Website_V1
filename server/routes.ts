@@ -139,17 +139,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Blog routes - Temporarily disabled (not implemented in storage)
+  // Blog post routes
   app.get("/api/blog", async (req, res) => {
-    res.json([]); // Return empty array until blog functionality is implemented
+    try {
+      const posts = await storage.getBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Error getting blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
   });
 
   app.get("/api/blog/:id", async (req, res) => {
-    res.status(404).json({ message: "Blog post not found" });
+    try {
+      const id = parseInt(req.params.id);
+      const post = await storage.getBlogPost(id);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error getting blog post:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+
+  app.get("/api/blog/slug/:slug", async (req, res) => {
+    try {
+      const slug = req.params.slug;
+      const post = await storage.getBlogPostBySlug(slug);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error getting blog post by slug:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
   });
 
   app.post("/api/blog", async (req, res) => {
-    res.status(501).json({ message: "Blog creation not yet implemented" });
+    try {
+      const postData = insertBlogPostSchema.parse(req.body);
+      const post = await storage.createBlogPost(postData);
+      res.json(post);
+    } catch (error) {
+      console.error("Error creating blog post:", error);
+      res.status(400).json({ message: "Failed to create blog post" });
+    }
   });
 
   // Testimonials routes

@@ -17,6 +17,8 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
 import AuthCallback from "@/pages/auth/callback";
+import InnerNutrition from "@/pages/InnerNutrition";
+import BlogArticle from "@/pages/BlogArticle";
 import Chatbot from "@/components/Chatbot";
 
 function Router() {
@@ -26,6 +28,8 @@ function Router() {
       <Route path="/journeys" component={Journeys} />
       <Route path="/journeys/:id" component={JourneyDetail} />
       <Route path="/meetups" component={Meetups} />
+      <Route path="/inner-nutrition" component={InnerNutrition} />
+      <Route path="/inner-nutrition/:slug" component={BlogArticle} />
       <Route path="/sages" component={Sages} />
       <Route path="/sages/:id" component={SageDetail} />
       <Route path="/ashrams" component={Ashrams} />

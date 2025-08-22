@@ -80,10 +80,16 @@ export const blogPosts = pgTable("blog_posts", {
   content: text("content").notNull(),
   excerpt: text("excerpt").notNull(),
   author: text("author").notNull(),
-  category: text("category").notNull(),
-  image: text("image"),
-  published: boolean("published").default(false),
+  category: text("category").notNull().default("Inner Nutrition"),
+  image: text("image").notNull(),
+  bannerImage: text("banner_image"),
+  slug: text("slug").notNull().unique(),
+  readTime: text("read_time").default("5 min read"),
+  tags: text("tags").array(),
+  published: boolean("published").default(true),
+  featured: boolean("featured").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const testimonials = pgTable("testimonials", {

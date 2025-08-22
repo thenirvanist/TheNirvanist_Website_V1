@@ -13,6 +13,7 @@ export default function Navigation() {
   const navItems = [
     { href: "/journeys", label: "Sacred Journeys" },
     { href: "/meetups", label: "Global Spiritual Meet-ups" },
+    { href: "/inner-nutrition", label: "Inner Nutrition" },
     { href: "/sages", label: "Sages" },
     { href: "/ashrams", label: "Ashrams" },
   ];

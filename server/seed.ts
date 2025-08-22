@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { journeys, sages, ashrams } from "@shared/schema";
+import { journeys, sages, ashrams, blogPosts } from "@shared/schema";
 
 async function seedDatabase() {
   try {
@@ -168,10 +168,80 @@ async function seedDatabase() {
       }
     ];
 
+    // Seed blog posts
+    const blogPostData = [
+      {
+        title: "The Art of Mindful Eating: Nourishing Your Body and Soul",
+        content: `<h2>Introduction to Mindful Eating</h2><p>In our fast-paced world, eating has become a rushed activity, often done while multitasking or scrolling through our phones. But what if we could transform this daily necessity into a sacred practice of inner nutrition?</p><h2>The Spiritual Dimension of Food</h2><p>Food is not merely fuel for the body—it is life force, prana, chi. When we eat mindfully, we honor the earth that grew our food, the hands that prepared it, and the body that will transform it into energy.</p><h2>Practical Steps to Mindful Eating</h2><ul><li><strong>Create Sacred Space:</strong> Set your dining area as a sanctuary, free from distractions</li><li><strong>Express Gratitude:</strong> Take a moment to appreciate the journey of your food</li><li><strong>Engage Your Senses:</strong> Notice colors, textures, aromas, and flavors</li><li><strong>Chew Slowly:</strong> Allow proper digestion and full appreciation</li><li><strong>Listen to Your Body:</strong> Honor hunger and satiety signals</li></ul><blockquote>"When we eat with full awareness, every bite becomes a moment of meditation, every meal a celebration of life itself."</blockquote>`,
+        excerpt: "Discover how transforming your relationship with food can become a powerful spiritual practice that nourishes both body and soul through mindful awareness.",
+        author: "Dr. Sarah Chen",
+        image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        bannerImage: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=400",
+        slug: "mindful-eating-nourishing-body-and-soul",
+        readTime: "8 min read",
+        tags: ["mindful eating", "spiritual nutrition", "meditation", "awareness"],
+        published: true,
+        featured: true
+      },
+      {
+        title: "Sacred Breath: The Gateway to Inner Peace",
+        content: `<h2>The Power of Conscious Breathing</h2><p>Breath is the bridge between body and soul, the rhythm that connects us to life itself. In every spiritual tradition, breath is recognized as the pathway to deeper states of consciousness and inner peace.</p><h2>Ancient Wisdom, Modern Science</h2><p>What ancient yogis knew thousands of years ago, modern neuroscience now confirms: conscious breathing directly influences our nervous system, reducing stress hormones and activating our body's natural relaxation response.</p><blockquote>"The breath is the thread that weaves together all aspects of our being—physical, mental, emotional, and spiritual."</blockquote>`,
+        excerpt: "Explore the transformative power of conscious breathing and learn how this simple practice can become your gateway to inner peace and spiritual awakening.",
+        author: "Ravi Patel",
+        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        bannerImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=400",
+        slug: "sacred-breath-gateway-inner-peace",
+        readTime: "6 min read",
+        tags: ["breathing", "pranayama", "meditation", "peace"],
+        published: true,
+        featured: false
+      },
+      {
+        title: "The Wisdom of Silence: Finding Your Inner Voice",
+        content: `<h2>In a World of Noise</h2><p>We live in an age of constant stimulation—notifications, conversations, media, and the endless chatter of our own minds. In this cacophony, we've forgotten the profound wisdom that emerges in silence.</p><h2>Silence as Sacred Space</h2><p>True silence is not merely the absence of sound, but the presence of awareness. It's in these quiet moments that we reconnect with our authentic self, beyond the roles we play and the masks we wear.</p><blockquote>"In the silence of the heart, God speaks. In the quiet of the soul, wisdom emerges."</blockquote>`,
+        excerpt: "Discover the transformative power of silence and learn how to access your inner wisdom through the practice of stillness and presence.",
+        author: "Maria Santos",
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        bannerImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=400",
+        slug: "wisdom-of-silence-finding-inner-voice",
+        readTime: "7 min read", 
+        tags: ["silence", "meditation", "inner wisdom", "presence"],
+        published: true,
+        featured: true
+      },
+      {
+        title: "Gratitude as Spiritual Practice: Transforming Daily Life",
+        content: `<h2>The Alchemy of Appreciation</h2><p>Gratitude is more than a positive emotion—it's a powerful spiritual practice that has the ability to transform our perception of reality and our experience of life itself.</p><h2>Beyond Thank You</h2><p>While saying "thank you" is polite, true gratitude goes much deeper. It's a recognition of the interconnected web of life that supports our existence.</p><blockquote>"Gratitude is not only the greatest of virtues but the parent of all others." - Cicero</blockquote>`,
+        excerpt: "Learn how to transform gratitude from a simple courtesy into a profound spiritual practice that can reshape your entire experience of life.",
+        author: "Dr. Michael Thompson",
+        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        bannerImage: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=400",
+        slug: "gratitude-spiritual-practice-transforming-daily-life",
+        readTime: "6 min read",
+        tags: ["gratitude", "appreciation", "spiritual practice", "transformation"],
+        published: true,
+        featured: false
+      },
+      {
+        title: "Inner Healing: The Journey from Wound to Wisdom",
+        content: `<h2>Embracing Our Shadows</h2><p>The path to wholeness requires us to acknowledge not just our light, but also our shadows—the wounded, hurt, and tender parts of ourselves that we often try to hide or ignore.</p><h2>Wounds as Gateways</h2><p>Our deepest wounds often become our greatest sources of wisdom and compassion. The very experiences that break us open can ultimately become the foundation for our most profound growth.</p><blockquote>"The wound is the place where the Light enters you." - Rumi</blockquote>`,
+        excerpt: "Explore how our deepest wounds can become our greatest sources of wisdom and learn practical approaches to transforming pain into purpose.",
+        author: "Dr. Elena Rodriguez",
+        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        bannerImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=400",
+        slug: "inner-healing-journey-wound-to-wisdom",
+        readTime: "9 min read",
+        tags: ["healing", "inner work", "transformation", "wholeness"],
+        published: true,
+        featured: true
+      }
+    ];
+
     // Insert data
     await db.insert(journeys).values(journeyData);
     await db.insert(sages).values(sageData);
     await db.insert(ashrams).values(ashramData);
+    await db.insert(blogPosts).values(blogPostData);
 
     console.log("Database seeded successfully!");
   } catch (error) {
