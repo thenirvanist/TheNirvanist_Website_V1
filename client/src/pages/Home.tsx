@@ -3,10 +3,10 @@ import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import InteractiveAbout from "@/components/InteractiveAbout";
 // Import critical sections directly to ensure immediate data loading
-import TourCarousel from "@/components/TourCarousel";
+import SimpleTourCarousel from "@/components/SimpleTourCarousel";
 import MeetupsSection from "@/components/MeetupsSection";
-import SagesSection from "@/components/SagesSection";
-import AshramsSection from "@/components/AshramsSection";
+import SimpleSagesSection from "@/components/SimpleSagesSection";
+import SimpleAshramsSection from "@/components/SimpleAshramsSection";
 
 // Only lazy load non-critical sections for better performance
 const SpiritualCollage = lazy(() => import("@/components/SpiritualCollage"));
@@ -42,11 +42,11 @@ export default function Home() {
         <SpiritualCollage />
       </Suspense>
       
-      {/* Critical sections with immediate data loading */}
-      <TourCarousel />
+      {/* Critical sections with immediate data loading - New order */}
       <MeetupsSection />
-      <SagesSection />
-      <AshramsSection />
+      <SimpleTourCarousel />
+      <SimpleSagesSection />
+      <SimpleAshramsSection />
       
       {/* Non-critical sections with lazy loading */}
       <Suspense fallback={<SectionSkeleton />}>
