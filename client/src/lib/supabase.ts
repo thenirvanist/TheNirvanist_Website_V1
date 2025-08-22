@@ -43,6 +43,7 @@ export const authHelpers = {
    * Get the current user session
    */
   getCurrentSession: async () => {
+    if (!supabase) return null;
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
     return session;
@@ -52,6 +53,7 @@ export const authHelpers = {
    * Get the current user
    */
   getCurrentUser: async () => {
+    if (!supabase) return null;
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) throw error;
     return user;
@@ -61,6 +63,7 @@ export const authHelpers = {
    * Sign out the current user
    */
   signOut: async () => {
+    if (!supabase) return;
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   },

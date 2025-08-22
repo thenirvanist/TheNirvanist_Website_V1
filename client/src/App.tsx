@@ -16,7 +16,7 @@ import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
-import AuthCallback from "@/pages/AuthCallback";
+import AuthCallback from "@/pages/auth/callback";
 import Chatbot from "@/components/Chatbot";
 
 function Router() {

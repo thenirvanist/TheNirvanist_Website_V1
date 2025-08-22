@@ -1,84 +1,16 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-// Custom API request function for authentication
-const authApiRequest = async (url: string, method = "GET", body?: any, headers?: Record<string, string>) => {
-  const response = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    let errorMessage;
-    try {
-      const errorJson = JSON.parse(errorText);
-      errorMessage = errorJson.message || `${response.status}: ${response.statusText}`;
-    } catch {
-      errorMessage = `${response.status}: ${response.statusText}`;
-    }
-    throw new Error(errorMessage);
-  }
-
-  return response.json();
-};
-import { registerSchema, type RegisterData } from "@shared/schema";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { SocialAuth } from "@/components/SocialAuth";
+import { SupabaseSignUp } from "@/components/SupabaseSignUp";
 
 export default function Register() {
   const [, navigate] = useLocation();
-  const [showPassword, setShowPassword] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
-  const { toast } = useToast();
-
-  const form = useForm<RegisterData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-    },
-  });
-
-  const registerMutation = useMutation({
-    mutationFn: async (data: RegisterData) => {
-      return await authApiRequest("/api/auth/register", "POST", data);
-    },
-    onSuccess: (response) => {
-      setRegistrationComplete(true);
-      
-      toast({
-        title: "Registration Successful!",
-        description: "Please check your email to verify your account.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "Please try again with different credentials.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: RegisterData) => {
-    registerMutation.mutate(data);
-  };
 
   if (registrationComplete) {
     return (
@@ -169,117 +101,11 @@ export default function Register() {
                 </div>
               </div>
 
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-700 font-semibold">First Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                              <Input
-                                type="text"
-                                placeholder="First name"
-                                className="pl-10 py-3 border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] rounded-lg"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-700 font-semibold">Last Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                              <Input
-                                type="text"
-                                placeholder="Last name"
-                                className="pl-10 py-3 border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] rounded-lg"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-500" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-semibold">Email Address</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <Input
-                              type="email"
-                              placeholder="Enter your email"
-                              className="pl-10 py-3 border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] rounded-lg"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-semibold">Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Create a password"
-                              className="pl-10 pr-12 py-3 border-2 border-gray-200 focus:border-[hsl(75,64%,49%)] rounded-lg"
-                              {...field}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                            >
-                              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-red-500" />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Minimum 6 characters required
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    disabled={registerMutation.isPending}
-                    className="w-full brand-primary hover:brand-bright text-white hover:text-black py-3 rounded-lg font-semibold text-lg transition-all duration-300"
-                  >
-                    {registerMutation.isPending ? "Creating Account..." : "Create Account"}
-                  </Button>
-                </form>
-              </Form>
+              {/* Use the new Supabase SignUp component */}
+              <SupabaseSignUp 
+                showHeader={false}
+                onSuccess={() => setRegistrationComplete(true)}
+              />
 
               <div className="mt-8 text-center">
                 <p className="text-gray-600">
