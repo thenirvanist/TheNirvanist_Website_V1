@@ -121,7 +121,7 @@ export default function QuotesCarousel() {
         </div>
 
         {/* Carousel Container */}
-        <div className="relative max-w-2xl mx-auto">
+        <div className="relative max-w-xl mx-auto">
           {/* Main Quote Card */}
           <div className="relative overflow-hidden rounded-2xl shadow-2xl">
             <div 
