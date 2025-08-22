@@ -53,7 +53,7 @@ export default function SimpleTourCarousel() {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-[#F7F2E8]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-6">Sacred Journeys</h2>
@@ -95,6 +95,14 @@ export default function SimpleTourCarousel() {
               </div>
             </div>
           ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <Link href="/journeys">
+            <Button className="brand-primary hover:brand-bright text-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+              Visit All Journeys
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
