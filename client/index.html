@@ -31,9 +31,9 @@
     
     <!-- Critical CSS Inlining -->
     <style>
-      /* Prevent initial white flash */
+      /* Prevent initial flash and ensure smooth loading */
       html, body {
-        background-color: #1f2937 !important;
+        background-color: #ffffff !important;
         margin: 0;
         padding: 0;
       }
@@ -56,10 +56,10 @@
         background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
       }
       
-      /* Ensure root div takes full height immediately */
+      /* Ensure root div has proper background */
       #root {
         min-height: 100vh;
-        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        background-color: #ffffff;
       }
     </style>
   </head>

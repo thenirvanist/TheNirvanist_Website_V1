@@ -2,13 +2,14 @@ import { lazy, Suspense } from "react";
 import Navigation from "@/components/Navigation";
 import OptimizedHeroSection from "@/components/OptimizedHeroSection";
 import InteractiveAbout from "@/components/InteractiveAbout";
+// Import critical sections directly to ensure immediate data loading
+import TourCarousel from "@/components/TourCarousel";
+import MeetupsSection from "@/components/MeetupsSection";
+import SagesSection from "@/components/SagesSection";
+import AshramsSection from "@/components/AshramsSection";
 
-// Lazy load below-the-fold components for better initial load performance
+// Only lazy load non-critical sections for better performance
 const SpiritualCollage = lazy(() => import("@/components/SpiritualCollage"));
-const TourCarousel = lazy(() => import("@/components/TourCarousel"));
-const MeetupsSection = lazy(() => import("@/components/MeetupsSection"));
-const SagesSection = lazy(() => import("@/components/SagesSection"));
-const AshramsSection = lazy(() => import("@/components/AshramsSection"));
 const Newsletter = lazy(() => import("@/components/Newsletter"));
 const Footer = lazy(() => import("@/components/Footer"));
 
@@ -36,27 +37,18 @@ export default function Home() {
       <OptimizedHeroSection priority />
       <InteractiveAbout />
       
-      {/* Below-the-fold content with lazy loading */}
+      {/* Below-the-fold content */}
       <Suspense fallback={<SectionSkeleton />}>
         <SpiritualCollage />
       </Suspense>
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <TourCarousel />
-      </Suspense>
+      {/* Critical sections with immediate data loading */}
+      <TourCarousel />
+      <MeetupsSection />
+      <SagesSection />
+      <AshramsSection />
       
-      <Suspense fallback={<SectionSkeleton />}>
-        <MeetupsSection />
-      </Suspense>
-      
-      <Suspense fallback={<SectionSkeleton />}>
-        <SagesSection />
-      </Suspense>
-      
-      <Suspense fallback={<SectionSkeleton />}>
-        <AshramsSection />
-      </Suspense>
-      
+      {/* Non-critical sections with lazy loading */}
       <Suspense fallback={<SectionSkeleton />}>
         <Newsletter />
       </Suspense>
