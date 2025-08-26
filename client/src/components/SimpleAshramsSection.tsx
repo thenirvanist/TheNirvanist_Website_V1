@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import type { Ashram } from "@shared/schema";
+import { BookmarkButton } from "./BookmarkButton";
 
 export default function SimpleAshramsSection() {
   const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
@@ -66,11 +67,20 @@ export default function SimpleAshramsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {ashrams.slice(0, 3).map((ashram) => (
             <div key={ashram.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <img 
-                src={ashram.image} 
-                alt={ashram.name}
-                className="w-full h-48 object-cover"
-              />
+              <div className="relative">
+                <img 
+                  src={ashram.image} 
+                  alt={ashram.name}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute top-3 right-3">
+                  <BookmarkButton 
+                    contentType="ashram" 
+                    contentId={ashram.id} 
+                    size="sm"
+                  />
+                </div>
+              </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{ashram.name}</h3>
                 <p className="text-gray-600 mb-3">{ashram.description}</p>

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import type { Journey } from "@shared/schema";
+import { BookmarkButton } from "./BookmarkButton";
 
 export default function SimpleTourCarousel() {
   const { data: journeys, isLoading, error } = useQuery<Journey[]>({
@@ -63,11 +64,20 @@ export default function SimpleTourCarousel() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {journeys.slice(0, 3).map((journey) => (
             <div key={journey.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <img 
-                src={journey.image} 
-                alt={journey.title}
-                className="w-full h-48 object-cover"
-              />
+              <div className="relative">
+                <img 
+                  src={journey.image} 
+                  alt={journey.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute top-3 right-3">
+                  <BookmarkButton 
+                    contentType="journey" 
+                    contentId={journey.id} 
+                    size="sm"
+                  />
+                </div>
+              </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-3">{journey.title}</h3>
                 <p className="text-gray-600 mb-4">{journey.description}</p>

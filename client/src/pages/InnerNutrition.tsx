@@ -8,39 +8,39 @@ import { Card, CardContent } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import type { BlogPost } from "@shared/schema";
+import { BookmarkButton } from "@/components/BookmarkButton";
 
 export default function InnerNutrition() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const { data: blogPosts, isLoading, error } = useQuery<BlogPost[]>({
+  const { data: blogPosts = [], isLoading, error } = useQuery<BlogPost[]>({
     queryKey: ['/api/blog'],
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
   });
 
   // Filter blog posts based on search term and category
-  const filteredPosts = blogPosts?.filter(post => {
+  const filteredPosts = blogPosts.filter((post: BlogPost) => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (post.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+                         (post.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
     
     const matchesCategory = selectedCategory === "All" || 
                            post.category === selectedCategory ||
                            (post.tags?.includes(selectedCategory));
     
     return matchesSearch && matchesCategory;
-  }) || [];
+  });
 
   // Get unique categories from all posts
-  const categories = ["All", ...(blogPosts?.reduce((cats: string[], post) => {
+  const categories = ["All", ...blogPosts.reduce((cats: string[], post: BlogPost) => {
     if (!cats.includes(post.category)) cats.push(post.category);
-    post.tags?.forEach(tag => {
+    post.tags?.forEach((tag: string) => {
       if (!cats.includes(tag)) cats.push(tag);
     });
     return cats;
-  }, []) || [])];
+  }, [])];
 
   if (error) {
     console.error('Error loading blog posts:', error);
@@ -151,7 +151,7 @@ export default function InnerNutrition() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post) => (
+              {filteredPosts.map((post: BlogPost) => (
                 <Link key={post.id} href={`/inner-nutrition/${post.slug}`}>
                   <Card className="group bg-white hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border-0 h-full">
                     <div className="relative overflow-hidden">
@@ -161,6 +161,13 @@ export default function InnerNutrition() {
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-3 right-3">
+                        <BookmarkButton 
+                          contentType="blog" 
+                          contentId={post.id} 
+                          size="sm"
+                        />
+                      </div>
                     </div>
                     
                     <CardContent className="p-6 flex flex-col h-full">
@@ -175,7 +182,7 @@ export default function InnerNutrition() {
                         </div>
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                          <span>{post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Recent'}</span>
                         </div>
                       </div>
                       
@@ -189,7 +196,7 @@ export default function InnerNutrition() {
                       
                       {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {post.tags.slice(0, 3).map((tag, index) => (
+                          {post.tags.slice(0, 3).map((tag: string, index: number) => (
                             <span
                               key={index}
                               className="px-3 py-1 bg-[hsl(75,64%,49%)]/10 text-[hsl(75,64%,39%)] rounded-full text-sm font-medium"
