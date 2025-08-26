@@ -6,22 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Book, Mountain, Compass, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-
-interface Bookmark {
-  id: number;
-  userId: number;
-  contentType: string;
-  contentId: number;
-  createdAt: string;
-}
-
-interface BookmarkedContent {
-  bookmarks: Bookmark[];
-  sages: any[];
-  ashrams: any[];
-  blogs: any[];
-  journeys: any[];
-}
+import type { Bookmark, Sage, Ashram, BlogPost, Journey } from "@shared/schema";
 
 export default function Dashboard() {
   const { user, isLoading: authLoading } = useAuth();
@@ -39,28 +24,28 @@ export default function Dashboard() {
   }, [authLoading, user, toast]);
 
   // Fetch bookmarks and all content to display bookmarked items
-  const { data: bookmarks = [], isLoading: bookmarksLoading } = useQuery({
+  const { data: bookmarks = [], isLoading: bookmarksLoading } = useQuery<Bookmark[]>({
     queryKey: ["/api/bookmarks"],
     enabled: !!user,
     retry: false
   });
 
-  const { data: sages = [] } = useQuery({
+  const { data: sages = [] } = useQuery<Sage[]>({
     queryKey: ["/api/sages"],
     enabled: !!user && bookmarks.length > 0
   });
 
-  const { data: ashrams = [] } = useQuery({
+  const { data: ashrams = [] } = useQuery<Ashram[]>({
     queryKey: ["/api/ashrams"],
     enabled: !!user && bookmarks.length > 0
   });
 
-  const { data: blogs = [] } = useQuery({
+  const { data: blogs = [] } = useQuery<BlogPost[]>({
     queryKey: ["/api/blog"],
     enabled: !!user && bookmarks.length > 0
   });
 
-  const { data: journeys = [] } = useQuery({
+  const { data: journeys = [] } = useQuery<Journey[]>({
     queryKey: ["/api/journeys"],
     enabled: !!user && bookmarks.length > 0
   });

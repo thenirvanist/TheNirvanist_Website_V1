@@ -4,6 +4,7 @@ import { Heart, HeartHandshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import type { Bookmark } from "@shared/schema";
 
 interface BookmarkButtonProps {
   contentType: "sage" | "ashram" | "blog" | "journey";
@@ -23,14 +24,14 @@ export function BookmarkButton({
   const queryClient = useQueryClient();
 
   // Check if item is bookmarked by fetching user's bookmarks
-  const { data: bookmarks } = useQuery({
+  const { data: bookmarks = [] } = useQuery<Bookmark[]>({
     queryKey: ["/api/bookmarks"],
     enabled: true, // Only fetch if user is likely logged in
     retry: false
   });
 
-  const isBookmarked = bookmarks?.some(
-    (bookmark: any) => 
+  const isBookmarked = bookmarks.some(
+    (bookmark: Bookmark) => 
       bookmark.contentType === contentType && 
       bookmark.contentId === contentId
   ) || false;
@@ -38,12 +39,9 @@ export function BookmarkButton({
   // Add bookmark mutation
   const addBookmark = useMutation({
     mutationFn: async () => {
-      await apiRequest("/api/bookmarks", {
-        method: "POST",
-        body: JSON.stringify({
-          contentType,
-          contentId
-        })
+      return await apiRequest("POST", "/api/bookmarks", {
+        contentType,
+        contentId
       });
     },
     onSuccess: () => {
@@ -80,9 +78,7 @@ export function BookmarkButton({
   // Remove bookmark mutation
   const removeBookmark = useMutation({
     mutationFn: async () => {
-      await apiRequest(`/api/bookmarks/${contentType}/${contentId}`, {
-        method: "DELETE"
-      });
+      return await apiRequest("DELETE", `/api/bookmarks/${contentType}/${contentId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bookmarks"] });
