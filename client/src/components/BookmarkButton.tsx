@@ -53,10 +53,10 @@ export function BookmarkButton({
       });
     },
     onError: (error: any) => {
-      if (error.message?.includes("401")) {
+      if (error.message?.includes("401") || error.message?.includes("Unauthorized") || error.message?.includes("Access token required")) {
         toast({
-          title: "Login Required",
-          description: "Please login to bookmark content.",
+          title: "Please sign in to bookmark",
+          description: "You need to be logged in to save content to your collection.",
           variant: "destructive"
         });
       } else if (error.message?.includes("409")) {
@@ -67,8 +67,8 @@ export function BookmarkButton({
         });
       } else {
         toast({
-          title: "Error",
-          description: "Failed to bookmark content. Please try again.",
+          title: "Please sign in to bookmark",
+          description: "Please try again after signing in.",
           variant: "destructive"
         });
       }
@@ -89,11 +89,19 @@ export function BookmarkButton({
       });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: "Failed to remove bookmark. Please try again.",
-        variant: "destructive"
-      });
+      if (error.message?.includes("401") || error.message?.includes("Unauthorized") || error.message?.includes("Access token required")) {
+        toast({
+          title: "Please sign in to bookmark",
+          description: "You need to be logged in to manage your collection.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to remove bookmark. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
