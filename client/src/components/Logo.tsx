@@ -26,7 +26,8 @@ export default function Logo({ className = "", variant = "white", size = "md" }:
       <img 
         src={logoSrc[variant]} 
         alt="The Nirvanist - Nourish Your Soul" 
-        className={`${logoSizes[size]} w-auto`}
+        className={`${logoSizes[size]} w-auto flex-shrink-0`}
+        style={{ minWidth: '120px' }}
       />
     </div>
   );
