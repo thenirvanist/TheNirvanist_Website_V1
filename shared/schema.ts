@@ -161,6 +161,22 @@ export const bookmarks = pgTable("bookmarks", {
   uniqueBookmark: unique().on(table.userId, table.contentType, table.contentId),
 }));
 
+// Translation cache table for storing Deepl API translations
+export const translationCache = pgTable("translation_cache", {
+  id: serial("id").primaryKey(),
+  contentType: varchar("content_type", { length: 50 }).notNull(), // 'journey', 'sage', 'ashram', 'blog'
+  contentId: integer("content_id").notNull(),
+  fieldName: varchar("field_name", { length: 100 }).notNull(), // 'title', 'description', 'biography', etc.
+  language: varchar("language", { length: 10 }).notNull(), // 'fr', 'es', 'de', 'zh', 'ar', 'ru', 'pt'
+  originalText: text("original_text").notNull(),
+  translatedText: text("translated_text").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  // Ensure unique translation cache entries per content+field+language combination
+  uniqueTranslation: unique().on(table.contentType, table.contentId, table.fieldName, table.language),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertJourneySchema = createInsertSchema(journeys).omit({ id: true });
@@ -175,6 +191,7 @@ export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSub
 export const insertQuoteOfWeekSchema = createInsertSchema(quotesOfWeek).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertAuthUserSchema = createInsertSchema(authUsers).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertBookmarkSchema = createInsertSchema(bookmarks).omit({ id: true, createdAt: true });
+export const insertTranslationCacheSchema = createInsertSchema(translationCache).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Login and authentication schemas
 export const loginSchema = z.object({
@@ -225,6 +242,8 @@ export type AuthUser = typeof authUsers.$inferSelect;
 export type InsertAuthUser = z.infer<typeof insertAuthUserSchema>;
 export type Bookmark = typeof bookmarks.$inferSelect;
 export type InsertBookmark = z.infer<typeof insertBookmarkSchema>;
+export type TranslationCache = typeof translationCache.$inferSelect;
+export type InsertTranslationCache = z.infer<typeof insertTranslationCacheSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type RegisterData = z.infer<typeof registerSchema>;
 export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
