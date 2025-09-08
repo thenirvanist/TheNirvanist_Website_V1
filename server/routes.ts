@@ -11,6 +11,7 @@ import {
   resetPasswordSchema 
 } from "@shared/schema";
 import { getChatbotResponse, analyzeUserIntent, generateSpiritualInsight } from "./openai";
+import { TranslationService } from "./translationService";
 import { 
   insertJourneySchema, insertSageSchema, insertAshramSchema, 
   insertMeetupSchema, insertRegistrationSchema, insertBlogPostSchema,
@@ -727,6 +728,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Newsletter verification error:", error);
       res.status(400).json({ 
         message: "Newsletter verification failed. Token may be invalid or expired." 
+      });
+    }
+  });
+
+  // Translation API routes
+  const translationService = new TranslationService();
+
+  // Translate dynamic content endpoint
+  app.post("/api/translate", async (req, res) => {
+    try {
+      const { contentType, contentId, fields, targetLanguage } = req.body;
+
+      if (!contentType || !contentId || !fields || !targetLanguage) {
+        return res.status(400).json({ 
+          message: "Missing required fields: contentType, contentId, fields, targetLanguage" 
+        });
+      }
+
+      // Validate content type
+      const validContentTypes = ['journey', 'sage', 'ashram', 'blog'];
+      if (!validContentTypes.includes(contentType)) {
+        return res.status(400).json({ 
+          message: `Invalid content type. Must be one of: ${validContentTypes.join(', ')}` 
+        });
+      }
+
+      const translatedFields = await translationService.translateMultipleFields(
+        contentType,
+        parseInt(contentId),
+        fields,
+        targetLanguage
+      );
+
+      res.json({
+        contentType,
+        contentId,
+        targetLanguage,
+        translatedFields,
+      });
+    } catch (error) {
+      console.error("Translation API error:", error);
+      res.status(500).json({ 
+        message: "Translation failed. Please try again." 
+      });
+    }
+  });
+
+  // Get Deepl API usage stats (admin only)
+  app.get("/api/translate/usage", async (req, res) => {
+    try {
+      const usage = await translationService.getApiUsage();
+      res.json(usage || { message: "API key not configured" });
+    } catch (error) {
+      console.error("Translation usage API error:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch usage statistics" 
+      });
+    }
+  });
+
+  // Clear translation cache for content (admin only)
+  app.delete("/api/translate/cache/:contentType/:contentId", async (req, res) => {
+    try {
+      const { contentType, contentId } = req.params;
+      
+      await translationService.clearCacheForContent(
+        contentType, 
+        parseInt(contentId)
+      );
+      
+      res.json({ 
+        message: `Translation cache cleared for ${contentType}:${contentId}` 
+      });
+    } catch (error) {
+      console.error("Clear cache API error:", error);
+      res.status(500).json({ 
+        message: "Failed to clear translation cache" 
       });
     }
   });
