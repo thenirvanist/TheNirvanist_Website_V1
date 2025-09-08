@@ -1,0 +1,87 @@
+{
+  "navigation": {
+    "home": "Home",
+    "journeys": "Sacred Journeys",
+    "meetups": "Global Spiritual Meet-ups",
+    "innerNutrition": "Inner Nutrition",
+    "sages": "Sages",
+    "ashrams": "Ashrams",
+    "login": "Login",
+    "signUp": "Sign Up",
+    "logout": "Logout",
+    "myCollection": "My Collection",
+    "welcome": "Welcome"
+  },
+  "hero": {
+    "title": "Nourish Your Soul",
+    "subtitle": "Embark on transformative spiritual journeys to sacred destinations around the world",
+    "cta": "Explore Sacred Journeys",
+    "secondaryCta": "Join Global Meetups"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "We are a community of spiritual seekers dedicated to providing authentic experiences that nurture the soul and expand consciousness."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Thank you for your message. We'll get back to you soon!"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Sign Up",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loginButton": "Sign In",
+    "registerButton": "Create Account",
+    "forgotPasswordButton": "Send Reset Link",
+    "resetPasswordButton": "Reset Password",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "backToLogin": "Back to Login"
+  },
+  "dashboard": {
+    "title": "My Spiritual Collection",
+    "noBookmarks": "You haven't bookmarked anything yet. Start exploring our content!",
+    "journeys": "Sacred Journeys",
+    "sages": "Sages",
+    "ashrams": "Ashrams",
+    "articles": "Inner Nutrition Articles"
+  },
+  "common": {
+    "loading": "Loading...",
+    "readMore": "Read More",
+    "learnMore": "Learn More",
+    "viewDetails": "View Details",
+    "bookNow": "Book Now",
+    "register": "Register",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "featured": "Featured",
+    "popular": "Popular",
+    "recent": "Recent",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "footer": {
+    "aboutUs": "About Us",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "newsletter": "Newsletter",
+    "subscribeNewsletter": "Subscribe to our newsletter for spiritual insights",
+    "subscribe": "Subscribe",
+    "copyright": "© 2024 The Nirvanist. All rights reserved."
+  }
+}
