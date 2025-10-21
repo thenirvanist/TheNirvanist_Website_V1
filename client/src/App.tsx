@@ -21,7 +21,7 @@ import AuthCallback from "@/pages/auth/callback";
 import InnerNutrition from "@/pages/InnerNutrition";
 import BlogArticle from "@/pages/BlogArticle";
 import Dashboard from "@/pages/Dashboard";
-import QuotesAdmin from "@/pages/QuotesAdmin";
+import QuotesAdmin from "@/pages/admin/QuotesAdmin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Chatbot from "@/components/Chatbot";
 
