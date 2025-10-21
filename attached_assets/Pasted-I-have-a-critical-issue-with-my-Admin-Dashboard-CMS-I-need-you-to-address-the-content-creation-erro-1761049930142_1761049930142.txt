@@ -1,0 +1,35 @@
+I have a critical issue with my Admin Dashboard/CMS. I need you to address the content creation errors and add a new interface for managing weekly quotes.
+
+A. FIX: Content Creation Errors (High Priority)
+
+The following pages in my CMS consistently fail when I attempt to add or submit new content:
+
+'Sages': Returns an error message: 'failed to create sage'.
+
+'Inner Nutrition' (Articles): Returns an error message: 'Failed to create article'.
+
+'Sacred Ashrams': Returns a similar creation error.
+
+I suspect this is a backend issue related to Supabase permissions (Row-Level Security) or Drizzle ORM schema validation.
+
+Please perform a full diagnostic and fix:
+
+Check Supabase Security: Review the code for database interactions and ensure that the Row-Level Security (RLS) policies in Supabase are correctly set up to allow the currently logged-in admin user to insert, update, and delete records in the sages, articles, and ashrams tables.
+
+Check Data Structure: Validate that the front-end forms are sending the data in the exact format (schema) that the Drizzle ORM and Supabase tables expect.
+
+Implement Server-Side Validation: Add robust server-side error handling to display a more useful error message than just 'failed to create...'.
+
+B. FEATURE: Quotes Upload and Scheduling
+
+I need to add a new interface to the Admin CMS for managing 'Quotes of the Week' images.
+
+Image Upload Interface: Create a dedicated section within the Admin Dashboard that allows me to upload PNG images (1080x1080) of the quotes. This interface must connect to Supabase Storage (not the database tables) to store the image files.
+
+Scheduling: The interface must include a field to select the "Display Date" for each quote image.
+
+Automatic Display: The homepage carousel should be updated to only display the quote image whose "Display Date" matches or is immediately prior to the current date.
+
+Bulk Upload: The system should be designed to allow me to upload several quote images in advance (e.g., 7 quotes for the next 7 weeks) and assign a unique display date to each one.
+
+Provide all necessary code, including the corrected data handling logic and the new quote management components.

@@ -100,12 +100,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/sages", async (req, res) => {
     try {
-      const validatedData = insertSageSchema.parse(req.body);
+      const body = req.body;
+      
+      // Transform data to match schema
+      const transformedData = {
+        name: body.name,
+        description: body.description || "",
+        biography: body.description || body.biography || "",  // Use description as biography if not provided
+        image: body.imageUrl || body.image || "",  // Map imageUrl to image
+        location: body.location || null,
+        teachings: body.teachings ? (Array.isArray(body.teachings) ? body.teachings : [body.teachings]) : [],
+        books: body.books ? (Array.isArray(body.books) ? body.books : [body.books]) : [],
+        coreTeachings: body.coreTeachings || [],
+        notableWork: body.notableWork || [],
+        category: body.category || null,
+        era: body.era || null,
+        status: body.status || null,
+      };
+      
+      const validatedData = insertSageSchema.parse(transformedData);
       const sage = await storage.createSage(validatedData);
-      res.status(201).json(sage);
+      
+      // Transform back to match frontend expectations
+      const responseData = {
+        ...sage,
+        imageUrl: sage.image,
+        teachings: sage.teachings?.[0] || "",
+        books: sage.books?.[0] || "",
+      };
+      
+      res.status(201).json(responseData);
     } catch (error) {
       console.error("Create sage error:", error);
-      res.status(400).json({ message: "Invalid sage data" });
+      if (error instanceof Error) {
+        res.status(400).json({ message: `Invalid sage data: ${error.message}` });
+      } else {
+        res.status(400).json({ message: "Invalid sage data" });
+      }
     }
   });
 
@@ -164,12 +195,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ashrams", async (req, res) => {
     try {
-      const validatedData = insertAshramSchema.parse(req.body);
+      const body = req.body;
+      
+      // Transform data to match schema
+      const transformedData = {
+        name: body.name || "",
+        location: body.location || "",
+        description: body.description || "",
+        facilities: body.facilities || [],
+        image: body.imageUrl || body.image || "",  // Map imageUrl to image
+        contact: body.contactEmail || body.contact || null,
+        website: body.website || null,
+        region: body.region || null,
+        focus: body.focus || null,
+        founders: body.founders || null,
+      };
+      
+      const validatedData = insertAshramSchema.parse(transformedData);
       const ashram = await storage.createAshram(validatedData);
-      res.status(201).json(ashram);
+      
+      // Transform back to match frontend expectations
+      const responseData = {
+        ...ashram,
+        imageUrl: ashram.image,
+        contactEmail: ashram.contact,
+        contactPhone: body.contactPhone || "",
+      };
+      
+      res.status(201).json(responseData);
     } catch (error) {
       console.error("Create ashram error:", error);
-      res.status(400).json({ message: "Invalid ashram data" });
+      if (error instanceof Error) {
+        res.status(400).json({ message: `Invalid ashram data: ${error.message}` });
+      } else {
+        res.status(400).json({ message: "Invalid ashram data" });
+      }
     }
   });
 
@@ -263,12 +323,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/blog", async (req, res) => {
     try {
-      const postData = insertBlogPostSchema.parse(req.body);
+      const body = req.body;
+      
+      // Transform data to match schema
+      const transformedData = {
+        title: body.title || "",
+        content: body.content || "",
+        excerpt: body.excerpt || "",
+        author: body.author || "Admin",  // Default author if not provided
+        category: body.category || "Inner Nutrition",
+        image: body.imageUrl || body.image || "",  // Map imageUrl to image
+        bannerImage: body.bannerImage || null,
+        slug: body.slug || "",
+        readTime: body.readTime || "5 min read",
+        tags: body.tags || [],
+        published: body.published !== undefined ? body.published : true,
+        featured: body.featured || false,
+        updatedAt: new Date(),
+      };
+      
+      const postData = insertBlogPostSchema.parse(transformedData);
       const post = await storage.createBlogPost(postData);
-      res.json(post);
+      
+      // Transform back to match frontend expectations
+      const responseData = {
+        ...post,
+        imageUrl: post.image,
+      };
+      
+      res.json(responseData);
     } catch (error) {
       console.error("Error creating blog post:", error);
-      res.status(400).json({ message: "Failed to create blog post" });
+      if (error instanceof Error) {
+        res.status(400).json({ message: `Failed to create blog post: ${error.message}` });
+      } else {
+        res.status(400).json({ message: "Failed to create blog post" });
+      }
     }
   });
 
