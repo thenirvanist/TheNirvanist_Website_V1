@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminGate from "@/components/AdminGate";
-import QuotesAdmin from "./QuotesAdmin";
+import QuotesAdmin from "./admin/QuotesAdmin";
 import SagesAdmin from "./admin/SagesAdmin";
 import NutritionAdmin from "./admin/NutritionAdmin";
 import AshramsAdmin from "./admin/AshramsAdmin";

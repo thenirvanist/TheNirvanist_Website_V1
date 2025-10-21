@@ -64,13 +64,12 @@ export interface NewsletterSubscriber {
 
 export interface QuoteOfWeek {
   id: number;
-  dayOfWeek: number;
   title: string;
   author: string;
   quoteText?: string;
   imageUrl: string;
+  displayDate: string;  // The date this quote should be displayed
   active?: boolean;
-  weekStartDate: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -146,6 +145,7 @@ export interface IStorage {
   getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]>;
   createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek>;
   updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined>;
+  deleteQuoteOfWeek(id: number): Promise<boolean>;
 
   // Bookmark operations
   getUserBookmarks(userId: number): Promise<Bookmark[]>;
@@ -543,7 +543,7 @@ export class SupabaseStorage implements IStorage {
   async getQuotesOfWeek(): Promise<QuoteOfWeek[]> {
     try {
       const quotes = await db.select().from(schema.quotesOfWeek)
-        .orderBy(sql`day_of_week ASC`);
+        .orderBy(sql`display_date DESC`);
       return quotes as QuoteOfWeek[];
     } catch (error) {
       console.error('Error getting quotes of week:', error);
@@ -555,7 +555,7 @@ export class SupabaseStorage implements IStorage {
     try {
       const quotes = await db.select().from(schema.quotesOfWeek)
         .where(eq(schema.quotesOfWeek.active, true))
-        .orderBy(sql`day_of_week ASC`);
+        .orderBy(sql`display_date DESC`);
       return quotes as QuoteOfWeek[];
     } catch (error) {
       console.error('Error getting active quotes of week:', error);
@@ -567,13 +567,12 @@ export class SupabaseStorage implements IStorage {
     try {
       const [newQuote] = await db.insert(schema.quotesOfWeek)
         .values({
-          dayOfWeek: quote.dayOfWeek!,
           title: quote.title!,
           author: quote.author!,
-          quoteText: quote.quoteText,
+          quoteText: quote.quoteText || null,
           imageUrl: quote.imageUrl!,
+          displayDate: quote.displayDate!,
           active: quote.active ?? true,
-          weekStartDate: quote.weekStartDate!,
         })
         .returning();
       return newQuote as QuoteOfWeek;
@@ -593,6 +592,18 @@ export class SupabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error updating quote of week:', error);
       return undefined;
+    }
+  }
+
+  async deleteQuoteOfWeek(id: number): Promise<boolean> {
+    try {
+      const [deletedQuote] = await db.delete(schema.quotesOfWeek)
+        .where(eq(schema.quotesOfWeek.id, id))
+        .returning();
+      return !!deletedQuote;
+    } catch (error) {
+      console.error('Error deleting quote of week:', error);
+      return false;
     }
   }
 

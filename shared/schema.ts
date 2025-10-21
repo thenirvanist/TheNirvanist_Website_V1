@@ -123,16 +123,19 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
 
 export const quotesOfWeek = pgTable("quotes_of_week", {
   id: serial("id").primaryKey(),
-  dayOfWeek: integer("day_of_week").notNull(), // 0 = Sunday, 1 = Monday, ... 6 = Saturday
   title: text("title").notNull(),
   author: text("author").notNull(),
   quoteText: text("quote_text"),
   imageUrl: text("image_url").notNull(),
+  displayDate: date("display_date").notNull(), // The date this quote should be displayed
   active: boolean("active").default(true),
-  weekStartDate: date("week_start_date").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Legacy field mapping for backward compatibility
+// dayOfWeek is replaced by displayDate
+// weekStartDate is replaced by displayDate
 
 // Authentication tables
 export const authUsers = pgTable("auth_users", {

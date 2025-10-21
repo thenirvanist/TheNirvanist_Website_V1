@@ -470,6 +470,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/quotes/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteQuoteOfWeek(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Quote not found" });
+      }
+      res.json({ message: "Quote deleted successfully" });
+    } catch (error) {
+      console.error("Delete quote error:", error);
+      res.status(400).json({ message: "Failed to delete quote" });
+    }
+  });
+
   // Bookmark endpoints (protected routes)
   const requireAuth = authenticateToken; // Use existing auth middleware
 

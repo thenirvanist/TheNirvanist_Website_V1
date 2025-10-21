@@ -1,22 +1,17 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface Quote {
   id: number;
-  dayOfWeek: number;
   title: string;
   author: string;
   quoteText?: string;
   imageUrl: string;
+  displayDate: string;
   active?: boolean;
-  weekStartDate: string;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
-
-const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function QuotesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,17 +60,29 @@ export default function QuotesCarousel() {
     }
   }, [isPlaying]);
 
+  // Format date for display (without timezone shift)
+  const formatDate = (dateString: string) => {
+    // Append time to force UTC interpretation and avoid timezone shift
+    const date = new Date(dateString + 'T00:00:00Z');
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'short', 
+      day: 'numeric',
+      timeZone: 'UTC' // Force UTC to prevent timezone shifts
+    });
+  };
+
   if (isLoading) {
     return (
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Quotes of the Week
+              Daily Wisdom
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-pink-500 mx-auto mb-6"></div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Daily wisdom from spiritual masters and mystics around the world
+              Inspirational quotes from spiritual masters and mystics
             </p>
           </div>
           
@@ -93,7 +100,7 @@ export default function QuotesCarousel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Quotes of the Week
+              Daily Wisdom
             </h2>
             <p className="text-xl text-gray-600">
               Unable to load quotes at this time. Please try again later.
@@ -112,11 +119,11 @@ export default function QuotesCarousel() {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Quotes of the Week
+            Daily Wisdom
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-pink-500 mx-auto mb-6"></div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Daily wisdom from spiritual masters and mystics around the world
+            Inspirational quotes from spiritual masters and mystics around the world
           </p>
         </div>
 
@@ -128,10 +135,10 @@ export default function QuotesCarousel() {
               className="aspect-square bg-cover bg-center relative"
               style={{ backgroundImage: `url(${currentQuote.imageUrl})` }}
             >
-              {/* Day Label Only */}
+              {/* Date Label */}
               <div className="absolute top-4 left-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full z-10">
                 <span className="text-sm font-medium text-gray-900">
-                  {dayNames[currentQuote.dayOfWeek]}
+                  {formatDate(currentQuote.displayDate)}
                 </span>
               </div>
             </div>
@@ -180,7 +187,7 @@ export default function QuotesCarousel() {
           ))}
         </div>
 
-        {/* Day Labels */}
+        {/* Author Labels */}
         <div className="flex justify-center items-center mt-6 flex-wrap gap-2">
           {quotes.map((quote, index) => (
             <button
@@ -191,9 +198,9 @@ export default function QuotesCarousel() {
                   ? "bg-gradient-to-r from-orange-400 to-pink-500 text-white"
                   : "bg-gray-100 hover:bg-gray-200 text-gray-700"
               }`}
-              data-testid={`day-label-${dayNames[quote.dayOfWeek].toLowerCase()}`}
+              data-testid={`author-label-${index}`}
             >
-              {dayNames[quote.dayOfWeek]}
+              {quote.author}
             </button>
           ))}
         </div>
