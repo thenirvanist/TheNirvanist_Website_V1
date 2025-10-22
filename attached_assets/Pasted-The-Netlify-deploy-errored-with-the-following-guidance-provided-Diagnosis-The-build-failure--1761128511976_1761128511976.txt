@@ -1,0 +1,86 @@
+The Netlify deploy errored, with the following guidance provided:
+
+**Diagnosis:**
+The build failure is due to a warning related to the CommonJS "module" variable being treated as a global variable in an ECMAScript module. This is caused by the file `netlify/functions/api.js` using `module.exports.handler` in an ECMAScript module when the `package.json` file sets the type to "module". This conflict is causing the function creation to fail.
+
+**Solution:**
+To resolve this issue, you need to rename the `api.js` file to use the `.cjs` file extension. In the Vite project configuration, CommonJS files in a "type": "module" package are required to use the `.cjs` file extension. First, ensure that the `api.js` file is present in the repository. Then, rename `api.js` to `api.cjs`.
+
+After renaming the file, the build should be successful without the ECMAScript module warning.
+
+The relevant error logs are:
+
+Line 112: ​
+Line 113: ▲ [WARNING] The CommonJS "module" variable is treated as a global variable in an ECMAScript module and may not work as expected 
+Line 114:     netlify/functions/api.js:355:0:
+Line 115:       355 │ module.exports.handler = serverless(app);
+Line 116:           ╵ ~~~~~~
+Line 117:   This file is considered to be an ECMAScript module because the enclosing "package.json" file sets the type of this file to "mo
+Line 118:     package.json:4:10:
+Line 119:       4 │   "type": "module",
+Line 120:         ╵           ~~~~~~~~
+Line 121:   Node's package format requires that CommonJS files in a "type": "module" package use the ".cjs" file extension.
+Line 122: Failed to create function
+Line 123: [33m[1m​[22m[39m
+Line 124: [33m[1m❯ Functions bundled with warnings:[22m[39m
+Line 125:    - api.zip
+Line 126: ​
+Line 127: [90m(Functions bundling completed in 4.1s)[39m
+Line 128: [96m[1m​[22m[39m
+Line 129: [96m[1mDeploy site                                                   [22m[39m
+Line 130: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 131: ​
+Line 132: Starting to deploy site from 'dist/public'
+Line 133: Calculating files to upload
+Line 134: 0 new file(s) to upload
+Line 135: 1 new function(s) to upload
+Line 136: Failed to create function
+Line 137: Failed to create function
+Line 138: Failed to create function
+Line 139: Failed to create function
+Line 140: Failed to create function
+Line 141: Failed to create function
+Line 142: Failed to create function
+Line 143: Failed to create function
+Line 144: Failed to create function
+Line 145: Failed to create function
+Line 146: Failed to create function
+Line 147: Failed during stage 'building site': Build script returned non-zero exit code: 4
+Line 148: Failed to upload file: api
+Line 149: Section completed: deploying
+Line 150: [91m[1m​[22m[39m
+Line 151: [91m[1mInternal error deploying                                      [22m[39m
+Line 152: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 153: ​
+Line 154:   [31m[1mError message[22m[39m
+Line 155:   Deploy did not succeed with HTTP Error 500: Failed to execute deploy: [PUT /deploys/{deploy_id}/functions/{name}][500] uploadD
+Line 156: ​
+Line 157:   [31m[1mError location[22m[39m
+Line 158:   At deploy the stage with HTTP status code '500'
+Line 159: ​
+Line 160:   [31m[1mResolved config[22m[39m
+Line 161:   build:
+Line 162:     command: npm run build && node scripts/build-functions.js
+Line 163:     commandOrigin: config
+Line 164:     environment:
+Line 165:       - SUPABASE_ANON_KEY
+Line 166:       - SUPABASE_URL
+Line 167:       - NODE_VERSION
+Line 170:   functions:
+Line 171:     "*":
+Line 172:       external_node_modules:
+Line 173:         - express
+Line 174:         - drizzle-orm
+Line 175:         - "@neondatabase/serverless"
+Line 176:       node_bundler: esbuild
+Line 177:   functionsDirectory: /opt/build/repo/netlify/functions
+Line 178:   redirects:
+Line 179:     - from: /api/*
+      status: 200
+      to: /.netlify/functions/api/:splat
+    - from: /*
+      status: 200
+      to: /index.
+Line 180: Build failed due to an internal system error: Build script returned non-zero exit code: 4
+Line 181: Failing build: Failed to build site
+Line 182: Finished processing build request in 1m58.364s
