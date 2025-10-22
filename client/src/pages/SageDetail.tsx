@@ -1,5 +1,4 @@
 import { useParams } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, MapPin, Sparkles, Heart, ArrowLeft } from "lucide-react";
@@ -7,15 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import type { Sage } from "@shared/schema";
+import { useSage } from "@/hooks/useSupabaseQuery";
 
 export default function SageDetail() {
   const { id } = useParams<{ id: string }>();
   const sageId = parseInt(id || "0");
 
-  const { data: sage, isLoading, error } = useQuery<Sage>({
-    queryKey: [`/api/sages/${sageId}`],
-  });
+  const { data: sage, isLoading, error } = useSage(sageId);
 
   if (isLoading) {
     return (

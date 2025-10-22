@@ -1,27 +1,14 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-
-interface Quote {
-  id: number;
-  title: string;
-  author: string;
-  quoteText?: string;
-  imageUrl: string;
-  displayDate: string;
-  active?: boolean;
-}
+import { useActiveQuotes } from "@/hooks/useSupabaseQuery";
 
 export default function QuotesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
-  // Fetch active quotes from API
-  const { data: quotes = [], isLoading, isError } = useQuery<Quote[]>({
-    queryKey: ["/api/quotes/active"],
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  // Fetch active quotes from Supabase
+  const { data: quotes = [], isLoading, isError } = useActiveQuotes();
 
   // Auto-play functionality
   useEffect(() => {

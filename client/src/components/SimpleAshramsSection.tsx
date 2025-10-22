@@ -1,13 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import type { Ashram } from "@shared/schema";
 import { BookmarkButton } from "./BookmarkButton";
+import { useAshrams } from "@/hooks/useSupabaseQuery";
 
 export default function SimpleAshramsSection() {
-  const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
-    queryKey: ["/api/ashrams"],
-  });
+  const { data: ashrams, isLoading, error } = useAshrams();
 
   if (isLoading) {
     return (

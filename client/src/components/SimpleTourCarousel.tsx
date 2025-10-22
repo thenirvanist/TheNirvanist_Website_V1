@@ -1,13 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import type { Journey } from "@shared/schema";
 import { BookmarkButton } from "./BookmarkButton";
+import { useJourneys } from "@/hooks/useSupabaseQuery";
 
 export default function SimpleTourCarousel() {
-  const { data: journeys, isLoading, error } = useQuery<Journey[]>({
-    queryKey: ["/api/journeys"],
-  });
+  const { data: journeys, isLoading, error } = useJourneys();
 
   if (isLoading) {
     return (

@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,12 +6,10 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import TourCarousel from "@/components/TourCarousel";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
-import type { Journey } from "@shared/schema";
+import { useJourneys } from "@/hooks/useSupabaseQuery";
 
 export default function Journeys() {
-  const { data: journeys, isLoading, error } = useQuery<Journey[]>({
-    queryKey: ["/api/journeys"],
-  });
+  const { data: journeys, isLoading, error } = useJourneys();
 
   if (isLoading) {
     return (

@@ -33,10 +33,7 @@ export default function QuotesAdmin() {
   // Create quote mutation
   const createQuoteMutation = useMutation({
     mutationFn: async (quote: Omit<Quote, 'id'>) => {
-      return apiRequest("/api/quotes", {
-        method: "POST",
-        body: quote,
-      });
+      return apiRequest("POST", "/api/quotes", quote);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });
@@ -54,10 +51,7 @@ export default function QuotesAdmin() {
   // Update quote mutation
   const updateQuoteMutation = useMutation({
     mutationFn: async (quote: Partial<Quote> & { id: number }) => {
-      return apiRequest(`/api/quotes/${quote.id}`, {
-        method: "PUT",
-        body: quote,
-      });
+      return apiRequest("PUT", `/api/quotes/${quote.id}`, quote);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });
@@ -73,9 +67,7 @@ export default function QuotesAdmin() {
   // Delete quote mutation
   const deleteQuoteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/quotes/${id}`, {
-        method: "DELETE",
-      });
+      return apiRequest("DELETE", `/api/quotes/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });

@@ -1,13 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import type { Sage } from "@shared/schema";
 import { BookmarkButton } from "./BookmarkButton";
+import { useSages } from "@/hooks/useSupabaseQuery";
 
 export default function SimpleSagesSection() {
-  const { data: sages, isLoading, error } = useQuery<Sage[]>({
-    queryKey: ["/api/sages"],
-  });
+  const { data: sages, isLoading, error } = useSages();
 
   if (isLoading) {
     return (

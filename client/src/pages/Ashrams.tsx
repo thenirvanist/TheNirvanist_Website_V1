@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,15 +7,13 @@ import { MapPin, Phone, Globe, Star, Heart, Leaf, Search, User } from "lucide-re
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import type { Ashram } from "@shared/schema";
+import { useAshrams } from "@/hooks/useSupabaseQuery";
 
 export default function Ashrams() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const { data: ashrams, isLoading, error } = useQuery<Ashram[]>({
-    queryKey: ["/api/ashrams"],
-  });
+  const { data: ashrams, isLoading, error } = useAshrams();
 
   const filterOptions = [
     "All",

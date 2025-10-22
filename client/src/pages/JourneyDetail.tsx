@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRoute } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,16 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Clock, DollarSign, Users, Calendar, Star } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import type { Journey } from "@shared/schema";
+import { useJourney } from "@/hooks/useSupabaseQuery";
 
 export default function JourneyDetail() {
   const [, params] = useRoute("/journeys/:id");
-  const journeyId = params?.id;
+  const journeyId = params?.id ? parseInt(params.id) : 0;
 
-  const { data: journey, isLoading, error } = useQuery<Journey>({
-    queryKey: [`/api/journeys/${journeyId}`],
-    enabled: !!journeyId,
-  });
+  const { data: journey, isLoading, error } = useJourney(journeyId);
 
   if (isLoading) {
     return (

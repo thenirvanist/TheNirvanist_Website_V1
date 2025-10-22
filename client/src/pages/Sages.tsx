@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,15 +7,13 @@ import { BookOpen, Heart, Sparkles, MapPin, Search } from "lucide-react";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import type { Sage } from "@shared/schema";
+import { useSages } from "@/hooks/useSupabaseQuery";
 
 export default function Sages() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const { data: sages, isLoading, error } = useQuery<Sage[]>({
-    queryKey: ["/api/sages"],
-  });
+  const { data: sages, isLoading, error } = useSages();
 
   const filterOptions = [
     "All",

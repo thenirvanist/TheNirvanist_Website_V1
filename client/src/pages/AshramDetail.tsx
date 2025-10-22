@@ -1,5 +1,4 @@
 import { useParams } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Globe, Star, Heart, Leaf, ArrowLeft, User } from "lucide-react";
@@ -7,15 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import type { Ashram } from "@shared/schema";
+import { useAshram } from "@/hooks/useSupabaseQuery";
 
 export default function AshramDetail() {
   const { id } = useParams<{ id: string }>();
   const ashramId = parseInt(id || "0");
 
-  const { data: ashram, isLoading, error } = useQuery<Ashram>({
-    queryKey: [`/api/ashrams/${ashramId}`],
-  });
+  const { data: ashram, isLoading, error } = useAshram(ashramId);
 
   if (isLoading) {
     return (
