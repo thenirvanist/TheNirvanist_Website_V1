@@ -50,10 +50,7 @@ export default function AshramsAdmin() {
   // Create ashram mutation
   const createAshramMutation = useMutation({
     mutationFn: async (ashram: Omit<Ashram, 'id'>) => {
-      return apiRequest("/api/ashrams", {
-        method: "POST",
-        body: ashram,
-      });
+      return apiRequest("POST", "/api/ashrams", ashram);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ashrams"] });
@@ -69,10 +66,7 @@ export default function AshramsAdmin() {
   // Update ashram mutation
   const updateAshramMutation = useMutation({
     mutationFn: async (ashram: Partial<Ashram> & { id: number }) => {
-      return apiRequest(`/api/ashrams/${ashram.id}`, {
-        method: "PUT",
-        body: ashram,
-      });
+      return apiRequest("PUT", `/api/ashrams/${ashram.id}`, ashram);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ashrams"] });
@@ -87,9 +81,7 @@ export default function AshramsAdmin() {
   // Delete ashram mutation
   const deleteAshramMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/ashrams/${id}`, {
-        method: "DELETE",
-      });
+      return apiRequest("DELETE", `/api/ashrams/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ashrams"] });

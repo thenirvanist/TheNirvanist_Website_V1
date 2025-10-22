@@ -47,10 +47,7 @@ export default function NutritionAdmin() {
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: async (post: Omit<BlogPost, 'id'>) => {
-      return apiRequest("/api/blog", {
-        method: "POST",
-        body: post,
-      });
+      return apiRequest("POST", "/api/blog", post);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
@@ -66,10 +63,7 @@ export default function NutritionAdmin() {
   // Update post mutation
   const updatePostMutation = useMutation({
     mutationFn: async (post: Partial<BlogPost> & { id: number }) => {
-      return apiRequest(`/api/blog/${post.id}`, {
-        method: "PUT",
-        body: post,
-      });
+      return apiRequest("PUT", `/api/blog/${post.id}`, post);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
@@ -84,9 +78,7 @@ export default function NutritionAdmin() {
   // Delete post mutation
   const deletePostMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/blog/${id}`, {
-        method: "DELETE",
-      });
+      return apiRequest("DELETE", `/api/blog/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/blog"] });

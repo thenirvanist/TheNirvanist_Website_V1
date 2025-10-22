@@ -41,10 +41,7 @@ export default function SagesAdmin() {
   // Create sage mutation
   const createSageMutation = useMutation({
     mutationFn: async (sage: Omit<Sage, 'id'>) => {
-      return apiRequest("/api/sages", {
-        method: "POST",
-        body: sage,
-      });
+      return apiRequest("POST", "/api/sages", sage);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sages"] });
@@ -59,10 +56,7 @@ export default function SagesAdmin() {
   // Update sage mutation
   const updateSageMutation = useMutation({
     mutationFn: async (sage: Partial<Sage> & { id: number }) => {
-      return apiRequest(`/api/sages/${sage.id}`, {
-        method: "PUT",
-        body: sage,
-      });
+      return apiRequest("PUT", `/api/sages/${sage.id}`, sage);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sages"] });
@@ -77,9 +71,7 @@ export default function SagesAdmin() {
   // Delete sage mutation
   const deleteSageMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/sages/${id}`, {
-        method: "DELETE",
-      });
+      return apiRequest("DELETE", `/api/sages/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sages"] });
