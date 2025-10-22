@@ -22,6 +22,9 @@ import InnerNutrition from "@/pages/InnerNutrition";
 import BlogArticle from "@/pages/BlogArticle";
 import Dashboard from "@/pages/Dashboard";
 import QuotesAdmin from "@/pages/admin/QuotesAdmin";
+import SagesAdmin from "@/pages/admin/SagesAdmin";
+import AshramsAdmin from "@/pages/admin/AshramsAdmin";
+import NutritionAdmin from "@/pages/admin/NutritionAdmin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Chatbot from "@/components/Chatbot";
 
@@ -45,6 +48,9 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/auth/callback" component={AuthCallback} />
       <Route path="/admin/quotes" component={QuotesAdmin} />
+      <Route path="/admin/sages" component={SagesAdmin} />
+      <Route path="/admin/ashrams" component={AshramsAdmin} />
+      <Route path="/admin/nutrition" component={NutritionAdmin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
