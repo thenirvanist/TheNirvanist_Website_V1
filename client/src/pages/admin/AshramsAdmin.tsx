@@ -7,20 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-
-interface Ashram {
-  id: number;
-  name: string;
-  location: string;
-  description: string;
-  imageUrl: string;
-  region: string;
-  focus: string;
-  founders: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  website?: string;
-}
+import type { Ashram } from "@shared/schema";
 
 const regions = ["North India", "South India", "West India", "East India", "Central India"];
 const focuses = [
@@ -33,6 +20,18 @@ const focuses = [
   "Community Service", 
   "Healing Arts"
 ];
+
+// Helper to convert arrays to comma-separated strings for editing
+const arrayToString = (arr: string[] | null | undefined): string => {
+  if (!arr || arr.length === 0) return "";
+  return arr.join(", ");
+};
+
+// Helper to convert comma-separated strings to arrays
+const stringToArray = (str: string): string[] | null => {
+  if (!str || str.trim() === "") return null;
+  return str.split(",").map(s => s.trim()).filter(s => s.length > 0);
+};
 
 export default function AshramsAdmin() {
   const [editingAshram, setEditingAshram] = useState<Ashram | null>(null);
@@ -120,7 +119,7 @@ export default function AshramsAdmin() {
         if (editingAshram) {
           setEditingAshram({
             ...editingAshram,
-            imageUrl: data.imageUrl,
+            image: data.imageUrl, // Server returns imageUrl, we store as image
           });
         }
         setUploadingImage(null);
@@ -154,13 +153,13 @@ export default function AshramsAdmin() {
       name: "",
       location: "",
       description: "",
-      imageUrl: "",
+      image: "",
+      facilities: null,
+      contact: null,
+      website: null,
       region: regions[0],
       focus: focuses[0],
-      founders: "",
-      contactEmail: "",
-      contactPhone: "",
-      website: "",
+      founders: null,
     });
     setShowCreateForm(true);
   };
@@ -192,7 +191,7 @@ export default function AshramsAdmin() {
           <div key={ashram.id} className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="aspect-[4/3] bg-gray-200 relative">
               <img
-                src={ashram.imageUrl}
+                src={ashram.image}
                 alt={ashram.name}
                 className="w-full h-full object-cover"
                 data-testid={`img-ashram-${ashram.id}`}
@@ -247,8 +246,8 @@ export default function AshramsAdmin() {
 
       {/* Edit/Create Modal */}
       {editingAshram && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[95vh] overflow-y-auto my-4">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">
@@ -272,16 +271,16 @@ export default function AshramsAdmin() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Ashram Image
                 </label>
-                {editingAshram.imageUrl && (
-                  <div className="aspect-[4/3] w-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                {editingAshram.image && (
+                  <div className="aspect-[4/3] w-full bg-gray-200 rounded-lg overflow-hidden mb-4">
                     <img
-                      src={editingAshram.imageUrl}
+                      src={editingAshram.image}
                       alt="Current"
                       className="w-full h-full object-cover"
                     />
                   </div>
                 )}
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <Input
                     type="file"
                     accept="image/*"
@@ -289,7 +288,7 @@ export default function AshramsAdmin() {
                     data-testid="input-image-upload"
                   />
                   {imagePreview && (
-                    <div className="aspect-[4/3] w-48 bg-gray-200 rounded-lg overflow-hidden">
+                    <div className="aspect-[4/3] w-full bg-gray-200 rounded-lg overflow-hidden">
                       <img
                         src={imagePreview}
                         alt="Preview"
@@ -298,18 +297,27 @@ export default function AshramsAdmin() {
                     </div>
                   )}
                   {uploadingImage && (
-                    <Button onClick={handleImageUpload} data-testid="button-upload-image">
+                    <Button onClick={handleImageUpload} size="sm" data-testid="button-upload-image">
                       <Upload className="h-4 w-4 mr-2" />
                       Upload Image
                     </Button>
                   )}
                 </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Or paste image URL directly below:
+                </p>
+                <Input
+                  value={editingAshram.image}
+                  onChange={(e) => setEditingAshram({ ...editingAshram, image: e.target.value })}
+                  placeholder="https://example.com/image.jpg"
+                  className="mt-2"
+                />
               </div>
 
               {/* Form Fields */}
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                   <Input
                     value={editingAshram.name}
                     onChange={(e) => setEditingAshram({ ...editingAshram, name: e.target.value })}
@@ -318,7 +326,7 @@ export default function AshramsAdmin() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
                   <Input
                     value={editingAshram.location}
                     onChange={(e) => setEditingAshram({ ...editingAshram, location: e.target.value })}
@@ -330,7 +338,7 @@ export default function AshramsAdmin() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
                     <Select
-                      value={editingAshram.region}
+                      value={editingAshram.region || ""}
                       onValueChange={(value) => setEditingAshram({ ...editingAshram, region: value })}
                     >
                       <SelectTrigger data-testid="select-region">
@@ -349,7 +357,7 @@ export default function AshramsAdmin() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Focus</label>
                     <Select
-                      value={editingAshram.focus}
+                      value={editingAshram.focus || ""}
                       onValueChange={(value) => setEditingAshram({ ...editingAshram, focus: value })}
                     >
                       <SelectTrigger data-testid="select-focus">
@@ -369,7 +377,7 @@ export default function AshramsAdmin() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Founders</label>
                   <Input
-                    value={editingAshram.founders}
+                    value={editingAshram.founders || ""}
                     onChange={(e) => setEditingAshram({ ...editingAshram, founders: e.target.value })}
                     placeholder="Names of founders or spiritual leaders"
                     data-testid="input-founders"
@@ -377,7 +385,7 @@ export default function AshramsAdmin() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
                   <Textarea
                     value={editingAshram.description}
                     onChange={(e) => setEditingAshram({ ...editingAshram, description: e.target.value })}
@@ -386,23 +394,27 @@ export default function AshramsAdmin() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-                    <Input
-                      value={editingAshram.contactEmail || ""}
-                      onChange={(e) => setEditingAshram({ ...editingAshram, contactEmail: e.target.value })}
-                      type="email"
-                      data-testid="input-email"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Facilities (comma-separated)
+                  </label>
+                  <Textarea
+                    value={arrayToString(editingAshram.facilities)}
+                    onChange={(e) => setEditingAshram({ ...editingAshram, facilities: stringToArray(e.target.value) })}
+                    rows={2}
+                    placeholder="Meditation Hall, Guest Rooms, Library, Garden"
+                    data-testid="input-facilities"
+                  />
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
                     <Input
-                      value={editingAshram.contactPhone || ""}
-                      onChange={(e) => setEditingAshram({ ...editingAshram, contactPhone: e.target.value })}
-                      data-testid="input-phone"
+                      value={editingAshram.contact || ""}
+                      onChange={(e) => setEditingAshram({ ...editingAshram, contact: e.target.value })}
+                      placeholder="Email or phone"
+                      data-testid="input-contact"
                     />
                   </div>
 
@@ -412,6 +424,7 @@ export default function AshramsAdmin() {
                       value={editingAshram.website || ""}
                       onChange={(e) => setEditingAshram({ ...editingAshram, website: e.target.value })}
                       type="url"
+                      placeholder="https://example.com"
                       data-testid="input-website"
                     />
                   </div>
