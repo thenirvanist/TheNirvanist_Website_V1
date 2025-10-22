@@ -1,29 +1,29 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit3, Eye, EyeOff, Save, X, Upload } from "lucide-react";
+import { Plus, Edit3, Save, X, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-
-interface Sage {
-  id: number;
-  name: string;
-  description: string;
-  teachings: string;
-  books: string;
-  imageUrl: string;
-  location?: string;
-  category: string;
-  era: string;
-  status: string;
-}
+import type { Sage } from "@shared/schema";
 
 const categories = ["Hindu", "Buddhist", "Sufi", "Jain", "Universal"];
 const eras = ["Ancient", "Classical", "Medieval", "Modern", "Contemporary"];
 const statuses = ["Living", "Deceased"];
+
+// Helper to convert arrays to comma-separated strings for editing
+const arrayToString = (arr: string[] | null | undefined): string => {
+  if (!arr || arr.length === 0) return "";
+  return arr.join(", ");
+};
+
+// Helper to convert comma-separated strings to arrays
+const stringToArray = (str: string): string[] | null => {
+  if (!str || str.trim() === "") return null;
+  return str.split(",").map(s => s.trim()).filter(s => s.length > 0);
+};
 
 export default function SagesAdmin() {
   const [editingSage, setEditingSage] = useState<Sage | null>(null);
@@ -110,7 +110,7 @@ export default function SagesAdmin() {
         if (editingSage) {
           setEditingSage({
             ...editingSage,
-            imageUrl: data.imageUrl,
+            image: data.imageUrl, // Server returns imageUrl, we store as image
           });
         }
         setUploadingImage(null);
@@ -143,10 +143,13 @@ export default function SagesAdmin() {
       id: 0,
       name: "",
       description: "",
-      teachings: "",
-      books: "",
-      imageUrl: "",
-      location: "",
+      biography: "",
+      image: "",
+      location: null,
+      teachings: null,
+      books: null,
+      coreTeachings: null,
+      notableWork: null,
       category: "Hindu",
       era: "Modern",
       status: "Living",
@@ -181,7 +184,7 @@ export default function SagesAdmin() {
           <div key={sage.id} className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="aspect-[4/3] bg-gray-200 relative">
               <img
-                src={sage.imageUrl}
+                src={sage.image}
                 alt={sage.name}
                 className="w-full h-full object-cover"
                 data-testid={`img-sage-${sage.id}`}
@@ -235,8 +238,8 @@ export default function SagesAdmin() {
 
       {/* Edit/Create Modal */}
       {editingSage && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-y-auto my-4">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">
@@ -255,157 +258,213 @@ export default function SagesAdmin() {
                 </Button>
               </div>
 
-              {/* Image Section */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sage Image
-                </label>
-                {editingSage.imageUrl && (
-                  <div className="aspect-[4/3] w-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={editingSage.imageUrl}
-                      alt="Current"
-                      className="w-full h-full object-cover"
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4">
+                  {/* Image Section */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Sage Image
+                    </label>
+                    {editingSage.image && (
+                      <div className="aspect-[4/3] w-full bg-gray-200 rounded-lg overflow-hidden mb-4">
+                        <img
+                          src={editingSage.image}
+                          alt="Current"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        data-testid="input-image-upload"
+                      />
+                      {imagePreview && (
+                        <div className="aspect-[4/3] w-full bg-gray-200 rounded-lg overflow-hidden">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      {uploadingImage && (
+                        <Button onClick={handleImageUpload} size="sm" data-testid="button-upload-image">
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload Image
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Or paste image URL directly below:
+                    </p>
+                    <Input
+                      value={editingSage.image}
+                      onChange={(e) => setEditingSage({ ...editingSage, image: e.target.value })}
+                      placeholder="https://example.com/image.jpg"
+                      className="mt-2"
                     />
                   </div>
-                )}
-                <div className="space-y-4">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    data-testid="input-image-upload"
-                  />
-                  {imagePreview && (
-                    <div className="aspect-[4/3] w-48 bg-gray-200 rounded-lg overflow-hidden">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                    <Input
+                      value={editingSage.name}
+                      onChange={(e) => setEditingSage({ ...editingSage, name: e.target.value })}
+                      data-testid="input-name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <Input
+                      value={editingSage.location || ""}
+                      onChange={(e) => setEditingSage({ ...editingSage, location: e.target.value })}
+                      data-testid="input-location"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                      <Select
+                        value={editingSage.category || ""}
+                        onValueChange={(value) => setEditingSage({ ...editingSage, category: value })}
+                      >
+                        <SelectTrigger data-testid="select-category">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((cat) => (
+                            <SelectItem key={cat} value={cat}>
+                              {cat}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  )}
-                  {uploadingImage && (
-                    <Button onClick={handleImageUpload} data-testid="button-upload-image">
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Image
-                    </Button>
-                  )}
-                </div>
-              </div>
 
-              {/* Form Fields */}
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <Input
-                    value={editingSage.name}
-                    onChange={(e) => setEditingSage({ ...editingSage, name: e.target.value })}
-                    data-testid="input-name"
-                  />
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Era</label>
+                      <Select
+                        value={editingSage.era || ""}
+                        onValueChange={(value) => setEditingSage({ ...editingSage, era: value })}
+                      >
+                        <SelectTrigger data-testid="select-era">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {eras.map((era) => (
+                            <SelectItem key={era} value={era}>
+                              {era}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                  <Input
-                    value={editingSage.location || ""}
-                    onChange={(e) => setEditingSage({ ...editingSage, location: e.target.value })}
-                    data-testid="input-location"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <Select
-                      value={editingSage.category}
-                      onValueChange={(value) => setEditingSage({ ...editingSage, category: value })}
-                    >
-                      <SelectTrigger data-testid="select-category">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Era</label>
-                    <Select
-                      value={editingSage.era}
-                      onValueChange={(value) => setEditingSage({ ...editingSage, era: value })}
-                    >
-                      <SelectTrigger data-testid="select-era">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {eras.map((era) => (
-                          <SelectItem key={era} value={era}>
-                            {era}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <Select
-                      value={editingSage.status}
-                      onValueChange={(value) => setEditingSage({ ...editingSage, status: value })}
-                    >
-                      <SelectTrigger data-testid="select-status">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {statuses.map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                      <Select
+                        value={editingSage.status || ""}
+                        onValueChange={(value) => setEditingSage({ ...editingSage, status: value })}
+                      >
+                        <SelectTrigger data-testid="select-status">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statuses.map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <Textarea
-                    value={editingSage.description}
-                    onChange={(e) => setEditingSage({ ...editingSage, description: e.target.value })}
-                    rows={4}
-                    data-testid="input-description"
-                  />
-                </div>
+                {/* Right Column */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                    <Textarea
+                      value={editingSage.description}
+                      onChange={(e) => setEditingSage({ ...editingSage, description: e.target.value })}
+                      rows={3}
+                      data-testid="input-description"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Core Teachings</label>
-                  <Textarea
-                    value={editingSage.teachings}
-                    onChange={(e) => setEditingSage({ ...editingSage, teachings: e.target.value })}
-                    rows={3}
-                    data-testid="input-teachings"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Biography *</label>
+                    <Textarea
+                      value={editingSage.biography}
+                      onChange={(e) => setEditingSage({ ...editingSage, biography: e.target.value })}
+                      rows={4}
+                      data-testid="input-biography"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Notable Books</label>
-                  <Textarea
-                    value={editingSage.books}
-                    onChange={(e) => setEditingSage({ ...editingSage, books: e.target.value })}
-                    rows={2}
-                    data-testid="input-books"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Teachings (comma-separated)
+                    </label>
+                    <Textarea
+                      value={arrayToString(editingSage.teachings)}
+                      onChange={(e) => setEditingSage({ ...editingSage, teachings: stringToArray(e.target.value) })}
+                      rows={2}
+                      placeholder="Meditation, Compassion, Non-violence"
+                      data-testid="input-teachings"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Core Teachings (comma-separated)
+                    </label>
+                    <Textarea
+                      value={arrayToString(editingSage.coreTeachings)}
+                      onChange={(e) => setEditingSage({ ...editingSage, coreTeachings: stringToArray(e.target.value) })}
+                      rows={2}
+                      placeholder="Self-realization, Mindfulness"
+                      data-testid="input-core-teachings"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Books (comma-separated)
+                    </label>
+                    <Textarea
+                      value={arrayToString(editingSage.books)}
+                      onChange={(e) => setEditingSage({ ...editingSage, books: stringToArray(e.target.value) })}
+                      rows={2}
+                      placeholder="Book 1, Book 2, Book 3"
+                      data-testid="input-books"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Notable Work (comma-separated)
+                    </label>
+                    <Textarea
+                      value={arrayToString(editingSage.notableWork)}
+                      onChange={(e) => setEditingSage({ ...editingSage, notableWork: stringToArray(e.target.value) })}
+                      rows={2}
+                      placeholder="Work 1, Work 2"
+                      data-testid="input-notable-work"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 mt-6">
                 <Button
                   onClick={showCreateForm ? handleCreateSage : handleSaveSage}
                   disabled={updateSageMutation.isPending || createSageMutation.isPending}
