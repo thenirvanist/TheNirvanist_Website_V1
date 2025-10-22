@@ -17,12 +17,12 @@ console.log('Building Netlify function...');
 // Build the Netlify function
 try {
   await build({
-    entryPoints: [join(__dirname, '..', 'server', 'netlify-function.js')],
+    entryPoints: [join(__dirname, '..', 'server', 'netlify-function.cjs')],
     bundle: true,
     platform: 'node',
     target: 'node18',
     format: 'cjs',
-    outfile: join(functionsDir, 'api.js'),
+    outfile: join(functionsDir, 'api.cjs'),
     external: [
       '@neondatabase/serverless',
       'drizzle-orm',
