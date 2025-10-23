@@ -121,21 +121,17 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
   subscribedAt: timestamp("subscribed_at").defaultNow(),
 });
 
-export const quotesOfWeek = pgTable("quotes_of_week", {
+export const dailyWisdom = pgTable("daily_wisdom", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   author: text("author").notNull(),
-  quoteText: text("quote_text"),
-  imageUrl: text("image_url").notNull(),
-  displayDate: date("display_date").notNull(), // The date this quote should be displayed
+  quote_text: text("quote_text"),
+  image_url: text("image_url").notNull(),
+  display_date: date("display_date").notNull(), // The date this quote should be displayed
   active: boolean("active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
-
-// Legacy field mapping for backward compatibility
-// dayOfWeek is replaced by displayDate
-// weekStartDate is replaced by displayDate
 
 // Authentication tables
 export const authUsers = pgTable("auth_users", {
@@ -191,7 +187,7 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: tru
 export const insertTestimonialSchema = createInsertSchema(testimonials).omit({ id: true });
 export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({ id: true, createdAt: true });
 export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({ id: true, subscribedAt: true });
-export const insertQuoteOfWeekSchema = createInsertSchema(quotesOfWeek).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertDailyWisdomSchema = createInsertSchema(dailyWisdom).omit({ id: true, created_at: true, updated_at: true });
 export const insertAuthUserSchema = createInsertSchema(authUsers).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertBookmarkSchema = createInsertSchema(bookmarks).omit({ id: true, createdAt: true });
 export const insertTranslationCacheSchema = createInsertSchema(translationCache).omit({ id: true, createdAt: true, updatedAt: true });
@@ -239,8 +235,8 @@ export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
-export type QuoteOfWeek = typeof quotesOfWeek.$inferSelect;
-export type InsertQuoteOfWeek = z.infer<typeof insertQuoteOfWeekSchema>;
+export type DailyWisdom = typeof dailyWisdom.$inferSelect;
+export type InsertDailyWisdom = z.infer<typeof insertDailyWisdomSchema>;
 export type AuthUser = typeof authUsers.$inferSelect;
 export type InsertAuthUser = z.infer<typeof insertAuthUserSchema>;
 export type Bookmark = typeof bookmarks.$inferSelect;

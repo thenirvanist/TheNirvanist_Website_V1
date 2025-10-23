@@ -6,6 +6,7 @@ import { useActiveQuotes } from "@/hooks/useSupabaseQuery";
 export default function QuotesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [imageError, setImageError] = useState<Record<number, boolean>>({});
 
   // Fetch active quotes from Supabase
   const { data: quotes = [], isLoading, isError } = useActiveQuotes();
@@ -47,16 +48,35 @@ export default function QuotesCarousel() {
     }
   }, [isPlaying]);
 
-  // Format date for display (without timezone shift)
-  const formatDate = (dateString: string) => {
-    // Append time to force UTC interpretation and avoid timezone shift
-    const date = new Date(dateString + 'T00:00:00Z');
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      month: 'short', 
-      day: 'numeric',
-      timeZone: 'UTC' // Force UTC to prevent timezone shifts
-    });
+  // Format date for display (handles PostgreSQL date format)
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "Date not available";
+    
+    try {
+      // PostgreSQL date format is YYYY-MM-DD
+      // Append time to force UTC interpretation and avoid timezone shift
+      const date = new Date(dateString + 'T00:00:00Z');
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return "Invalid Date";
+      }
+      
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        month: 'short', 
+        day: 'numeric',
+        timeZone: 'UTC' // Force UTC to prevent timezone shifts
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
+    }
+  };
+
+  // Handle image loading errors
+  const handleImageError = (quoteId: number) => {
+    setImageError(prev => ({ ...prev, [quoteId]: true }));
   };
 
   if (isLoading) {
@@ -118,17 +138,40 @@ export default function QuotesCarousel() {
         <div className="relative max-w-xl mx-auto">
           {/* Main Quote Card */}
           <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-            <div 
-              className="aspect-square bg-cover bg-center relative"
-              style={{ backgroundImage: `url(${currentQuote.imageUrl})` }}
-            >
-              {/* Date Label */}
-              <div className="absolute top-4 left-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full z-10">
-                <span className="text-sm font-medium text-gray-900">
-                  {formatDate(currentQuote.displayDate)}
-                </span>
+            {imageError[currentQuote.id] || !currentQuote.image_url ? (
+              // Fallback for missing/broken images
+              <div className="aspect-square bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center relative">
+                <div className="text-center p-8">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentQuote.title}</h3>
+                  <p className="text-lg text-gray-700 italic">"{currentQuote.quote_text}"</p>
+                  <p className="text-md text-gray-600 mt-4">— {currentQuote.author}</p>
+                </div>
+                {/* Date Label */}
+                <div className="absolute top-4 left-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full z-10">
+                  <span className="text-sm font-medium text-gray-900">
+                    {formatDate(currentQuote.display_date)}
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div 
+                className="aspect-square bg-cover bg-center relative"
+                style={{ backgroundImage: `url(${currentQuote.image_url})` }}
+              >
+                <img
+                  src={currentQuote.image_url}
+                  alt={currentQuote.title}
+                  className="hidden"
+                  onError={() => handleImageError(currentQuote.id)}
+                />
+                {/* Date Label */}
+                <div className="absolute top-4 left-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full z-10">
+                  <span className="text-sm font-medium text-gray-900">
+                    {formatDate(currentQuote.display_date)}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Navigation Arrows */}
