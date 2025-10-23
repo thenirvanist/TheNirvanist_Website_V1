@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import type { Journey, Sage, Ashram, Meetup, Testimonial, QuoteOfWeek } from "@shared/schema";
+import type { Journey, Sage, Ashram, Meetup, Testimonial, DailyWisdom } from "@shared/schema";
 
 /**
  * Direct Supabase query hooks that bypass backend API
@@ -143,13 +143,13 @@ export function useTestimonials() {
 }
 
 export function useActiveQuotes() {
-  return useQuery<QuoteOfWeek[]>({
-    queryKey: ["supabase", "quotes", "active"],
+  return useQuery<DailyWisdom[]>({
+    queryKey: ["supabase", "daily_wisdom", "active"],
     queryFn: async () => {
       if (!supabase) throw new Error("Supabase not configured");
       const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
-        .from("quotes_of_week")
+        .from("daily_wisdom")
         .select("*")
         .eq("active", true)
         .lte("display_date", today)

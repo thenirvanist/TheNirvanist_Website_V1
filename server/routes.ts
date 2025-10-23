@@ -16,7 +16,7 @@ import {
   insertJourneySchema, insertSageSchema, insertAshramSchema, 
   insertMeetupSchema, insertRegistrationSchema, insertBlogPostSchema,
   insertTestimonialSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
-  insertQuoteOfWeekSchema
+  insertDailyWisdomSchema
 } from "@shared/schema";
 import { registerSEORoutes } from "./seo-routes";
 
@@ -423,35 +423,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Quotes of the Week routes
+  // Daily Wisdom routes
   app.get("/api/quotes", async (req, res) => {
     try {
-      const quotes = await storage.getQuotesOfWeek();
+      const quotes = await storage.getDailyWisdom();
       res.json(quotes);
     } catch (error) {
-      console.error("Quotes API error:", error);
-      res.status(500).json({ message: "Failed to fetch quotes" });
+      console.error("Daily Wisdom API error:", error);
+      res.status(500).json({ message: "Failed to fetch daily wisdom" });
     }
   });
 
   app.get("/api/quotes/active", async (req, res) => {
     try {
-      const quotes = await storage.getActiveQuotesOfWeek();
+      const quotes = await storage.getActiveDailyWisdom();
       res.json(quotes);
     } catch (error) {
-      console.error("Active quotes API error:", error);
-      res.status(500).json({ message: "Failed to fetch active quotes" });
+      console.error("Active daily wisdom API error:", error);
+      res.status(500).json({ message: "Failed to fetch active daily wisdom" });
     }
   });
 
   app.post("/api/quotes", async (req, res) => {
     try {
-      const validatedData = insertQuoteOfWeekSchema.parse(req.body);
-      const quote = await storage.createQuoteOfWeek(validatedData);
+      const validatedData = insertDailyWisdomSchema.parse(req.body);
+      const quote = await storage.createDailyWisdom(validatedData);
       res.status(201).json(quote);
     } catch (error) {
-      console.error("Create quote error:", error);
-      res.status(400).json({ message: "Invalid quote data" });
+      console.error("Create daily wisdom error:", error);
+      res.status(400).json({ message: "Invalid daily wisdom data" });
     }
   });
 
@@ -459,28 +459,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const updateData = req.body;
-      const quote = await storage.updateQuoteOfWeek(id, updateData);
+      const quote = await storage.updateDailyWisdom(id, updateData);
       if (!quote) {
-        return res.status(404).json({ message: "Quote not found" });
+        return res.status(404).json({ message: "Daily wisdom not found" });
       }
       res.json(quote);
     } catch (error) {
-      console.error("Update quote error:", error);
-      res.status(400).json({ message: "Failed to update quote" });
+      console.error("Update daily wisdom error:", error);
+      res.status(400).json({ message: "Failed to update daily wisdom" });
     }
   });
 
   app.delete("/api/quotes/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteQuoteOfWeek(id);
+      const deleted = await storage.deleteDailyWisdom(id);
       if (!deleted) {
-        return res.status(404).json({ message: "Quote not found" });
+        return res.status(404).json({ message: "Daily wisdom not found" });
       }
-      res.json({ message: "Quote deleted successfully" });
+      res.json({ message: "Daily wisdom deleted successfully" });
     } catch (error) {
-      console.error("Delete quote error:", error);
-      res.status(400).json({ message: "Failed to delete quote" });
+      console.error("Delete daily wisdom error:", error);
+      res.status(400).json({ message: "Failed to delete daily wisdom" });
     }
   });
 

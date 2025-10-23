@@ -62,16 +62,16 @@ export interface NewsletterSubscriber {
   subscribedAt?: Date;
 }
 
-export interface QuoteOfWeek {
+export interface DailyWisdom {
   id: number;
   title: string;
   author: string;
-  quoteText?: string;
-  imageUrl: string;
-  displayDate: string;  // The date this quote should be displayed
+  quote_text?: string;
+  image_url: string;
+  display_date: string;  // The date this quote should be displayed
   active?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface Bookmark {
@@ -140,12 +140,12 @@ export interface IStorage {
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
   deleteBlogPost(id: number): Promise<boolean>;
 
-  // Quote of week operations
-  getQuotesOfWeek(): Promise<QuoteOfWeek[]>;
-  getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]>;
-  createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek>;
-  updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined>;
-  deleteQuoteOfWeek(id: number): Promise<boolean>;
+  // Daily Wisdom operations
+  getDailyWisdom(): Promise<DailyWisdom[]>;
+  getActiveDailyWisdom(): Promise<DailyWisdom[]>;
+  createDailyWisdom(quote: Partial<DailyWisdom>): Promise<DailyWisdom>;
+  updateDailyWisdom(id: number, quote: Partial<DailyWisdom>): Promise<DailyWisdom | undefined>;
+  deleteDailyWisdom(id: number): Promise<boolean>;
 
   // Bookmark operations
   getUserBookmarks(userId: number): Promise<Bookmark[]>;
@@ -539,70 +539,70 @@ export class SupabaseStorage implements IStorage {
     }
   }
 
-  // Quote of week operations
-  async getQuotesOfWeek(): Promise<QuoteOfWeek[]> {
+  // Daily Wisdom operations
+  async getDailyWisdom(): Promise<DailyWisdom[]> {
     try {
-      const quotes = await db.select().from(schema.quotesOfWeek)
+      const quotes = await db.select().from(schema.dailyWisdom)
         .orderBy(sql`display_date DESC`);
-      return quotes as QuoteOfWeek[];
+      return quotes as DailyWisdom[];
     } catch (error) {
-      console.error('Error getting quotes of week:', error);
+      console.error('Error getting daily wisdom:', error);
       return [];
     }
   }
 
-  async getActiveQuotesOfWeek(): Promise<QuoteOfWeek[]> {
+  async getActiveDailyWisdom(): Promise<DailyWisdom[]> {
     try {
-      const quotes = await db.select().from(schema.quotesOfWeek)
-        .where(eq(schema.quotesOfWeek.active, true))
+      const quotes = await db.select().from(schema.dailyWisdom)
+        .where(eq(schema.dailyWisdom.active, true))
         .orderBy(sql`display_date DESC`);
-      return quotes as QuoteOfWeek[];
+      return quotes as DailyWisdom[];
     } catch (error) {
-      console.error('Error getting active quotes of week:', error);
+      console.error('Error getting active daily wisdom:', error);
       return [];
     }
   }
 
-  async createQuoteOfWeek(quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek> {
+  async createDailyWisdom(quote: Partial<DailyWisdom>): Promise<DailyWisdom> {
     try {
-      const [newQuote] = await db.insert(schema.quotesOfWeek)
+      const [newQuote] = await db.insert(schema.dailyWisdom)
         .values({
           title: quote.title!,
           author: quote.author!,
-          quoteText: quote.quoteText || null,
-          imageUrl: quote.imageUrl!,
-          displayDate: quote.displayDate!,
+          quote_text: quote.quote_text || null,
+          image_url: quote.image_url!,
+          display_date: quote.display_date!,
           active: quote.active ?? true,
         })
         .returning();
-      return newQuote as QuoteOfWeek;
+      return newQuote as DailyWisdom;
     } catch (error) {
-      console.error('Error creating quote of week:', error);
+      console.error('Error creating daily wisdom:', error);
       throw error;
     }
   }
 
-  async updateQuoteOfWeek(id: number, quote: Partial<QuoteOfWeek>): Promise<QuoteOfWeek | undefined> {
+  async updateDailyWisdom(id: number, quote: Partial<DailyWisdom>): Promise<DailyWisdom | undefined> {
     try {
-      const [updatedQuote] = await db.update(schema.quotesOfWeek)
-        .set({ ...quote, updatedAt: new Date() })
-        .where(eq(schema.quotesOfWeek.id, id))
+      const [updatedQuote] = await db.update(schema.dailyWisdom)
+        .set({ ...quote, updated_at: new Date() })
+        .where(eq(schema.dailyWisdom.id, id))
         .returning();
-      return updatedQuote as QuoteOfWeek || undefined;
+      return updatedQuote as DailyWisdom || undefined;
     } catch (error) {
-      console.error('Error updating quote of week:', error);
+      console.error('Error updating daily wisdom:', error);
       return undefined;
     }
   }
 
-  async deleteQuoteOfWeek(id: number): Promise<boolean> {
+  async deleteDailyWisdom(id: number): Promise<boolean> {
     try {
-      const [deletedQuote] = await db.delete(schema.quotesOfWeek)
-        .where(eq(schema.quotesOfWeek.id, id))
+      const [deletedQuote] = await db.delete(schema.dailyWisdom)
+        .where(eq(schema.dailyWisdom.id, id))
         .returning();
       return !!deletedQuote;
     } catch (error) {
-      console.error('Error deleting quote of week:', error);
+      console.error('Error deleting daily wisdom:', error);
       return false;
     }
   }
