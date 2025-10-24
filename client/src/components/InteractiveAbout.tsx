@@ -50,15 +50,15 @@ export default function InteractiveAbout() {
   }, [isInView, visibleWords, aboutText.length]);
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-white text-black flex items-center justify-center py-20">
+    <section ref={sectionRef} className="bg-white text-black py-12">
       <div className="max-w-6xl mx-auto px-6">
         {/* Interactive Text Animation */}
-        <div className="text-center mb-16">
-          <h2 className="text-6xl md:text-8xl font-light mb-12 tracking-tight">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl md:text-6xl font-light mb-6 tracking-tight">
             <span className="text-[hsl(70,71%,62%)]">About</span> Us
           </h2>
           
-          <div className="text-2xl md:text-3xl leading-relaxed font-light max-w-4xl mx-auto mb-8">
+          <div className="text-xl md:text-2xl leading-relaxed font-light max-w-4xl mx-auto mb-6">
             {aboutText.map((word, index) => (
               <span
                 key={index}
@@ -77,7 +77,7 @@ export default function InteractiveAbout() {
             ))}
           </div>
 
-          <div className="text-xl md:text-2xl leading-relaxed font-light max-w-3xl mx-auto opacity-80">
+          <div className="text-lg md:text-xl leading-relaxed font-light max-w-3xl mx-auto opacity-80">
             {mission.map((word, index) => (
               <span
                 key={index}
@@ -97,7 +97,7 @@ export default function InteractiveAbout() {
         </div>
 
         {/* Feature Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20">
+        <div className="grid md:grid-cols-3 gap-6 mt-10">
           <div className="text-center group">
             <div className="w-20 h-20 mx-auto mb-6 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-[hsl(70,71%,62%)] to-[hsl(75,64%,49%)] rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>

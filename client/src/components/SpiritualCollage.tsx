@@ -66,47 +66,15 @@ export default function SpiritualCollage() {
           </p>
         </div>
 
-        {/* Dynamic Collage Grid */}
-        <div className="grid grid-cols-4 grid-rows-4 gap-4 h-[600px] scroll-trigger">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className={`
-                ${image.className} 
-                relative overflow-hidden rounded-2xl group cursor-pointer
-                transform hover:scale-[1.02] transition-all duration-500
-              `}
-              style={{
-                animationDelay: `${index * 0.1}s`
-              }}
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute bottom-4 left-4 text-white">
-                  <p className="text-sm font-medium">{image.alt}</p>
-                </div>
+        {/* Single Image Placeholder for Looping GIF */}
+        <div className="flex justify-center scroll-trigger">
+          <div className="relative w-full max-w-4xl aspect-video overflow-hidden rounded-2xl shadow-2xl">
+            <div className="w-full h-full bg-gradient-to-br from-[hsl(70,71%,62%)]/20 to-[hsl(75,64%,49%)]/20 flex items-center justify-center">
+              <div className="text-center p-8">
+                <p className="text-2xl font-light text-gray-700 mb-4">Looping GIF Placeholder</p>
+                <p className="text-lg text-gray-600">Replace this section with your looping GIF</p>
               </div>
-              
-              {/* Floating Animation Elements */}
-              <div className="absolute top-4 right-4 w-2 h-2 bg-[hsl(70,71%,62%)] rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-300"></div>
             </div>
-          ))}
-        </div>
-
-        {/* Floating Text Elements */}
-        <div className="relative mt-16">
-          <div className="absolute left-1/4 top-8 text-[hsl(70,71%,62%)] text-lg font-light animate-float opacity-60">
-            Ancient Wisdom
-          </div>
-          <div className="absolute right-1/3 top-16 text-white text-sm font-light animate-float-delayed opacity-40">
-            Sacred Journeys
-          </div>
-          <div className="absolute left-1/3 bottom-8 text-[hsl(70,71%,62%)] text-base font-light animate-float opacity-50">
-            Inner Peace
           </div>
         </div>
       </div>
