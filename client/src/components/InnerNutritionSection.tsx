@@ -96,7 +96,7 @@ export default function InnerNutritionSection() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      <span>{post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
                   </div>
                   
