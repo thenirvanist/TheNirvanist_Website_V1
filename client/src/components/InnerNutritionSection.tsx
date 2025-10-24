@@ -9,7 +9,7 @@ export default function InnerNutritionSection() {
   const { data: blogPosts, isLoading, error } = useQuery<BlogPost[]>({
     queryKey: ['/api/blog'],
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 
   if (error) {
@@ -72,7 +72,7 @@ export default function InnerNutritionSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {latestPosts.map((post) => (
+          {latestPosts.map((post: BlogPost) => (
             <Link key={post.id} href={`/inner-nutrition/${post.slug}`}>
               <Card className="group bg-white hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border-0">
                 <div className="relative overflow-hidden">
@@ -110,7 +110,7 @@ export default function InnerNutritionSection() {
                   
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags.slice(0, 2).map((tag, index) => (
+                      {post.tags.slice(0, 2).map((tag: string, index: number) => (
                         <span
                           key={index}
                           className="px-3 py-1 bg-[hsl(75,64%,49%)]/10 text-[hsl(75,64%,39%)] rounded-full text-sm font-medium"
