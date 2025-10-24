@@ -9,6 +9,7 @@ import MeetupsSection from "@/components/MeetupsSection";
 import InnerNutritionSection from "@/components/InnerNutritionSection";
 import SimpleSagesSection from "@/components/SimpleSagesSection";
 import SimpleAshramsSection from "@/components/SimpleAshramsSection";
+import TestimonialSection from "@/components/TestimonialSection";
 
 // Only lazy load non-critical sections for better performance
 const SpiritualCollage = lazy(() => import("@/components/SpiritualCollage"));
@@ -51,6 +52,7 @@ export default function Home() {
       <InnerNutritionSection />
       <SimpleSagesSection />
       <SimpleAshramsSection />
+      <TestimonialSection />
       
       {/* Non-critical sections with lazy loading */}
       <Suspense fallback={<SectionSkeleton />}>
