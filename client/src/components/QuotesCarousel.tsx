@@ -81,7 +81,7 @@ export default function QuotesCarousel() {
 
   if (isLoading) {
     return (
-      <section className="bg-white py-16">
+      <section className="bg-[#F7F2E8] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -103,7 +103,7 @@ export default function QuotesCarousel() {
 
   if (isError || quotes.length === 0) {
     return (
-      <section className="bg-white py-16">
+      <section className="bg-[#F7F2E8] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -121,7 +121,7 @@ export default function QuotesCarousel() {
   const currentQuote = quotes[currentIndex];
 
   return (
-    <section className="bg-white py-16" data-testid="quotes-carousel">
+    <section className="bg-[#F7F2E8] py-16" data-testid="quotes-carousel">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

@@ -22,7 +22,7 @@ export default function InnerNutritionSection() {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-[hsl(38,42%,96%)]">
+      <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <div className="w-64 h-8 bg-gray-200 rounded mx-auto mb-4 animate-pulse"></div>
@@ -49,7 +49,7 @@ export default function InnerNutritionSection() {
 
   if (!blogPosts || blogPosts.length === 0) {
     return (
-      <section className="py-20 bg-[hsl(38,42%,96%)]">
+      <section className="py-20 bg-[#F7F2E8]">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-8">Inner Nutrition</h2>
           <p className="text-xl text-gray-600 mb-12">
@@ -62,7 +62,7 @@ export default function InnerNutritionSection() {
   }
 
   return (
-    <section className="py-20 bg-[hsl(38,42%,96%)]">
+    <section className="py-20 bg-[#F7F2E8]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 scroll-trigger">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Inner Nutrition</h2>

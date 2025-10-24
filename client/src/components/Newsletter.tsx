@@ -39,10 +39,10 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-20 brand-dark text-white">
+    <section className="py-20 bg-[#F7F2E8] text-gray-900">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <h2 className="text-4xl font-bold mb-6">Stay Connected to Your Journey</h2>
-        <p className="text-xl mb-8 opacity-90">
+        <p className="text-xl mb-8 text-gray-700">
           Receive weekly inspiration, retreat updates, and spiritual insights delivered to your inbox
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
