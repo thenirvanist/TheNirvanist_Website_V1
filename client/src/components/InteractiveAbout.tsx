@@ -54,9 +54,7 @@ export default function InteractiveAbout() {
       <div className="max-w-6xl mx-auto px-6">
         {/* Interactive Text Animation */}
         <div className="text-center mb-8">
-          <h2 className="text-4xl md:text-6xl font-light mb-6 tracking-tight">
-            <span className="text-[hsl(70,71%,62%)]">About</span> Us
-          </h2>
+          <h2 className="text-4xl font-bold mb-6">About Us</h2>
           
           <div className="text-xl md:text-2xl leading-relaxed font-light max-w-4xl mx-auto mb-6">
             {aboutText.map((word, index) => (

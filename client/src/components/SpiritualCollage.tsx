@@ -58,10 +58,8 @@ export default function SpiritualCollage() {
     <section ref={sectionRef} className="py-20 bg-[#F7F2E8] overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 scroll-trigger">
-          <h2 className="text-5xl md:text-6xl font-light text-black mb-8">
-            Sacred <span className="text-[hsl(70,71%,62%)]">Experiences</span>
-          </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold mb-6">Sacred Experiences</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Immerse yourself in the transformative power of ancient wisdom traditions
           </p>
         </div>

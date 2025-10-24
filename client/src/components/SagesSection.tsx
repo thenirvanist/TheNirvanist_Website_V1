@@ -59,7 +59,7 @@ export default function SagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <div className="flex items-center justify-center space-x-3">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[hsl(75,64%,49%)]"></div>
               <p className="text-lg text-gray-700">Loading spiritual wisdom...</p>
@@ -76,7 +76,7 @@ export default function SagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
               <p className="text-red-800 font-medium mb-2">Content unavailable</p>
               <p className="text-red-600 text-sm">We're experiencing technical difficulties. Please try refreshing the page.</p>
@@ -93,7 +93,7 @@ export default function SagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <p className="text-lg text-gray-700">Loading sage data...</p>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function SagesSection() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="scroll-trigger">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <p className="text-lg text-gray-700 leading-relaxed mb-8">
               Spiritual philosophers, to whatever background they may belong, have left their mark in sands of times. They lived and left this world holding a single aspiration – progress of their fellow human beings in paths of spirituality. For this they sacrificed their own comforts, tolerated hardships, censure, torture, ridicule with grace and with kindness. By reading their lives and letting it inspire you, you pay your ultimate homage to them and their lives efforts.
             </p>

@@ -46,7 +46,7 @@ export default function TestimonialSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">What Our Travelers Say</h2>
+            <h2 className="text-4xl font-bold mb-6">Testimonials</h2>
             <p className="text-xl text-gray-600">Loading spiritual experiences...</p>
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function TestimonialSection() {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-6">What Our Travelers Say</h2>
+          <h2 className="text-4xl font-bold mb-6">Testimonials</h2>
           <p className="text-xl text-gray-600">Transformative experiences from our spiritual community</p>
         </div>
 
