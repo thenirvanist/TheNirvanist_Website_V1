@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import type { Journey, Sage, Ashram, Meetup, Testimonial, DailyWisdom } from "@shared/schema";
+import type { Journey, Sage, Ashram, Meetup, Testimonial, DailyWisdom, BlogPost } from "@shared/schema";
 
 /**
  * Direct Supabase query hooks that bypass backend API
@@ -158,6 +158,41 @@ export function useActiveQuotes() {
       if (error) throw error;
       return data || [];
     },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useBlogPosts() {
+  return useQuery<BlogPost[]>({
+    queryKey: ["supabase", "blog_posts"],
+    queryFn: async () => {
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useBlogPost(slug: string) {
+  return useQuery<BlogPost>({
+    queryKey: ["supabase", "blog_posts", slug],
+    queryFn: async () => {
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("slug", slug)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
     staleTime: 5 * 60 * 1000,
   });
 }

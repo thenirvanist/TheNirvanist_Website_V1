@@ -1,16 +1,12 @@
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, Calendar, User, ArrowRight } from "lucide-react";
 import type { BlogPost } from "@shared/schema";
+import { useBlogPosts } from "@/hooks/useSupabaseQuery";
 
 export default function InnerNutritionSection() {
-  const { data: blogPosts, isLoading, error } = useQuery<BlogPost[]>({
-    queryKey: ['/api/blog'],
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-  });
+  const { data: blogPosts, isLoading, error } = useBlogPosts();
 
   if (error) {
     console.error('Error loading blog posts:', error);

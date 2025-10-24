@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Search, Clock, Calendar, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,15 +8,13 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import type { BlogPost } from "@shared/schema";
 import { BookmarkButton } from "@/components/BookmarkButton";
+import { useBlogPosts } from "@/hooks/useSupabaseQuery";
 
 export default function InnerNutrition() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const { data: blogPosts = [], isLoading, error } = useQuery<BlogPost[]>({
-    queryKey: ['/api/blog'],
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const { data: blogPosts = [], isLoading, error } = useBlogPosts();
 
   // Filter blog posts based on search term and category
   const filteredPosts = blogPosts.filter((post: BlogPost) => {

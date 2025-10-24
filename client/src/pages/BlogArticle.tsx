@@ -1,11 +1,11 @@
 import { useParams, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Clock, Calendar, User, ArrowLeft, Share2, Twitter, Facebook, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import type { BlogPost } from "@shared/schema";
+import { useBlogPost, useBlogPosts } from "@/hooks/useSupabaseQuery";
 
 // Social sharing component
 function SocialShare({ post, url }: { post: BlogPost; url: string }) {
@@ -69,31 +69,14 @@ export default function BlogArticle() {
   const slug = params.slug as string;
   const currentUrl = `${window.location.origin}/inner-nutrition/${slug}`;
 
-  const { data: post, isLoading, error } = useQuery<BlogPost>({
-    queryKey: ['/api/blog/slug', slug],
-    queryFn: async () => {
-      const response = await fetch(`/api/blog/slug/${slug}`);
-      if (!response.ok) {
-        throw new Error('Article not found');
-      }
-      return response.json();
-    },
-    enabled: !!slug,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    cacheTime: 60 * 60 * 1000, // 1 hour
-  });
+  const { data: post, isLoading, error } = useBlogPost(slug);
 
   // Get related articles from the same category
-  const { data: relatedPosts } = useQuery<BlogPost[]>({
-    queryKey: ['/api/blog'],
-    enabled: !!post,
-    select: (data) => {
-      return data
-        ?.filter(p => p.id !== post?.id && (p.category === post?.category || 
-          post?.tags?.some(tag => p.tags?.includes(tag))))
-        ?.slice(0, 3) || [];
-    }
-  });
+  const { data: allPosts } = useBlogPosts();
+  const relatedPosts = allPosts
+    ?.filter((p: BlogPost) => p.id !== post?.id && (p.category === post?.category || 
+      post?.tags?.some((tag: string) => p.tags?.includes(tag))))
+    ?.slice(0, 3) || [];
 
   if (isLoading) {
     return (
