@@ -4,7 +4,7 @@
 
 The Nirvanist is a full-stack spiritual tourism platform that connects seekers with transformative spiritual journeys, sage wisdom, ashram retreats, and global meetups. The application facilitates spiritual growth through curated experiences in sacred destinations worldwide.
 
-## Recent Changes (August 25, 2025)
+## Recent Changes (October 24, 2025)
 ✓ Updated brand assets with new logo variations (color, white, black)
 ✓ Implemented hero video autoplay with Heritage Film India footage
 ✓ Added transparency effects to navigation and partner strip
@@ -95,6 +95,16 @@ The Nirvanist is a full-stack spiritual tourism platform that connects seekers w
   - Included all journeys, sages, ashrams detail pages with individual URLs
   - Configured proper crawl delays and asset permissions for optimal indexing
   - Added comprehensive SEO implementation guide with deployment instructions
+✓ Migrated ALL content queries to use direct Supabase client hooks instead of backend API endpoints:
+  - Created centralized useSupabaseQuery.ts hook with functions for all content types
+  - Implemented useBlogPosts() and useBlogPost(slug) for blog content
+  - Fixed production deployment issues with Netlify serverless functions
+  - All content (Journeys, Sages, Ashrams, Meetups, Testimonials, Daily Wisdom, Blog Posts) now use direct Supabase queries
+✓ Updated homepage section titles for clarity and consistency:
+  - Changed "Global Spiritual Meetups" → "Spiritual Meetups"
+  - Changed "Wisdom of the Sages" → "Biographies of the Sages"
+  - Changed "What Our Travelers Say" → "Testimonials"
+  - Standardized "About Us" and "Sacred Experiences" title formatting to match other sections
 
 ## User Preferences
 
@@ -154,11 +164,19 @@ Preferred communication style: Simple, everyday language.
 ## Data Flow
 
 ### Client-Server Communication
-1. Frontend makes API requests using TanStack Query
-2. Express routes handle requests with validation
-3. Storage layer interfaces with Drizzle ORM
-4. PostgreSQL database stores and retrieves data
-5. Responses flow back through the same chain
+**IMPORTANT: All content queries now use direct Supabase client hooks instead of backend API endpoints.**
+
+1. Frontend makes direct Supabase queries using hooks from `client/src/hooks/useSupabaseQuery.ts`
+2. Supabase client connects directly to the database with anon key and RLS policies
+3. Content is fetched and cached using TanStack Query
+4. This pattern is used for ALL content: Journeys, Sages, Ashrams, Meetups, Testimonials, Daily Wisdom, and Blog Posts
+5. Backend API routes still exist for mutations (create, update, delete) and authentication
+
+**Why this pattern:**
+- Fixes Netlify serverless function deployment issues
+- Reduces backend complexity and improves performance
+- Provides better caching with TanStack Query
+- Works seamlessly in production without serverless function overhead
 
 ### Real-time Features
 - Chatbot interactions with OpenAI API
