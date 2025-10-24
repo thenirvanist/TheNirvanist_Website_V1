@@ -44,11 +44,11 @@ export default function Home() {
         <SpiritualCollage />
       </Suspense>
       
-      {/* Critical sections with immediate data loading - New order */}
+      {/* Critical sections with immediate data loading - Reordered */}
+      <SimpleTourCarousel />
       <QuotesCarousel />
       <MeetupsSection />
       <InnerNutritionSection />
-      <SimpleTourCarousel />
       <SimpleSagesSection />
       <SimpleAshramsSection />
       
