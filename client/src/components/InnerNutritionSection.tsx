@@ -60,7 +60,7 @@ export default function InnerNutritionSection() {
   return (
     <section className="py-20 bg-[#F7F2E8]">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16 scroll-trigger">
+        <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Inner Nutrition</h2>
           <p className="text-xl text-gray-600 mb-8">
             Nourishment for your spiritual journey through mindful insights and transformative wisdom

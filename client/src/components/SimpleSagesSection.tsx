@@ -11,7 +11,7 @@ export default function SimpleSagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <div className="flex items-center justify-center space-x-3">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[hsl(75,64%,49%)]"></div>
               <p className="text-lg text-gray-700">Loading spiritual wisdom...</p>
@@ -27,7 +27,7 @@ export default function SimpleSagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
               <p className="text-red-800 font-medium">Content unavailable</p>
             </div>
@@ -42,7 +42,7 @@ export default function SimpleSagesSection() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">Wisdom of the Sages</h2>
+            <h2 className="text-4xl font-bold mb-6">Biographies of the Sages</h2>
             <p className="text-lg text-gray-700">No sage information available at the moment.</p>
           </div>
         </div>
