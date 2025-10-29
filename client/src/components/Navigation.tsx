@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, User, LogOut, Heart } from "lucide-react";
+import { Menu, X, User, LogOut, Heart, ChevronDown } from "lucide-react";
 import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { LanguageDropdown } from "./LanguageDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,12 +20,18 @@ export default function Navigation() {
   const navItems = [
     { href: "/journeys", label: "Sacred Journeys" },
     { href: "/meetups", label: "Spiritual Meetups" },
-    { href: "/inner-nutrition", label: "Inner Nutrition" },
     { href: "/sages", label: "Sages" },
     { href: "/ashrams", label: "Ashrams" },
   ];
 
+  const innerNutritionItems = [
+    { href: "/daily-quotes", label: "Daily Quotes" },
+    { href: "/inner-nutrition", label: "Articles" },
+  ];
+
   const isActive = (href: string) => location === href;
+  
+  const isInnerNutritionActive = innerNutritionItems.some(item => isActive(item.href));
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-30 backdrop-blur-sm">
@@ -43,6 +55,30 @@ export default function Navigation() {
                 </Button>
               </Link>
             ))}
+            
+            {/* Inner Nutrition Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={`text-white hover:bg-[hsl(70,71%,62%)] hover:text-black px-4 py-2 rounded-lg transition-all duration-300 ${
+                    isInnerNutritionActive ? "bg-[hsl(70,71%,62%)] text-black" : ""
+                  }`}
+                >
+                  Inner Nutrition
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
+                {innerNutritionItems.map((item) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link href={item.href}>
+                      <span className="cursor-pointer w-full px-2 py-1 hover:bg-gray-100">{item.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             {/* Language and Authentication Section */}
             <div className="flex items-center space-x-4 pl-4 border-l border-white/20">
@@ -122,6 +158,24 @@ export default function Navigation() {
                   </Button>
                 </Link>
               ))}
+              
+              {/* Inner Nutrition Section in Mobile */}
+              <div className="pl-2">
+                <div className="text-white text-sm font-semibold px-2 py-2">Inner Nutrition</div>
+                {innerNutritionItems.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant="ghost"
+                      className={`w-full text-white hover:bg-[hsl(70,71%,62%)] hover:text-black px-4 py-2 rounded-lg transition-all duration-300 justify-start ${
+                        isActive(item.href) ? "bg-[hsl(70,71%,62%)] text-black" : ""
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
               
               
               {/* Mobile Language Selection */}
