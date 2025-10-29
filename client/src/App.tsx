@@ -20,6 +20,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import AuthCallback from "@/pages/auth/callback";
 import InnerNutrition from "@/pages/InnerNutrition";
 import BlogArticle from "@/pages/BlogArticle";
+import DailyQuotes from "@/pages/DailyQuotes";
 import Dashboard from "@/pages/Dashboard";
 import QuotesAdmin from "@/pages/admin/QuotesAdmin";
 import SagesAdmin from "@/pages/admin/SagesAdmin";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/journeys" component={Journeys} />
       <Route path="/journeys/:id" component={JourneyDetail} />
       <Route path="/meetups" component={Meetups} />
+      <Route path="/daily-quotes" component={DailyQuotes} />
       <Route path="/inner-nutrition" component={InnerNutrition} />
       <Route path="/inner-nutrition/:slug" component={BlogArticle} />
       <Route path="/sages" component={Sages} />
