@@ -162,6 +162,22 @@ export function useActiveQuotes() {
   });
 }
 
+export function useAllDailyWisdom() {
+  return useQuery<DailyWisdom[]>({
+    queryKey: ["supabase", "daily_wisdom", "all"],
+    queryFn: async () => {
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase
+        .from("daily_wisdom")
+        .select("*")
+        .order("display_date", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useBlogPosts() {
   return useQuery<BlogPost[]>({
     queryKey: ["supabase", "blog_posts"],
