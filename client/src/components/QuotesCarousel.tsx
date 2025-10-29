@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "wouter";
 import { Button } from "./ui/button";
 import { useActiveQuotes } from "@/hooks/useSupabaseQuery";
 
@@ -85,7 +86,7 @@ export default function QuotesCarousel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Daily Wisdom
+              Daily Quotes
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-pink-500 mx-auto mb-6"></div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -107,7 +108,7 @@ export default function QuotesCarousel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Daily Wisdom
+              Daily Quotes
             </h2>
             <p className="text-xl text-gray-600">
               Unable to load quotes at this time. Please try again later.
@@ -126,7 +127,7 @@ export default function QuotesCarousel() {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Daily Wisdom
+            Daily Quotes
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-pink-500 mx-auto mb-6"></div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -233,6 +234,15 @@ export default function QuotesCarousel() {
               {quote.author}
             </button>
           ))}
+        </div>
+
+        {/* Explore All Button */}
+        <div className="text-center mt-8">
+          <Link href="/daily-quotes">
+            <Button className="bg-[hsl(75,64%,49%)] hover:bg-[hsl(75,64%,59%)] text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+              Explore All Daily Quotes
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

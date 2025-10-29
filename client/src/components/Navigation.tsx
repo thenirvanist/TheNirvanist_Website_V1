@@ -64,16 +64,19 @@ export default function Navigation() {
                   className={`text-white hover:bg-[hsl(70,71%,62%)] hover:text-black px-4 py-2 rounded-lg transition-all duration-300 ${
                     isInnerNutritionActive ? "bg-[hsl(70,71%,62%)] text-black" : ""
                   }`}
+                  data-testid="button-inner-nutrition-dropdown"
                 >
                   Inner Nutrition
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
+              <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg z-[100] min-w-[200px]" align="start">
                 {innerNutritionItems.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <Link href={item.href}>
-                      <span className="cursor-pointer w-full px-2 py-1 hover:bg-gray-100">{item.label}</span>
+                  <DropdownMenuItem key={item.href} asChild className="cursor-pointer">
+                    <Link href={item.href} className="w-full">
+                      <div className="w-full px-2 py-2 hover:bg-gray-100 text-gray-900">
+                        {item.label}
+                      </div>
                     </Link>
                   </DropdownMenuItem>
                 ))}

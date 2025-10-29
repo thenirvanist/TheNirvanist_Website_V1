@@ -46,7 +46,7 @@ export default function DailyQuotes() {
         <div className="pt-24 pb-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center">
-              <h1 className="text-4xl font-bold mb-6">Loading Daily Wisdom...</h1>
+              <h1 className="text-4xl font-bold mb-6">Loading Daily Quotes...</h1>
               <p className="text-xl text-gray-600">Gathering spiritual insights for your journey</p>
             </div>
           </div>
@@ -63,9 +63,9 @@ export default function DailyQuotes() {
         <div className="pt-24 pb-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center">
-              <h1 className="text-4xl font-bold mb-6 text-red-600">Unable to Load Daily Wisdom</h1>
+              <h1 className="text-4xl font-bold mb-6 text-red-600">Unable to Load Daily Quotes</h1>
               <p className="text-xl text-gray-600">
-                We're experiencing difficulties accessing the wisdom quotes. 
+                We're experiencing difficulties accessing the quotes. 
                 Please try again later.
               </p>
             </div>
